@@ -19,6 +19,18 @@ export function initRatingsMarquee() {
   let lastTick = performance.now();
   let rafId = 0;
   let paused = false;
+  let offscreen = false;
+
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        const e = entries[0];
+        offscreen = !(e && e.isIntersecting);
+      },
+      { root: null, rootMargin: "80px 0px", threshold: 0 }
+    );
+    io.observe(marquee);
+  }
 
   const dragState = {
     active: false,
@@ -54,7 +66,7 @@ export function initRatingsMarquee() {
     const dt = Math.min(0.05, Math.max(0, (now - lastTick) / 1000));
     lastTick = now;
 
-    if (!paused && !dragState.active) {
+    if (!paused && !dragState.active && !offscreen) {
       const speed = 18;
       offset = wrap(offset + speed * dt);
       render();

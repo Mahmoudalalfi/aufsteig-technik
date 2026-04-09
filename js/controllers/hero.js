@@ -21,7 +21,7 @@ function isNarrowViewport() {
 }
 
 export function initHero(refs) {
-  const { canvas } = refs;
+  const { canvas, heroSequence } = refs;
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const state = appState.hero;
@@ -139,9 +139,25 @@ export function initHero(refs) {
     pump();
   }
 
+  let heroInView = true;
+  if (heroSequence && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        const e = entries[0];
+        heroInView = !!(e && e.isIntersecting);
+      },
+      { threshold: [0, 0.02, 0.15] }
+    );
+    io.observe(heroSequence);
+  }
+
+  const lerp = isCoarsePointer() ? 0.22 : 0.16;
+
   function renderLoop() {
-    state.currentFrame += (state.targetFrame - state.currentFrame) * 0.16;
-    drawSequenceFrame(state.currentFrame, false);
+    state.currentFrame += (state.targetFrame - state.currentFrame) * lerp;
+    if (heroInView) {
+      drawSequenceFrame(state.currentFrame, false);
+    }
     requestAnimationFrame(renderLoop);
   }
 
@@ -154,9 +170,16 @@ export function initHero(refs) {
   };
 
   window.addEventListener("resize", onLayoutChange, { passive: true });
-  if (window.visualViewport) {
+
+  /**
+   * iOS/Android fire visualViewport resize constantly while the URL bar shows/hides during scroll.
+   * That was resizing the canvas + ScrollTrigger.refresh every frame → heavy stutter.
+   * Desktop: keep sync; touch devices: ignore (orientationchange + window resize still run).
+   */
+  if (window.visualViewport && !isCoarsePointer()) {
     window.visualViewport.addEventListener("resize", onLayoutChange, { passive: true });
   }
+
   window.addEventListener("orientationchange", onLayoutChange, { passive: true });
 
   requestAnimationFrame(renderLoop);

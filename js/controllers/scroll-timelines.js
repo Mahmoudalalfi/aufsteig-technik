@@ -2,6 +2,15 @@ import { HERO_FRAME_COUNT } from "../model/hero-config.js";
 import { appState } from "../model/app-state.js";
 import { clamp } from "../utils/math.js";
 
+/** Coarser scrub on touch = less fighting with momentum scroll (fewer micro-updates). */
+function touchScrollTuning() {
+  const touch = window.matchMedia("(pointer: coarse)").matches;
+  if (!touch) {
+    return { scrubHero: 1.15, scrubService: 1.05, scrub: 1, scrubBottom: 1.08 };
+  }
+  return { scrubHero: 1.72, scrubService: 1.48, scrub: 1.38, scrubBottom: 1.55 };
+}
+
 export function initScrollTimelines(refs) {
   if (!window.gsap || !window.ScrollTrigger) return;
 
@@ -9,11 +18,14 @@ export function initScrollTimelines(refs) {
   const ScrollTrigger = window.ScrollTrigger;
   gsap.registerPlugin(ScrollTrigger);
 
+  const st = touchScrollTuning();
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
   ScrollTrigger.create({
     trigger: refs.heroSequence,
     start: "top top",
     end: () => `+=${Math.max(0, refs.sequenceTrack.offsetHeight - window.innerHeight)}`,
-    scrub: 1.15,
+    scrub: st.scrubHero,
     onUpdate(self) {
       appState.hero.targetFrame = self.progress * (HERO_FRAME_COUNT - 1);
 
@@ -59,7 +71,7 @@ export function initScrollTimelines(refs) {
       trigger: refs.serviceTrack,
       start: "top top",
       end: "bottom bottom",
-      scrub: 1.05,
+      scrub: st.scrubService,
       invalidateOnRefresh: true,
       onRefresh: refreshServiceStepSize,
       onUpdate(self) {
@@ -163,7 +175,7 @@ export function initScrollTimelines(refs) {
       trigger: refs.processSection,
       start: "top 82%",
       end: "bottom 38%",
-      scrub: 1,
+      scrub: st.scrub,
       invalidateOnRefresh: true,
       onRefresh() {
         refreshRoutePins();
@@ -197,7 +209,7 @@ export function initScrollTimelines(refs) {
           trigger: el,
           start: "top 88%",
           end: "top 56%",
-          scrub: 1
+          scrub: st.scrub
         }
       }
     );
@@ -239,7 +251,7 @@ export function initScrollTimelines(refs) {
             trigger: card,
             start: "top 88%",
             end: "top 58%",
-            scrub: 1,
+            scrub: st.scrub,
             onEnter: () => cards.forEach((item, itemIdx) => item.classList.toggle("is-active", itemIdx === idx)),
             onEnterBack: () => cards.forEach((item, itemIdx) => item.classList.toggle("is-active", itemIdx === idx))
           }
@@ -251,7 +263,7 @@ export function initScrollTimelines(refs) {
       trigger: capabilitiesScroll,
       start: "top 82%",
       end: "bottom 34%",
-      scrub: 1,
+      scrub: st.scrub,
       onUpdate(self) {
         if (capabilitiesProgress) {
           capabilitiesProgress.style.transform = `scaleX(${Math.max(0.06, self.progress).toFixed(4)})`;
@@ -274,7 +286,7 @@ export function initScrollTimelines(refs) {
             trigger: refs.impactSection,
             start: "top 84%",
             end: "top 58%",
-            scrub: 1
+            scrub: st.scrub
           }
         }
       );
@@ -286,7 +298,7 @@ export function initScrollTimelines(refs) {
       trigger: refs.brainSection,
       start: "top bottom",
       end: "bottom top",
-      scrub: 1,
+      scrub: st.scrub,
       onUpdate(self) {
         refs.root.style.setProperty("--brain-parallax", `${(self.progress - 0.5) * 34}px`);
       }
@@ -304,7 +316,7 @@ export function initScrollTimelines(refs) {
           trigger: refs.brainSection,
           start: "top 86%",
           end: "top 48%",
-          scrub: 1
+          scrub: st.scrub
         }
       }
     );
@@ -321,7 +333,7 @@ export function initScrollTimelines(refs) {
           trigger: refs.bottomSlogan,
           start: "top 92%",
           end: "bottom top",
-          scrub: 1.08
+          scrub: st.scrubBottom
         }
       }
     );
@@ -339,7 +351,7 @@ export function initScrollTimelines(refs) {
             trigger: refs.bottomSlogan,
             start: "top 88%",
             end: "bottom top",
-            scrub: 1.08
+            scrub: st.scrubBottom
           }
         }
       );
