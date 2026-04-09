@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Your Project | Aufsteig Technik</title>
+  <meta
+    name="description"
+    content="Start a new elevator or escalator project request. Multi-step form with autosave and review."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="start-project.css" />
+</head>
+<body>
+  <header class="sp-topbar">
+    <a class="sp-brand" href="index.html">Aufsteig.</a>
+    <div class="sp-topbar-actions">
+      <button class="sp-btn sp-btn-ghost" id="spClearDraft" type="button">Clear draft</button>
+      <a class="sp-btn sp-btn-ghost" href="index.html#contact">Back to site</a>
+    </div>
+  </header>
+
+  <main class="sp-shell" aria-label="Start your project form">
+    <section class="sp-hero" aria-label="Intro">
+      <span class="sp-chip">Start your project</span>
+      <h1>Project Request</h1>
+      <p>
+        A structured intake so we can scope the right elevator/escalator solution quickly. Your progress is saved
+        locally on this device.
+      </p>
+      <div class="sp-progress" aria-label="Progress">
+        <div class="sp-progress-top">
+          <strong id="spStepLabel">Step 1 of 7</strong>
+          <span id="spDraftStatus" class="sp-draft-status" aria-live="polite"></span>
+        </div>
+        <div class="sp-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <i id="spProgressBar"></i>
+        </div>
+      </div>
+    </section>
+
+    <section class="sp-card" aria-label="Wizard">
+      <form id="spForm" novalidate>
+        <div class="sp-steps" aria-live="polite">
+        <!-- STEP 1 -->
+        <div class="sp-step is-active" data-step="1" aria-label="Client information">
+          <h2>Client Information</h2>
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span>Full Name <b>*</b></span>
+              <input name="fullName" autocomplete="name" required />
+              <small class="sp-error" data-error-for="fullName"></small>
+            </label>
+            <label class="sp-field">
+              <span>Company Name</span>
+              <input name="companyName" autocomplete="organization" />
+              <small class="sp-error" data-error-for="companyName"></small>
+            </label>
+          </div>
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span>Email Address <b>*</b></span>
+              <input name="email" type="email" autocomplete="email" required />
+              <small class="sp-error" data-error-for="email"></small>
+            </label>
+            <label class="sp-field">
+              <span>Phone Number <b>*</b></span>
+              <div class="sp-phone">
+                <select name="phoneCountry" id="spPhoneCountry" aria-label="Phone country code" required>
+                  <option value="+49" data-country="Germany">🇩🇪 +49</option>
+                  <option value="+43" data-country="Austria">🇦🇹 +43</option>
+                  <option value="+41" data-country="Switzerland">🇨🇭 +41</option>
+                  <option value="+31" data-country="Netherlands">🇳🇱 +31</option>
+                  <option value="+32" data-country="Belgium">🇧🇪 +32</option>
+                  <option value="+33" data-country="France">🇫🇷 +33</option>
+                  <option value="+34" data-country="Spain">🇪🇸 +34</option>
+                  <option value="+39" data-country="Italy">🇮🇹 +39</option>
+                  <option value="+44" data-country="United Kingdom">🇬🇧 +44</option>
+                  <option value="+20" data-country="Egypt">🇪🇬 +20</option>
+                  <option value="+966" data-country="Saudi Arabia">🇸🇦 +966</option>
+                  <option value="+971" data-country="United Arab Emirates">🇦🇪 +971</option>
+                  <option value="+1" data-country="United States">🇺🇸 +1</option>
+                </select>
+                <input
+                  name="phone"
+                  id="spPhone"
+                  type="tel"
+                  inputmode="tel"
+                  placeholder="(0) 170 1234567"
+                  autocomplete="tel-national"
+                  required
+                />
+              </div>
+              <small class="sp-help">Use international format (e.g. +49…)</small>
+              <small class="sp-error" data-error-for="phone"></small>
+            </label>
+          </div>
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span>Country <b>*</b></span>
+              <select name="country" required>
+                <option value="">Select…</option>
+                <option>Germany</option>
+                <option>Austria</option>
+                <option>Switzerland</option>
+                <option>Other</option>
+              </select>
+              <small class="sp-error" data-error-for="country"></small>
+            </label>
+            <label class="sp-field">
+              <span>City <b>*</b></span>
+              <input name="city" autocomplete="address-level2" required />
+              <small class="sp-error" data-error-for="city"></small>
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="sp-step" data-step="2" aria-label="Project type">
+          <h2>Project Type</h2>
+          <div class="sp-grid sp-grid-2">
+            <fieldset class="sp-fieldset">
+              <legend>Type of Project <b>*</b></legend>
+              <div class="sp-choice-grid">
+                <label class="sp-choice">
+                  <input type="radio" name="projectType" value="Residential" required />
+                  <strong>Residential</strong>
+                  <span>Apartments, villas, mixed-use housing.</span>
+                </label>
+                <label class="sp-choice">
+                  <input type="radio" name="projectType" value="Commercial" />
+                  <strong>Commercial</strong>
+                  <span>Offices, retail, hotels, public buildings.</span>
+                </label>
+                <label class="sp-choice">
+                  <input type="radio" name="projectType" value="Industrial" />
+                  <strong>Industrial</strong>
+                  <span>Warehouses, factories, heavy-duty sites.</span>
+                </label>
+              </div>
+              <small class="sp-error" data-error-for="projectType"></small>
+            </fieldset>
+            <fieldset class="sp-fieldset">
+              <legend>Product Needed <b>*</b></legend>
+              <div class="sp-choice-grid">
+                <label class="sp-choice sp-choice--multi">
+                  <input type="checkbox" name="productNeeded" value="Elevator" />
+                  <strong>Elevator</strong>
+                  <span>Passenger, freight, hospital, panoramic.</span>
+                </label>
+                <label class="sp-choice sp-choice--multi">
+                  <input type="checkbox" name="productNeeded" value="Escalator" />
+                  <strong>Escalator</strong>
+                  <span>Retail, transit, and high-traffic sites.</span>
+                </label>
+                <label class="sp-choice sp-choice--multi">
+                  <input type="checkbox" name="productNeeded" value="Moving Walkway" />
+                  <strong>Moving Walkway</strong>
+                  <span>Airports, hubs, long corridors.</span>
+                </label>
+              </div>
+              <small class="sp-error" data-error-for="productNeeded"></small>
+            </fieldset>
+          </div>
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span>Number of Units Required <b>*</b></span>
+              <input name="units" type="number" min="1" step="1" required />
+              <small class="sp-error" data-error-for="units"></small>
+            </label>
+          </div>
+          <label id="spProjectAreaWrap" class="sp-field sp-conditional" style="display:none;">
+            <span>Project Area / Description <b>*</b></span>
+            <textarea
+              name="projectArea"
+              rows="4"
+              placeholder="If you selected multiple products, describe where each one is needed (e.g., '2 elevators for Tower A, 1 escalator for retail atrium, 1 moving walkway for corridor…')."
+            ></textarea>
+            <small class="sp-error" data-error-for="projectArea"></small>
+          </label>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="sp-step" data-step="3" aria-label="Building details">
+          <h2>Building Details</h2>
+          <div class="sp-grid sp-grid-3">
+            <label class="sp-field">
+              <span>Number of Floors <b>*</b></span>
+              <input name="floors" type="number" min="1" step="1" required />
+              <small class="sp-error" data-error-for="floors"></small>
+            </label>
+            <label class="sp-field">
+              <span>Building Height (meters)</span>
+              <input name="buildingHeightM" type="number" min="0" step="0.1" />
+              <small class="sp-error" data-error-for="buildingHeightM"></small>
+            </label>
+            <label class="sp-field">
+              <span>Floor-to-Floor Height (optional)</span>
+              <input name="floorToFloorM" type="number" min="0" step="0.1" />
+              <small class="sp-error" data-error-for="floorToFloorM"></small>
+            </label>
+          </div>
+
+          <div class="sp-grid sp-grid-2">
+            <fieldset class="sp-fieldset">
+              <legend>New Building or Existing <b>*</b></legend>
+              <label class="sp-radio"><input type="radio" name="buildingState" value="New Construction" required /> New Construction</label>
+              <label class="sp-radio"><input type="radio" name="buildingState" value="Existing (Modernization)" /> Existing Building (modernization)</label>
+              <small class="sp-error" data-error-for="buildingState"></small>
+            </fieldset>
+            <fieldset class="sp-fieldset">
+              <legend>Shaft Availability <b>*</b></legend>
+              <label class="sp-radio"><input type="radio" name="shaftAvailable" value="Yes" required /> Yes</label>
+              <label class="sp-radio"><input type="radio" name="shaftAvailable" value="No" /> No</label>
+              <small class="sp-error" data-error-for="shaftAvailable"></small>
+            </fieldset>
+          </div>
+
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span>Load Capacity Required (kg) <b>*</b></span>
+              <input name="loadKg" type="number" min="1" step="1" required />
+              <small class="sp-error" data-error-for="loadKg"></small>
+            </label>
+            <label class="sp-field">
+              <span>Estimated Daily Usage <b>*</b></span>
+              <select name="dailyUsage" required>
+                <option value="">Select…</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+              <small class="sp-help">Traffic level helps us size durability and dispatch logic.</small>
+              <small class="sp-error" data-error-for="dailyUsage"></small>
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="sp-step" data-step="4" aria-label="Technical specifications">
+          <h2>Technical Specifications</h2>
+
+          <div id="spElevatorOnly" class="sp-conditional" aria-label="Elevator options">
+            <div class="sp-grid sp-grid-2">
+              <label class="sp-field">
+                <span>Preferred Elevator Type</span>
+                <select name="elevatorType">
+                  <option value="">Select…</option>
+                  <option>Passenger</option>
+                  <option>Freight</option>
+                  <option>Hospital/Bed</option>
+                  <option>Panoramic/Glass</option>
+                </select>
+              </label>
+              <label class="sp-field">
+                <span>Drive Type</span>
+                <select name="driveType">
+                  <option value="">Select…</option>
+                  <option>Hydraulic</option>
+                  <option>Traction</option>
+                  <option>Machine Room-less (MRL)</option>
+                </select>
+                <small class="sp-help">We’ll confirm with site constraints and load requirements.</small>
+              </label>
+            </div>
+          </div>
+
+          <div class="sp-grid sp-grid-3">
+            <label class="sp-field">
+              <span>Speed Requirement (m/s)</span>
+              <input name="speedMs" type="number" min="0" step="0.1" />
+            </label>
+            <label class="sp-field">
+              <span>Door Type</span>
+              <select name="doorType">
+                <option value="">Select…</option>
+                <option>Automatic Sliding</option>
+                <option>Manual</option>
+              </select>
+            </label>
+            <label class="sp-field">
+              <span>Interior Finish Preferences</span>
+              <input name="finish" placeholder="e.g., stainless steel, warm wood, matte black…" />
+            </label>
+          </div>
+
+          <fieldset class="sp-fieldset">
+            <legend>Special Requirements</legend>
+            <label class="sp-check"><input type="checkbox" name="reqAccessibility" /> Accessibility (wheelchair support)</label>
+            <label class="sp-check"><input type="checkbox" name="reqEnergy" /> Energy Efficient System</label>
+            <label class="sp-check"><input type="checkbox" name="reqIot" /> Smart Control / IoT Integration</label>
+          </fieldset>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="sp-step" data-step="5" aria-label="Location and installation">
+          <h2>Location & Installation</h2>
+          <label class="sp-field">
+            <span>Project Address <b>*</b></span>
+            <input name="address" autocomplete="street-address" required />
+            <small class="sp-error" data-error-for="address"></small>
+          </label>
+          <label class="sp-field">
+            <span>Site Accessibility Conditions</span>
+            <textarea name="siteAccess" rows="4" placeholder="e.g., loading bay, crane access, working hours, noise limits…"></textarea>
+          </label>
+          <fieldset class="sp-fieldset">
+            <legend>Installation Timeline <b>*</b></legend>
+            <label class="sp-radio"><input type="radio" name="timeline" value="Urgent (0–3 months)" required /> Urgent (0–3 months)</label>
+            <label class="sp-radio"><input type="radio" name="timeline" value="Medium (3–6 months)" /> Medium (3–6 months)</label>
+            <label class="sp-radio"><input type="radio" name="timeline" value="Flexible (6+ months)" /> Flexible (6+ months)</label>
+            <small class="sp-error" data-error-for="timeline"></small>
+          </fieldset>
+        </div>
+
+        <!-- STEP 6 -->
+        <div class="sp-step" data-step="6" aria-label="Budget and additional notes">
+          <h2>Budget & Additional Notes</h2>
+          <fieldset class="sp-fieldset">
+            <legend>Estimated Budget Range <b>*</b></legend>
+            <label class="sp-radio"><input type="radio" name="budget" value="Low" required /> Low</label>
+            <label class="sp-radio"><input type="radio" name="budget" value="Medium" /> Medium</label>
+            <label class="sp-radio"><input type="radio" name="budget" value="High" /> High</label>
+            <small class="sp-error" data-error-for="budget"></small>
+          </fieldset>
+          <label class="sp-field">
+            <span>Additional Notes / Custom Requests</span>
+            <textarea name="notes" rows="5" placeholder="Tell us what matters most: noise, energy, aesthetics, SLA, compliance…"></textarea>
+          </label>
+          <label class="sp-field">
+            <span>File Upload (optional: blueprints, drawings, PDFs)</span>
+            <input name="files" type="file" multiple accept=".pdf,image/*" />
+            <small class="sp-help">Files are not uploaded in this demo. We’ll ask for them via email after submission.</small>
+          </label>
+        </div>
+
+        <!-- STEP 7 -->
+        <div class="sp-step" data-step="7" aria-label="Review and submit">
+          <h2>Review & Submit</h2>
+          <p class="sp-review-lead">
+            Confirm everything looks right. You can go back to edit any step.
+          </p>
+          <div id="spReview" class="sp-review" aria-live="polite"></div>
+          <div class="sp-submit-row">
+            <button id="spSubmit" class="sp-btn sp-btn-primary" type="submit">
+              <span class="sp-btn-label">Submit request</span>
+              <span class="sp-btn-spinner" aria-hidden="true"></span>
+            </button>
+            <div id="spSubmitMsg" class="sp-submit-msg" aria-live="polite"></div>
+          </div>
+        </div>
+        </div>
+
+        <div class="sp-nav">
+          <button class="sp-btn sp-btn-ghost" id="spBack" type="button">Back</button>
+          <div class="sp-nav-right">
+            <button class="sp-btn sp-btn-ghost" id="spSave" type="button">Save draft</button>
+            <button class="sp-btn sp-btn-primary" id="spNext" type="button">Next</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="start-project.js"></script>
+</body>
+</html>
+

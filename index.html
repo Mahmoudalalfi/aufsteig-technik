@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aufsteig Technik | Elevators & Escalators</title>
+  <meta
+    name="description"
+    content="Aufsteig Technik designs, modernizes, and maintains premium elevators and escalators across Germany."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top-nav">
+    <div class="nav-pill">
+      <a href="#" class="brand">Aufsteig Technik</a>
+      <button id="menuToggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="menuPanel">
+        <span class="menu-icon">=</span>
+      </button>
+    </div>
+    <nav class="menu-strip" aria-label="Desktop Primary">
+      <span class="menu-strip-indicator" aria-hidden="true"></span>
+      <a class="is-active" href="#heroSequence">Home</a>
+      <a href="#about">About</a>
+      <a href="#projects">Our Partners</a>
+      <a href="#servicesGrid">Services</a>
+      <a href="#portfolio">Products</a>
+      <a href="#contact">Contact Us</a>
+    </nav>
+    <nav id="menuPanel" class="menu-panel" aria-label="Primary">
+      <a href="#heroSequence">Home</a>
+      <a href="#about">About</a>
+      <a href="#projects">Our Partners</a>
+      <a href="#servicesGrid">Services</a>
+      <a href="#portfolio">Products</a>
+      <a href="#contact">Contact Us</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </header>
+
+  <section id="heroSequence" class="hero-sequence">
+    <div class="sequence-track">
+      <div class="sequence-sticky">
+        <canvas id="heroCanvas"></canvas>
+        <div class="hero-overlay">
+          <div class="hero-copy">
+            <p class="eyebrow">Elevators & Escalators / Germany</p>
+            <h1>
+              Vertical mobility
+              <span>without friction</span>
+            </h1>
+            <p>
+              Aufsteig Technik builds, modernizes, and maintains premium systems for offices, retail,
+              transit hubs, and residential towers.
+            </p>
+          </div>
+          <div class="hero-cta-bar">
+            <span>24/7 Monitoring. Fast dispatch. TÜV-ready maintenance.</span>
+            <a href="#contact">Book a site assessment</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main id="mainContent">
+    <section id="about" class="section intro reveal">
+      <div class="container intro-grid">
+        <span class="chip">Made for high-traffic buildings</span>
+        <h2>Safe, quiet, efficient movement from lobby to top floor.</h2>
+        <p>
+          We deliver engineering supply and contracting excellence across elevators, lifts, and advanced
+          electromechanical systems for commercial, industrial, and residential projects.
+        </p>
+      </div>
+      <div class="container intro-stats">
+        <div class="stats-grid">
+          <article>
+            <h4>18+</h4>
+            <p>Years of engineering and installation experience</p>
+          </article>
+          <article>
+            <h4>250+</h4>
+            <p>Completed elevator and escalator project deliveries</p>
+          </article>
+          <article>
+            <h4>98%</h4>
+            <p>Average service uptime under maintenance contracts</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section dark reveal color-page">
+      <div class="services-track">
+        <div class="services-sticky">
+          <div class="container two-col">
+            <div class="services-left">
+              <h3>Tools that work with your building, not against it</h3>
+              <ul class="pill-list services-pills" id="servicePills">
+                <li class="is-active">Designed for calm, not chaos</li>
+                <li>The effortless way to begin</li>
+                <li>Stay fully focused</li>
+                <li>Small steps. Zero guilt</li>
+              </ul>
+              <div class="services-bottom-cta">
+                <p>No downtime. No complicated operations.<br />Just reliable movement, clearly managed.</p>
+                <a class="btn-light" href="#contact">Request proposal</a>
+              </div>
+            </div>
+            <article class="floating-card services-card" id="serviceStoryCard">
+              <div class="service-story-viewport">
+              <div class="service-story-stack">
+                <section class="service-story-slide is-active">
+                  <p class="card-kicker">Control Center</p>
+                  <h4>Designed for calm, not chaos</h4>
+                  <p>Live system status is presented in one clean view so teams can act fast without digging through noisy dashboards.</p>
+                  <div class="service-photo" style="--photo:url('https://images.unsplash.com/photo-1758193017781-e3aee6c3e359?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzU2MjU1MDR8&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080');">
+                    <div class="service-photo-meta">
+                      <span>Site Health</span>
+                      <strong>Calm Lobby Flow</strong>
+                    </div>
+                  </div>
+                </section>
+                <section class="service-story-slide">
+                  <p class="card-kicker">Dispatch Intelligence</p>
+                  <h4>The effortless way to begin</h4>
+                  <p>Incident intake, team assignment, and part selection are streamlined into one guided flow for faster first response.</p>
+                  <div class="service-photo" style="--photo:url('https://images.unsplash.com/photo-1721275638208-0993a9b84126?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzU2MjU1MDR8&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080');">
+                    <div class="service-photo-meta">
+                      <span>Rapid Dispatch</span>
+                      <strong>Interior Access Ready</strong>
+                    </div>
+                  </div>
+                </section>
+                <section class="service-story-slide">
+                  <p class="card-kicker">Flow Focus</p>
+                  <h4>Stay fully focused</h4>
+                  <p>Peak-hour diagnostics highlight congestion and tune stop logic automatically to keep rider movement consistent.</p>
+                  <div class="service-photo" style="--photo:url('https://images.unsplash.com/photo-1660928311605-f585eeebe267?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzU2MjU1MDV8&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080');">
+                    <div class="service-photo-meta">
+                      <span>Panel Analytics</span>
+                      <strong>Focused Control</strong>
+                    </div>
+                  </div>
+                </section>
+                <section class="service-story-slide">
+                  <p class="card-kicker">Modernization Path</p>
+                  <h4>Small steps. Zero guilt</h4>
+                  <p>Upgrades are phased so your building stays operational while each cycle improves energy efficiency and compliance.</p>
+                  <div class="service-photo" style="--photo:url('https://images.unsplash.com/photo-1722916857603-b48184d6b732?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzU2MjU1MDV8&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080');">
+                    <div class="service-photo-meta">
+                      <span>Modernization</span>
+                      <strong>Escalator Upgrade</strong>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="section reveal">
+      <div class="container">
+        <div class="section-head partners-head">
+          <span class="chip">Our Partners</span>
+          <h3>Global partners, local execution.</h3>
+          <p>
+            We collaborate with OEMs, parts suppliers, and specialist teams to keep systems compliant, stocked, and running.
+          </p>
+        </div>
+
+        <div class="partners-strip" aria-label="Partner companies">
+          <div class="partners-strip-track" aria-hidden="true">
+            <div class="partner-pill"><img src="assets/partners/kone.png" alt="" loading="lazy" /><span>KONE</span></div>
+            <div class="partner-pill"><img src="assets/partners/schindler.png" alt="" loading="lazy" /><span>Schindler</span></div>
+            <div class="partner-pill"><img src="assets/partners/otis.png" alt="" loading="lazy" /><span>OTIS</span></div>
+            <div class="partner-pill"><img src="assets/partners/tke.png" alt="" loading="lazy" /><span>TK Elevator</span></div>
+            <div class="partner-pill"><img src="assets/partners/mitsubishi.png" alt="" loading="lazy" /><span>Mitsubishi Electric</span></div>
+            <div class="partner-pill"><img src="assets/partners/weco.png" alt="" loading="lazy" /><span>WECO</span></div>
+            <div class="partner-pill"><img src="assets/partners/kronenberg.png" alt="" loading="lazy" /><span>Kronenberg</span></div>
+            <div class="partner-pill"><img src="assets/partners/elesca.png" alt="" loading="lazy" /><span>ELESCA</span></div>
+            <div class="partner-pill"><img src="assets/partners/metro.png" alt="" loading="lazy" /><span>Metro</span></div>
+            <div class="partner-pill"><img src="assets/partners/sassi.png" alt="" loading="lazy" /><span>Sassi</span></div>
+
+            <div class="partner-pill"><img src="assets/partners/kone.png" alt="" loading="lazy" /><span>KONE</span></div>
+            <div class="partner-pill"><img src="assets/partners/schindler.png" alt="" loading="lazy" /><span>Schindler</span></div>
+            <div class="partner-pill"><img src="assets/partners/otis.png" alt="" loading="lazy" /><span>OTIS</span></div>
+            <div class="partner-pill"><img src="assets/partners/tke.png" alt="" loading="lazy" /><span>TK Elevator</span></div>
+            <div class="partner-pill"><img src="assets/partners/mitsubishi.png" alt="" loading="lazy" /><span>Mitsubishi Electric</span></div>
+            <div class="partner-pill"><img src="assets/partners/weco.png" alt="" loading="lazy" /><span>WECO</span></div>
+            <div class="partner-pill"><img src="assets/partners/kronenberg.png" alt="" loading="lazy" /><span>Kronenberg</span></div>
+            <div class="partner-pill"><img src="assets/partners/elesca.png" alt="" loading="lazy" /><span>ELESCA</span></div>
+            <div class="partner-pill"><img src="assets/partners/metro.png" alt="" loading="lazy" /><span>Metro</span></div>
+            <div class="partner-pill"><img src="assets/partners/sassi.png" alt="" loading="lazy" /><span>Sassi</span></div>
+          </div>
+        </div>
+
+        <div class="capabilities-scroll" id="capabilitiesScroll" aria-label="Core delivery capabilities">
+          <div class="capabilities-viewport" id="capabilitiesViewport">
+            <div class="capabilities-track" id="capabilitiesTrack">
+              <article class="capability-card">
+                <span class="capability-kicker">Control & Drives</span>
+                <h4>Precision systems sourcing for stable ride quality.</h4>
+                <p>Fast access to controllers, VVVF drives, safety circuits, and compliant documentation for planned upgrades and urgent recoveries.</p>
+              </article>
+              <article class="capability-card">
+                <span class="capability-kicker">Field Coverage</span>
+                <h4>Dispatch structure built for real-world downtime pressure.</h4>
+                <p>Regional technician network with tiered response levels, coordinated triage, and portfolio-level reporting for multi-site operators.</p>
+              </article>
+              <article class="capability-card">
+                <span class="capability-kicker">Parts Readiness</span>
+                <h4>Critical components available before failures escalate.</h4>
+                <p>Recommended spare-part plans and fast availability for door operators, rollers, sensors, and control panels to reduce repeat outages.</p>
+              </article>
+              <article class="capability-card">
+                <span class="capability-kicker">Compliance Support</span>
+                <h4>Inspection confidence with traceable service evidence.</h4>
+                <p>TUV and EN 81 aligned workflows, clear maintenance history, and inspection-ready handover packs prepared for audit windows.</p>
+              </article>
+            </div>
+            <div class="capabilities-progress" aria-hidden="true">
+              <i id="capabilitiesProgress"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="partners-people" aria-label="Key personnel">
+          <div class="section-head">
+            <span class="chip">Some of our employees</span>
+            <h3>Meet some of the people behind Aufsteig Technik.</h3>
+            <p>
+              A snapshot of team members across engineering, field service, and operations who help keep projects moving.
+            </p>
+          </div>
+          <div class="people-grid">
+            <article class="person-card">
+              <div class="person-media">
+                <img src="assets/people/engineering-manager.png" alt="Engineering Manager" loading="lazy" />
+                <p class="person-bubble">Hi, I plan upgrade roadmaps and keep every modernization step clear.</p>
+              </div>
+              <div class="person-card-body">
+                <h4>Felix Schneider</h4>
+                <p class="person-role">Engineering Manager</p>
+                <p>Planning, modernization scope, and compliance documentation.</p>
+              </div>
+            </article>
+            <article class="person-card">
+              <div class="person-media">
+                <img src="assets/people/service-lead.png" alt="Field Service Lead" loading="lazy" />
+                <p class="person-bubble">Hi, I handle diagnostics on site and coordinate fast technician dispatch.</p>
+              </div>
+              <div class="person-card-body">
+                <h4>Matthias Wagner</h4>
+                <p class="person-role">Field Service Lead</p>
+                <p>On-site diagnostics, repairs, and dispatch coordination.</p>
+              </div>
+            </article>
+            <article class="person-card">
+              <div class="person-media">
+                <img src="assets/people/ops-coordinator.png" alt="Operations Coordinator" loading="lazy" />
+                <p class="person-bubble">Hi, I manage scheduling, parts readiness, and practical client updates.</p>
+              </div>
+              <div class="person-card-body">
+                <h4>Anna Becker</h4>
+                <p class="person-role">Operations Coordinator</p>
+                <p>SLA scheduling, parts readiness, and client reporting.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="impactImage" class="section reveal">
+      <div class="container">
+        <div class="achievement-carousel" id="achievementCarousel">
+          <button
+            type="button"
+            class="carousel-dir-btn carousel-dir-btn--left"
+            data-achievement-action="prev"
+            aria-label="Previous project"
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+          <article class="achievement-showcase" id="achievementShowcase">
+          <div class="achievement-media">
+            <div
+              class="achievement-compare"
+              id="achievementCompare"
+              style="--compare-pct: 50"
+              role="group"
+              aria-label="Concept drawing compared to photograph. Drag to compare."
+            >
+              <img
+                class="achievement-compare-layer achievement-compare-after"
+                id="achievementImageAfter"
+                src="assets/achievements-real/OTSNE-after.png"
+                alt=""
+                loading="lazy"
+                draggable="false"
+              />
+              <img
+                class="achievement-compare-layer achievement-compare-before"
+                id="achievementImageBefore"
+                src="assets/achievements-pencil/OTSNE.png"
+                alt=""
+                loading="lazy"
+                draggable="false"
+              />
+              <div class="achievement-compare-overlay" aria-hidden="true"></div>
+              <button
+                type="button"
+                class="achievement-compare-handle"
+                id="achievementCompareHandle"
+                aria-label="Comparison slider"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="50"
+              >
+                <span class="achievement-compare-grip" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="achievement-copy">
+            <span class="chip">Project Achievements</span>
+            <h3 id="achievementTitle">Berlin Office Tower Lift Modernization</h3>
+            <p id="achievementMessage">
+              Completed a full control and cabin modernization with phased downtime windows, improving passenger flow and reliability.
+            </p>
+            <ul id="achievementHighlights" class="achievement-highlights">
+              <li>New drive + control integration completed</li>
+              <li>Dispatch response time improved across the site</li>
+              <li>TUV-ready documentation delivered at handover</li>
+            </ul>
+            <div class="achievement-dots" id="achievementDots" role="tablist" aria-label="Project achievements">
+              <button type="button" class="is-active" data-achievement-dot="0" aria-label="Show achievement 1"></button>
+              <button type="button" data-achievement-dot="1" aria-label="Show achievement 2"></button>
+              <button type="button" data-achievement-dot="2" aria-label="Show achievement 3"></button>
+              <button type="button" data-achievement-dot="3" aria-label="Show achievement 4"></button>
+            </div>
+          </div>
+          </article>
+          <button
+            type="button"
+            class="carousel-dir-btn carousel-dir-btn--right"
+            data-achievement-action="next"
+            aria-label="Next project"
+          >
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="brainCta" class="section reveal">
+      <div class="container">
+        <article class="brain-card">
+          <div class="brain-bg"></div>
+          <div class="brain-overlay">
+            <div class="brain-left">
+              <h3>Choose your next upgrade phase, whenever you're ready</h3>
+              <div class="brain-tags">
+                <span>Cabin Retrofit</span>
+                <span>Drive Upgrade</span>
+                <span>Control System</span>
+                <span>Safety Check</span>
+                <span>Energy Tune</span>
+              </div>
+            </div>
+            <div class="brain-right">
+              <h2>For buildings that cannot afford downtime.</h2>
+              <a class="btn-light" href="#contact">Book a site assessment</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="servicesGrid" class="section reveal services-signature color-page">
+      <div class="container services-signature-wrap">
+        <div class="services-signature-head">
+          <span class="chip">Services</span>
+          <h3>Everything your building needs to keep moving.</h3>
+          <p>
+            From supply and installation to monitoring, modernization, and audits—delivered with calm process and fast dispatch.
+          </p>
+        </div>
+
+        <div id="serviceTabs" class="service-tabs" role="tablist" aria-label="Service categories">
+          <button class="service-tab is-active" type="button" role="tab" aria-selected="true" data-service-key="supply">
+            Elevators & Lifts Supply
+            <span class="service-tab-preview" aria-hidden="true" style="--preview:url('assets/LnfAa.png');"></span>
+          </button>
+          <button class="service-tab" type="button" role="tab" aria-selected="false" data-service-key="installation">
+            Mechanical & Electrical Installation
+            <span class="service-tab-preview" aria-hidden="true" style="--preview:url('assets/mOKkI.png');"></span>
+          </button>
+          <button class="service-tab" type="button" role="tab" aria-selected="false" data-service-key="maintenance">
+            Maintenance & After-Sales
+            <span class="service-tab-preview" aria-hidden="true" style="--preview:url('assets/zDfhX.png');"></span>
+          </button>
+          <button class="service-tab" type="button" role="tab" aria-selected="false" data-service-key="contracting">
+            Engineering Contracting
+            <span class="service-tab-preview" aria-hidden="true" style="--preview:url('assets/Xhwno.png');"></span>
+          </button>
+          <button class="service-tab" type="button" role="tab" aria-selected="false" data-service-key="supplies">
+            Premium Technical Supplies
+            <span class="service-tab-preview" aria-hidden="true" style="--preview:url('assets/fy9pD.png');"></span>
+          </button>
+          <button class="service-tab" type="button" role="tab" aria-selected="false" data-service-key="compliance">
+            Compliance & Safety Audits
+            <span class="service-tab-preview" aria-hidden="true" style="--preview:url('assets/qqIvE.png');"></span>
+          </button>
+        </div>
+
+        <div class="service-products-panel" aria-live="polite">
+          <div class="service-products-head">
+            <h4 id="serviceProductsTitle">Elevators & Lifts Supply Products</h4>
+            <p id="serviceProductsLead">Click any category tab to explore available products.</p>
+          </div>
+          <div id="serviceProductsGrid" class="service-products-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio" class="section reveal">
+      <div class="container">
+        <div class="section-head">
+          <span class="chip">Latest Completed Work</span>
+          <h3>Our engineering and elevator project portfolio.</h3>
+        </div>
+        <div id="projectDeck" class="project-deck" aria-label="Completed work carousel. Use arrows or dots to change slide.">
+          <article class="project-deck-card">
+            <div class="project-image" style="--project:url('https://images.unsplash.com/photo-1624985947227-6abdf50fb47d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzU2NTE1Nzh8&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080');"></div>
+            <h4>Passenger Elevator Installation</h4>
+            <p>High-capacity passenger system with smooth frequency-converter control and low-noise cabin performance.</p>
+          </article>
+          <article class="project-deck-card">
+            <div class="project-image" style="--project:url('https://images.unsplash.com/photo-1678154690955-aa95e0480e47?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzU2NTE1Nzh8&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080');"></div>
+            <h4>Commercial Escalator Modernization</h4>
+            <p>Drive, control, and safety upgrades for high-traffic retail infrastructure with reduced downtime windows.</p>
+          </article>
+          <article class="project-deck-card">
+            <div class="project-image" style="--project:url('https://images.unsplash.com/photo-1706954226305-3d6abf829f08?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzU2NTE1ODF8&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080');"></div>
+            <h4>Hospital Bed Lift Deployment</h4>
+            <p>Medical-grade elevator installation focused on safe transport cycles, clean operations, and reliability.</p>
+          </article>
+          <article class="project-deck-card">
+            <div class="project-image" style="--project:url('assets/Jr5Af.png');"></div>
+            <h4>Panoramic Lift Lobby Upgrade</h4>
+            <p>Full lobby redesign with panoramic lift integration, updated control panels, and premium passenger flow guidance.</p>
+          </article>
+          <article class="project-deck-card">
+            <div class="project-image" style="--project:url('assets/Vf8Es.png');"></div>
+            <h4>Transit Escalator Reliability Program</h4>
+            <p>Station escalator modernization with condition monitoring, safer step-chain systems, and faster maintenance turnarounds.</p>
+          </article>
+          <div class="project-deck-controls" aria-label="Project navigation">
+            <button type="button" class="carousel-dir-btn carousel-dir-btn--left" data-deck-action="prev" aria-label="Previous project">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button type="button" class="carousel-dir-btn carousel-dir-btn--right" data-deck-action="next" aria-label="Next project">
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+        <div class="project-deck-dots" role="tablist" aria-label="Portfolio slides">
+          <button type="button" class="is-active" data-deck-dot="0" aria-label="Show project 1"></button>
+          <button type="button" data-deck-dot="1" aria-label="Show project 2"></button>
+          <button type="button" data-deck-dot="2" aria-label="Show project 3"></button>
+          <button type="button" data-deck-dot="3" aria-label="Show project 4"></button>
+          <button type="button" data-deck-dot="4" aria-label="Show project 5"></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="process" class="section reveal">
+      <div class="container process-route-wrap">
+        <div class="process-route" aria-hidden="true">
+          <svg id="processRouteSvg" class="process-route-svg" viewBox="0 0 1000 180" preserveAspectRatio="none">
+            <path
+              id="processRoutePath"
+              class="process-route-base"
+              d="M90 110 C220 34 300 34 430 98 S700 160 910 82"
+            ></path>
+            <path
+              id="processRouteProgress"
+              class="process-route-progress"
+              d="M90 110 C220 34 300 34 430 98 S700 160 910 82"
+            ></path>
+            <circle id="processRouteGlow" class="process-route-glow" cx="90" cy="110" r="15"></circle>
+            <circle id="processRouteMarker" class="process-route-marker" cx="90" cy="110" r="5"></circle>
+            <circle class="process-route-pin" data-pin="0" cx="90" cy="110" r="5"></circle>
+            <circle class="process-route-pin" data-pin="1" cx="500" cy="124" r="5"></circle>
+            <g id="processTreasure" class="process-treasure">
+              <circle id="processTreasureRing" class="process-treasure-ring" cx="910" cy="82" r="19"></circle>
+              <line id="processTreasureX1" class="process-treasure-x" x1="901" y1="73" x2="919" y2="91"></line>
+              <line id="processTreasureX2" class="process-treasure-x" x1="919" y1="73" x2="901" y2="91"></line>
+            </g>
+          </svg>
+        </div>
+        <div class="process-grid">
+          <article>
+          <span>STEP 01</span>
+          <h4>Site Survey & Technical Planning</h4>
+          <p>Full site inspection, load analysis, shaft review, and layout planning for the optimal system configuration.</p>
+        </article>
+          <article>
+          <span>STEP 02</span>
+          <h4>Procurement & Supply</h4>
+          <p>Certified systems, control units, and components sourced from trusted global manufacturing partners.</p>
+        </article>
+          <article>
+          <span>STEP 03</span>
+          <h4>Installation & Commissioning</h4>
+          <p>Installation by certified engineers, comprehensive safety testing, calibration, and operational handover.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="ratings" class="section reveal">
+      <div class="container ratings-wrap">
+        <div class="ratings-head">
+          <span class="chip">Client Ratings</span>
+          <h3>Trusted by top operators across Germany.</h3>
+        </div>
+        <div class="ratings-marquee" id="ratingsMarquee" aria-label="Client ratings carousel">
+          <div class="ratings-track" id="ratingsTrack">
+            <article class="rating-card">
+              <div class="rating-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>"Reliable execution and excellent uptime gains."</blockquote>
+              <p class="rating-company">Siemens</p>
+            </article>
+            <article class="rating-card">
+              <div class="rating-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>"Modernization quality exceeded our internal benchmark."</blockquote>
+              <p class="rating-company">BMW Group</p>
+            </article>
+            <article class="rating-card">
+              <div class="rating-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>"Fast response, clear reporting, and strong technical discipline."</blockquote>
+              <p class="rating-company">Deutsche Telekom</p>
+            </article>
+            <article class="rating-card">
+              <div class="rating-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>"Consistent performance uplift across multiple facilities."</blockquote>
+              <p class="rating-company">BASF</p>
+            </article>
+            <article class="rating-card">
+              <div class="rating-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>"Professional delivery with safety and reliability at the core."</blockquote>
+              <p class="rating-company">Volkswagen Group</p>
+            </article>
+            <article class="rating-card">
+              <div class="rating-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>"Outstanding maintenance quality and minimal service disruption."</blockquote>
+              <p class="rating-company">Lufthansa</p>
+            </article>
+            <article class="rating-card">
+              <div class="rating-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>"A dependable partner for mission-critical transport systems."</blockquote>
+              <p class="rating-company">DHL Group</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section reveal">
+      <div class="container faq-wrap">
+        <div>
+          <span class="chip">FAQ</span>
+          <h3>
+            We are here to help. If you did not find the answer to your question,
+            <a href="#contact">email us</a> anytime.
+          </h3>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>Do you service both elevators and escalators?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>Yes. We maintain elevators, escalators, moving walks, and hybrid mobility systems across commercial and residential properties.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>Can you modernize older systems without full replacement?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>Absolutely. We can retrofit key components in phases to reduce outages while bringing performance and safety up to modern standards.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>Do you offer contracts for multi-site portfolios?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>Yes. We provide centralized reporting, SLA-based response levels, and regional technician coverage for portfolio operators.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>How fast is emergency response in major German cities?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>Most metro areas receive dispatch within 60 minutes depending on contract tier and real-time traffic conditions.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>How often should elevators and escalators be maintained?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>It depends on traffic, age, and building type. We recommend a preventive schedule tailored to usage, with higher-frequency checks for high-traffic sites like retail and transit hubs.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>Do you handle TÜV preparation and documentation?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>Yes. We prepare checklists, service records, and corrective actions so your system is inspection-ready with clear documentation and traceable maintenance history.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>Can you modernize systems with minimal downtime?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>Yes. We plan modernization in phases—controls, drive, safety, and cabin—so your building stays operational while performance and compliance improve step by step.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>Do you provide spare parts and long-term support?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>We source certified parts, maintain recommended spares for critical sites, and track part compatibility so repairs are faster and repeat issues are reduced.</p>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>What information should I send when reporting a fault?</summary>
+            <div class="faq-drawer">
+              <div class="faq-content">
+                <p>Share the building address, system type, any fault code shown on the panel, time of incident, and photos/videos if possible. This helps us dispatch the right technician and parts.</p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section reveal">
+      <div class="container contact-grid">
+        <div class="contact-left">
+          <span class="chip">Get in touch</span>
+          <h2>Questions or concerns?</h2>
+          <p>
+            Tell us what building you manage and what you need. We’ll reply with clear next steps, timeline,
+            and a transparent quote.
+          </p>
+          <div class="contact-cards">
+            <div class="contact-card">
+              <span>Call</span>
+              <strong><a href="tel:+49017621475191">+49 0176 2147 5191</a></strong>
+              <em>Priority dispatch tiers available</em>
+            </div>
+            <div class="contact-card">
+              <span>Email</span>
+              <strong><a href="mailto:info@aufsteig-technik.de">info@aufsteig-technik.de</a></strong>
+              <em>Send drawings, photos, or fault codes</em>
+            </div>
+          </div>
+        </div>
+
+        <article class="contact-form-card" aria-label="Contact form">
+          <form id="contactForm" class="contact-form">
+            <div class="contact-row">
+              <label>
+                <span>Full Name *</span>
+                <input name="name" autocomplete="name" required />
+              </label>
+            </div>
+            <div class="contact-row contact-row--two">
+              <label>
+                <span>Email *</span>
+                <input name="email" type="email" autocomplete="email" required />
+              </label>
+              <label>
+                <span>Phone</span>
+                <input name="phone" type="tel" autocomplete="tel" />
+              </label>
+            </div>
+            <div class="contact-row">
+              <label>
+                <span>Subject</span>
+                <input name="subject" autocomplete="off" />
+              </label>
+            </div>
+            <div class="contact-row">
+              <label>
+                <span>Message *</span>
+                <textarea name="message" rows="5" required></textarea>
+              </label>
+            </div>
+            <label class="contact-consent">
+              <input type="checkbox" name="consent" required />
+              <span>I agree to be contacted about this request.</span>
+            </label>
+            <button class="contact-submit" type="submit">Submit now</button>
+          </form>
+        </article>
+      </div>
+    </section>
+
+    <section id="bottomSlogan" class="bottom-slogan reveal" aria-label="Company slogan">
+      <div class="container">
+        <h2 class="bottom-slogan-title">
+          <span>Elevating</span>
+          <span>everyday mobility</span>
+          <span class="is-blur">with trusted precision.</span>
+        </h2>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer" class="site-footer color-page">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand" href="#">Aufsteig Technik</a>
+        <p>Reliable vertical transportation for offices, retail, infrastructure, and living spaces.</p>
+        <a class="btn-light" href="start-project.html">Start your project</a>
+      </div>
+      <div>
+        <h5>Information</h5>
+        <a href="#heroSequence">Home</a>
+      <a href="#servicesGrid">Services</a>
+        <a href="#portfolio">Projects</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <a href="mailto:info@aufsteig-technik.de">info@aufsteig-technik.de</a>
+        <a href="tel:+49017621475191">+49 0176 2147 5191</a>
+        <a href="tel:+49015510601054">+49 0155 1060 1054</a>
+        <p>Germany, Berlin - Munich - Frankfurt</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,469 @@
+const DRAFT_KEY = "aufsteig_start_project_draft_v1";
+
+const stepsTotal = 7;
+let currentStep = 1;
+
+function $(sel, root = document) {
+  return root.querySelector(sel);
+}
+
+function $all(sel, root = document) {
+  return Array.from(root.querySelectorAll(sel));
+}
+
+function setProgress(step) {
+  const pct = Math.round(((step - 1) / (stepsTotal - 1)) * 100);
+  $("#spStepLabel").textContent = `Step ${step} of ${stepsTotal}`;
+  $("#spProgressBar").style.width = `${pct}%`;
+  const track = $(".sp-progress-track");
+  if (track) track.setAttribute("aria-valuenow", String(pct));
+}
+
+function setDraftStatus(text) {
+  $("#spDraftStatus").textContent = text || "";
+}
+
+function syncStepsHeight() {
+  const wrap = $(".sp-steps");
+  const active = $(".sp-step.is-active");
+  if (!wrap || !active) return;
+  wrap.style.height = `${active.scrollHeight}px`;
+}
+
+function showStep(step) {
+  const prevStep = currentStep;
+  const dir = step < prevStep ? "back" : "forward";
+  currentStep = step;
+
+  const steps = $all(".sp-step");
+  const nextEl = steps.find((el) => Number(el.dataset.step) === step);
+  const prevEl = steps.find((el) => Number(el.dataset.step) === prevStep);
+
+  steps.forEach((el) => {
+    if (el === nextEl) return;
+    el.classList.remove("is-active", "is-back");
+  });
+
+  if (nextEl) nextEl.classList.toggle("is-back", dir === "back");
+  if (prevEl) prevEl.classList.remove("is-back");
+
+  if (nextEl) {
+    // trigger transition reliably
+    void nextEl.offsetWidth;
+    nextEl.classList.add("is-active");
+  }
+  requestAnimationFrame(() => syncStepsHeight());
+
+  $("#spBack").disabled = step === 1;
+  $("#spNext").style.display = step === stepsTotal ? "none" : "inline-flex";
+  $("#spSave").style.display = step === stepsTotal ? "none" : "inline-flex";
+  setProgress(step);
+  syncConditional();
+  if (step === stepsTotal) renderReview();
+  const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
+}
+
+function getFormData() {
+  const form = $("#spForm");
+  const fd = new FormData(form);
+
+  const obj = {};
+  for (const [k, v] of fd.entries()) {
+    if (k === "files") continue;
+    if (obj[k] !== undefined) {
+      if (Array.isArray(obj[k])) obj[k].push(v);
+      else obj[k] = [obj[k], v];
+    } else {
+      obj[k] = v;
+    }
+  }
+
+  // Checkboxes not checked won't be present in FormData
+  ["reqAccessibility", "reqEnergy", "reqIot"].forEach((name) => {
+    obj[name] = Boolean(fd.get(name));
+  });
+
+  // Store full E.164 phone in the draft/review.
+  const cc = String(obj.phoneCountry || "").trim();
+  const national = String(obj.phone || "").trim();
+  if (cc && national) {
+    const nationalDigits = national.replace(/[^\d]/g, "");
+    const ccDigits = cc.replace(/[^\d]/g, "");
+    obj.phoneE164 = `+${ccDigits}${nationalDigits}`;
+  } else {
+    obj.phoneE164 = "";
+  }
+
+  return obj;
+}
+
+function saveDraft() {
+  const data = getFormData();
+  const payload = { data, savedAt: Date.now(), step: currentStep };
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+  setDraftStatus("Draft saved.");
+  setTimeout(() => setDraftStatus(""), 1500);
+}
+
+function loadDraft() {
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function applyDraft(draft) {
+  if (!draft || !draft.data) return;
+  const form = $("#spForm");
+  Object.entries(draft.data).forEach(([name, value]) => {
+    const els = $all(`[name="${CSS.escape(name)}"]`, form);
+    if (els.length === 0) return;
+
+    els.forEach((el) => {
+      if (el.type === "radio") {
+        el.checked = String(el.value) === String(value);
+      } else if (el.type === "checkbox") {
+        el.checked = Boolean(value);
+      } else {
+        el.value = String(value ?? "");
+      }
+    });
+  });
+}
+
+function clearErrors() {
+  $all(".sp-field, .sp-fieldset").forEach((el) => el.classList.remove("is-invalid"));
+  $all(".sp-error").forEach((el) => (el.textContent = ""));
+}
+
+function markInvalid(name, message) {
+  const errorEl = $(`[data-error-for="${CSS.escape(name)}"]`);
+  if (errorEl) errorEl.textContent = message;
+
+  const field = $(`[name="${CSS.escape(name)}"]`)?.closest(".sp-field") || $(`[name="${CSS.escape(name)}"]`)?.closest(".sp-fieldset");
+  if (field) field.classList.add("is-invalid");
+}
+
+function valueOf(name) {
+  const els = $all(`[name="${CSS.escape(name)}"]`, $("#spForm"));
+  if (els.length === 0) return "";
+  const type = els[0].type;
+  if (type === "radio") {
+    const chosen = els.find((e) => e.checked);
+    return chosen ? chosen.value : "";
+  }
+  if (type === "checkbox") return els[0].checked ? "Yes" : "";
+  return els[0].value.trim();
+}
+
+function valuesOf(name) {
+  const els = $all(`[name="${CSS.escape(name)}"]`, $("#spForm"));
+  if (els.length === 0) return [];
+  const type = els[0].type;
+  if (type === "checkbox") return els.filter((e) => e.checked).map((e) => e.value);
+  const v = valueOf(name);
+  return v ? [v] : [];
+}
+
+function validateStep(step) {
+  clearErrors();
+  let ok = true;
+
+  function req(name, label = "This field is required.") {
+    const v = valueOf(name);
+    if (!v) {
+      ok = false;
+      markInvalid(name, label);
+    }
+  }
+
+  function reqEmail(name) {
+    const v = valueOf(name);
+    if (!v) return req(name);
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    if (!valid) {
+      ok = false;
+      markInvalid(name, "Enter a valid email address.");
+    }
+  }
+
+  function reqIntlPhone(name) {
+    const raw = valueOf(name);
+    if (!raw) return req(name);
+    const cc = valueOf("phoneCountry") || "+";
+    const digits = String(raw).replace(/[^\d]/g, "");
+    const ccDigits = String(cc).replace(/[^\d]/g, "");
+    // E.164 max is 15 digits total; require at least 7 national digits
+    const valid = digits.length >= 7 && (ccDigits.length + digits.length) <= 15;
+    if (!valid) {
+      ok = false;
+      markInvalid(name, "Enter a valid phone number for the selected country code.");
+    }
+  }
+
+  if (step === 1) {
+    req("fullName");
+    reqEmail("email");
+    req("phoneCountry");
+    reqIntlPhone("phone");
+    req("country");
+    req("city");
+  }
+
+  if (step === 2) {
+    req("projectType");
+    if (valuesOf("productNeeded").length === 0) {
+      ok = false;
+      markInvalid("productNeeded", "Select at least one product.");
+    }
+    req("units");
+
+    const products = valuesOf("productNeeded");
+    if (products.length > 1) {
+      req("projectArea", "Please describe where each selected product is needed.");
+    }
+  }
+
+  if (step === 3) {
+    req("floors");
+    req("buildingState");
+    req("shaftAvailable");
+    req("loadKg");
+    req("dailyUsage");
+  }
+
+  if (step === 5) {
+    req("address");
+    req("timeline");
+  }
+
+  if (step === 6) {
+    req("budget");
+  }
+
+  return ok;
+}
+
+function syncConditional() {
+  const products = valuesOf("productNeeded");
+  const elevatorOnly = $("#spElevatorOnly");
+  if (!elevatorOnly) return;
+  elevatorOnly.style.display = products.includes("Elevator") ? "block" : "none";
+
+  const areaWrap = $("#spProjectAreaWrap");
+  if (areaWrap) areaWrap.style.display = products.length > 1 ? "block" : "none";
+  requestAnimationFrame(() => syncStepsHeight());
+}
+
+function renderReview() {
+  const data = getFormData();
+
+  const groups = [
+    ["Client Information", ["fullName", "companyName", "email", "phoneE164", "country", "city"]],
+    ["Project Type", ["projectType", "productNeeded", "units", "projectArea"]],
+    ["Building Details", ["floors", "buildingHeightM", "floorToFloorM", "buildingState", "shaftAvailable", "loadKg", "dailyUsage"]],
+    ["Technical Specs", ["elevatorType", "driveType", "speedMs", "doorType", "finish", "reqAccessibility", "reqEnergy", "reqIot"]],
+    ["Location & Installation", ["address", "siteAccess", "timeline"]],
+    ["Budget & Notes", ["budget", "notes"]]
+  ];
+
+  function pretty(key, value) {
+    if (value === undefined || value === null) return "—";
+    if (typeof value === "boolean") return value ? "Yes" : "No";
+    if (Array.isArray(value)) return value.length ? value.join(", ") : "—";
+    const s = String(value).trim();
+    return s ? s : "—";
+  }
+
+  const review = $("#spReview");
+  review.innerHTML = "";
+
+  groups.forEach(([title, keys]) => {
+    const g = document.createElement("div");
+    g.className = "sp-review-group";
+    const h = document.createElement("h3");
+    h.textContent = title;
+    g.appendChild(h);
+
+    keys.forEach((k) => {
+      const row = document.createElement("div");
+      row.className = "sp-review-row";
+      const keyEl = document.createElement("div");
+      keyEl.className = "sp-review-k";
+      keyEl.textContent = labelFor(k);
+      const valEl = document.createElement("div");
+      valEl.className = "sp-review-v";
+      valEl.textContent = pretty(k, data[k]);
+      row.appendChild(keyEl);
+      row.appendChild(valEl);
+      g.appendChild(row);
+    });
+    review.appendChild(g);
+  });
+}
+
+function labelFor(key) {
+  const map = {
+    fullName: "Full name",
+    companyName: "Company name",
+    email: "Email",
+    phoneCountry: "Phone country code",
+    phone: "Phone (national)",
+    phoneE164: "Phone (international)",
+    country: "Country",
+    city: "City",
+    projectType: "Project type",
+    productNeeded: "Product(s) needed",
+    units: "Units",
+    projectArea: "Project area / description",
+    floors: "Floors",
+    buildingHeightM: "Building height (m)",
+    floorToFloorM: "Floor-to-floor (m)",
+    buildingState: "Building state",
+    shaftAvailable: "Shaft available",
+    loadKg: "Load (kg)",
+    dailyUsage: "Daily usage",
+    elevatorType: "Elevator type",
+    driveType: "Drive type",
+    speedMs: "Speed (m/s)",
+    doorType: "Door type",
+    finish: "Interior finish",
+    reqAccessibility: "Accessibility",
+    reqEnergy: "Energy efficient",
+    reqIot: "Smart control / IoT",
+    address: "Address",
+    siteAccess: "Site access",
+    timeline: "Timeline",
+    budget: "Budget",
+    notes: "Notes"
+  };
+  return map[key] || key;
+}
+
+async function mockSubmit() {
+  const btn = $("#spSubmit");
+  const msg = $("#spSubmitMsg");
+  btn.classList.add("is-loading");
+  btn.disabled = true;
+  msg.textContent = "Submitting…";
+
+  await new Promise((r) => setTimeout(r, 1100));
+
+  btn.classList.remove("is-loading");
+  msg.textContent = "Your project request has been submitted successfully. Our team will contact you shortly.";
+
+  // Clear draft after success
+  localStorage.removeItem(DRAFT_KEY);
+  setDraftStatus("");
+}
+
+function init() {
+  const draft = loadDraft();
+  if (draft) {
+    applyDraft(draft);
+    setDraftStatus("Draft loaded.");
+    setTimeout(() => setDraftStatus(""), 1500);
+    if (draft.step && Number(draft.step) >= 1 && Number(draft.step) <= stepsTotal) currentStep = Number(draft.step);
+  }
+
+  setProgress(currentStep);
+  showStep(currentStep);
+
+  const phoneCountry = $("#spPhoneCountry");
+  const phoneInput = $("#spPhone");
+  if (phoneCountry && phoneInput) {
+    const normalize = (s) => String(s || "").replace(/[^\d]/g, "");
+
+    function ensurePrefix() {
+      const cc = String(phoneCountry.value || "").trim();
+      const ccDigits = normalize(cc);
+      const v = String(phoneInput.value || "").trim();
+
+      // If user pasted full international number, keep it and try to sync the dropdown.
+      if (v.startsWith("+")) {
+        const allDigits = normalize(v);
+        const match = Array.from(phoneCountry.options)
+          .map((o) => ({ o, d: normalize(o.value) }))
+          .sort((a, b) => b.d.length - a.d.length)
+          .find(({ d }) => allDigits.startsWith(d));
+        if (match) phoneCountry.value = match.o.value;
+        phoneInput.value = allDigits.slice(match ? normalize(phoneCountry.value).length : 0);
+        return;
+      }
+
+      // If field is empty, just keep it empty; placeholder hints local number.
+      if (!v) return;
+
+      // Strip country code if user typed it into the national field
+      const digits = normalize(v);
+      if (ccDigits && digits.startsWith(ccDigits)) {
+        phoneInput.value = digits.slice(ccDigits.length);
+      } else {
+        phoneInput.value = digits;
+      }
+    }
+
+    phoneCountry.addEventListener("change", () => {
+      ensurePrefix();
+      saveDraft();
+    });
+    phoneInput.addEventListener("blur", ensurePrefix);
+  }
+
+  $("#spNext").addEventListener("click", () => {
+    if (!validateStep(currentStep)) return;
+    saveDraft();
+    showStep(Math.min(stepsTotal, currentStep + 1));
+  });
+
+  $("#spBack").addEventListener("click", () => {
+    showStep(Math.max(1, currentStep - 1));
+  });
+
+  $("#spSave").addEventListener("click", saveDraft);
+
+  $("#spClearDraft").addEventListener("click", () => {
+    localStorage.removeItem(DRAFT_KEY);
+    setDraftStatus("Draft cleared.");
+    setTimeout(() => setDraftStatus(""), 1500);
+  });
+
+  $("#spForm").addEventListener("input", () => {
+    // Lightweight autosave for texty inputs; do not spam UI.
+    try {
+      const payload = { data: getFormData(), savedAt: Date.now(), step: currentStep };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+    } catch {}
+  });
+
+  $("#spForm").addEventListener("change", () => {
+    syncConditional();
+    try {
+      const payload = { data: getFormData(), savedAt: Date.now(), step: currentStep };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+    } catch {}
+  });
+
+  window.addEventListener("resize", () => syncStepsHeight());
+  requestAnimationFrame(() => syncStepsHeight());
+
+  $("#spForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    // Validate all required steps before submit.
+    const requiredSteps = [1, 2, 3, 5, 6];
+    for (const st of requiredSteps) {
+      if (!validateStep(st)) {
+        showStep(st);
+        return;
+      }
+    }
+    await mockSubmit();
+  });
+}
+
+init();
+

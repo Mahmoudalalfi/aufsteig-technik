@@ -1,0 +1,349 @@
+import { HERO_FRAME_COUNT } from "../model/hero-config.js";
+import { appState } from "../model/app-state.js";
+import { clamp } from "../utils/math.js";
+
+export function initScrollTimelines(refs) {
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  const gsap = window.gsap;
+  const ScrollTrigger = window.ScrollTrigger;
+  gsap.registerPlugin(ScrollTrigger);
+
+  ScrollTrigger.create({
+    trigger: refs.heroSequence,
+    start: "top top",
+    end: () => `+=${Math.max(0, refs.sequenceTrack.offsetHeight - window.innerHeight)}`,
+    scrub: 1.15,
+    onUpdate(self) {
+      appState.hero.targetFrame = self.progress * (HERO_FRAME_COUNT - 1);
+
+      const overlayOpacity = clamp(1 - self.progress * 1.24, 0, 1);
+      const heroShift = self.progress * 42;
+      const heroScale = 1 - self.progress * 0.04;
+
+      refs.root.style.setProperty("--hero-opacity", overlayOpacity.toFixed(4));
+      refs.root.style.setProperty("--hero-shift", `${heroShift.toFixed(2)}px`);
+      refs.root.style.setProperty("--hero-scale", heroScale.toFixed(4));
+      refs.root.style.setProperty("--nav-y", "0px");
+      refs.root.style.setProperty("--nav-scale", "1");
+    }
+  });
+
+  if (refs.serviceTrack && refs.servicesSection && refs.serviceCard && refs.serviceSlides.length > 0) {
+    const setStoryTrackY = gsap.quickSetter(refs.serviceStoryTrack, "y", "px");
+
+    function refreshServiceStepSize() {
+      const firstSlide = refs.serviceSlides[0];
+      if (!firstSlide) return;
+      const stackStyle = window.getComputedStyle(refs.serviceStoryTrack);
+      const gap = parseFloat(stackStyle.rowGap || stackStyle.gap || "26") || 26;
+      appState.serviceSlideStepY = firstSlide.offsetHeight + gap;
+    }
+
+    refreshServiceStepSize();
+
+    function setServiceStep(step) {
+      if (step === appState.activeServiceStep) return;
+      appState.activeServiceStep = step;
+
+      refs.servicePills.forEach((pill, idx) => {
+        pill.classList.toggle("is-active", idx === step);
+      });
+
+      refs.serviceSlides.forEach((slide, idx) => {
+        slide.classList.toggle("is-active", idx === step);
+      });
+    }
+
+    ScrollTrigger.create({
+      trigger: refs.serviceTrack,
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 1.05,
+      invalidateOnRefresh: true,
+      onRefresh: refreshServiceStepSize,
+      onUpdate(self) {
+        const p = self.progress * (refs.serviceSlides.length - 1);
+        if (refs.serviceStoryTrack) {
+          setStoryTrackY(-(p * appState.serviceSlideStepY));
+        }
+
+        setServiceStep(Math.round(p));
+      }
+    });
+  }
+
+  if (
+    refs.processSection &&
+    refs.processRoutePath &&
+    refs.processRouteProgress &&
+    refs.processRouteMarker &&
+    refs.processRouteGlow &&
+    refs.processCards.length > 0
+  ) {
+    const routeLength = refs.processRoutePath.getTotalLength();
+    // Visual tweak: place the first dot on the clearly-visible part of the stroke.
+    // (The very start of the curve reads as "detached" due to the immediate bend.)
+    const routeStartOffset = Math.min(180, Math.max(120, routeLength * 0.12));
+    const usableRouteLength = Math.max(1, routeLength - routeStartOffset);
+    const lastStep = refs.processCards.length - 1;
+    const stepFractions = refs.processCards.map((_, idx) => (lastStep > 0 ? idx / lastStep : 0));
+
+    refs.processRouteProgress.style.strokeDasharray = `${routeLength}`;
+    refs.processRouteProgress.style.strokeDashoffset = `${routeLength}`;
+
+    const pulseTween = gsap.to(refs.processRouteGlow, {
+      attr: { r: 19 },
+      opacity: 0.22,
+      duration: 1,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true
+    });
+
+    function setProcessStep(step) {
+      if (step === appState.activeProcessStep) return;
+      appState.activeProcessStep = step;
+      refs.processCards.forEach((card, idx) => card.classList.toggle("is-active", idx === step));
+      refs.processRoutePins.forEach((pin, idx) => pin.classList.toggle("is-active", idx <= step));
+    }
+
+    function renderProcessRoute(progress) {
+      const clamped = clamp(progress, 0, 1);
+      const currentLength = routeStartOffset + usableRouteLength * clamped;
+      const point = refs.processRoutePath.getPointAtLength(currentLength);
+
+      refs.processRouteProgress.style.strokeDashoffset = `${routeLength - currentLength}`;
+      refs.processRouteMarker.setAttribute("cx", `${point.x}`);
+      refs.processRouteMarker.setAttribute("cy", `${point.y}`);
+      refs.processRouteGlow.setAttribute("cx", `${point.x}`);
+      refs.processRouteGlow.setAttribute("cy", `${point.y}`);
+
+      const step = Math.min(lastStep, Math.round(clamped * lastStep));
+      setProcessStep(step);
+    }
+
+    function refreshRoutePins() {
+      refs.processRoutePins.forEach((pin, idx) => {
+        const t = stepFractions[idx] ?? 0;
+        const point = refs.processRoutePath.getPointAtLength(routeStartOffset + usableRouteLength * t);
+        pin.setAttribute("cx", `${point.x}`);
+        pin.setAttribute("cy", `${point.y}`);
+      });
+    }
+
+    function placeTreasureAtEnd() {
+      if (!refs.processTreasureRing || !refs.processTreasureX1 || !refs.processTreasureX2) return;
+      const endPoint = refs.processRoutePath.getPointAtLength(routeLength);
+      const x = endPoint.x;
+      const y = endPoint.y;
+      const r = 19;
+      const d = 8;
+
+      refs.processTreasureRing.setAttribute("cx", `${x}`);
+      refs.processTreasureRing.setAttribute("cy", `${y}`);
+      refs.processTreasureRing.setAttribute("r", `${r}`);
+
+      refs.processTreasureX1.setAttribute("x1", `${x - d}`);
+      refs.processTreasureX1.setAttribute("y1", `${y - d}`);
+      refs.processTreasureX1.setAttribute("x2", `${x + d}`);
+      refs.processTreasureX1.setAttribute("y2", `${y + d}`);
+
+      refs.processTreasureX2.setAttribute("x1", `${x + d}`);
+      refs.processTreasureX2.setAttribute("y1", `${y - d}`);
+      refs.processTreasureX2.setAttribute("x2", `${x - d}`);
+      refs.processTreasureX2.setAttribute("y2", `${y + d}`);
+    }
+
+    refreshRoutePins();
+    placeTreasureAtEnd();
+    renderProcessRoute(0);
+
+    ScrollTrigger.create({
+      trigger: refs.processSection,
+      start: "top 82%",
+      end: "bottom 38%",
+      scrub: 1,
+      invalidateOnRefresh: true,
+      onRefresh() {
+        refreshRoutePins();
+        placeTreasureAtEnd();
+      },
+      onUpdate(self) {
+        renderProcessRoute(self.progress);
+      }
+    });
+
+    ScrollTrigger.create({
+      trigger: refs.processSection,
+      start: "top bottom",
+      end: "bottom top",
+      onEnter: () => pulseTween.play(),
+      onEnterBack: () => pulseTween.play(),
+      onLeave: () => pulseTween.pause(),
+      onLeaveBack: () => pulseTween.pause()
+    });
+  }
+
+  gsap.utils.toArray(".intro-grid, .stats-grid article, .service-tabs .service-tab, .service-products-grid article, .rating-card, .faq-list details").forEach((el) => {
+    gsap.fromTo(
+      el,
+      { y: 34, opacity: 0.2 },
+      {
+        y: 0,
+        opacity: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          end: "top 56%",
+          scrub: 1
+        }
+      }
+    );
+  });
+
+  const servicesGrid = document.querySelector("#servicesGrid .service-products-grid");
+  if (servicesGrid) {
+    const cards = Array.from(servicesGrid.querySelectorAll("article"));
+    gsap.fromTo(
+      cards,
+      { y: 22, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power2.out",
+        stagger: 0.08,
+        scrollTrigger: { trigger: servicesGrid, start: "top 80%" }
+      }
+    );
+  }
+
+  const capabilitiesScroll = document.getElementById("capabilitiesScroll");
+  const capabilitiesViewport = document.getElementById("capabilitiesViewport");
+  const capabilitiesTrack = document.getElementById("capabilitiesTrack");
+  const capabilitiesProgress = document.getElementById("capabilitiesProgress");
+  if (capabilitiesScroll && capabilitiesViewport && capabilitiesTrack) {
+    const cards = Array.from(capabilitiesTrack.querySelectorAll(".capability-card"));
+    cards.forEach((card, idx) => {
+      gsap.fromTo(
+        card,
+        { y: 26, opacity: 0.2, scale: 0.97 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 88%",
+            end: "top 58%",
+            scrub: 1,
+            onEnter: () => cards.forEach((item, itemIdx) => item.classList.toggle("is-active", itemIdx === idx)),
+            onEnterBack: () => cards.forEach((item, itemIdx) => item.classList.toggle("is-active", itemIdx === idx))
+          }
+        }
+      );
+    });
+
+    ScrollTrigger.create({
+      trigger: capabilitiesScroll,
+      start: "top 82%",
+      end: "bottom 34%",
+      scrub: 1,
+      onUpdate(self) {
+        if (capabilitiesProgress) {
+          capabilitiesProgress.style.transform = `scaleX(${Math.max(0.06, self.progress).toFixed(4)})`;
+        }
+      }
+    });
+  }
+
+  if (refs.impactSection) {
+    const showcase = refs.impactSection.querySelector(".achievement-showcase");
+    if (showcase) {
+      gsap.fromTo(
+        showcase,
+        { y: 24, opacity: 0.3 },
+        {
+          y: 0,
+          opacity: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: refs.impactSection,
+            start: "top 84%",
+            end: "top 58%",
+            scrub: 1
+          }
+        }
+      );
+    }
+  }
+
+  if (refs.brainSection) {
+    ScrollTrigger.create({
+      trigger: refs.brainSection,
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 1,
+      onUpdate(self) {
+        refs.root.style.setProperty("--brain-parallax", `${(self.progress - 0.5) * 34}px`);
+      }
+    });
+
+    gsap.fromTo(
+      refs.brainSection.querySelectorAll(".brain-left h3, .brain-tags span, .brain-right h2, .brain-right .btn-light"),
+      { opacity: 0.2, y: 26 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.05,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: refs.brainSection,
+          start: "top 86%",
+          end: "top 48%",
+          scrub: 1
+        }
+      }
+    );
+  }
+
+  if (refs.bottomSlogan && refs.bottomSloganTitle) {
+    gsap.fromTo(
+      refs.bottomSloganTitle,
+      { y: 92 },
+      {
+        y: 0,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: refs.bottomSlogan,
+          start: "top 92%",
+          end: "bottom top",
+          scrub: 1.08
+        }
+      }
+    );
+
+    if (refs.bottomSloganBlur) {
+      gsap.fromTo(
+        refs.bottomSloganBlur,
+        { y: 56, filter: "blur(12px)", opacity: 0.24 },
+        {
+          y: 22,
+          filter: "blur(5.2px)",
+          opacity: 0.86,
+          ease: "sine.out",
+          scrollTrigger: {
+            trigger: refs.bottomSlogan,
+            start: "top 88%",
+            end: "bottom top",
+            scrub: 1.08
+          }
+        }
+      );
+    }
+  }
+}
+

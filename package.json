@@ -1,0 +1,4 @@
+{
+  "private": true,
+  "description": "Static site; GSAP and Lenis load from CDN. No npm install required for deployment."
+}
