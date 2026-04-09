@@ -123,14 +123,17 @@ export function initScrollTimelines(refs) {
     refs.processRouteProgress.style.strokeDasharray = `${routeLength}`;
     refs.processRouteProgress.style.strokeDashoffset = `${routeLength}`;
 
-    const pulseTween = gsap.to(refs.processRouteGlow, {
-      attr: { r: 19 },
-      opacity: 0.22,
-      duration: 1,
-      ease: "sine.inOut",
-      repeat: -1,
-      yoyo: true
-    });
+    const touchDevice = window.matchMedia("(pointer: coarse)").matches;
+    const pulseTween = touchDevice
+      ? null
+      : gsap.to(refs.processRouteGlow, {
+          attr: { r: 19 },
+          opacity: 0.22,
+          duration: 1,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true
+        });
 
     function setProcessStep(step) {
       if (step === appState.activeProcessStep) return;
@@ -205,15 +208,17 @@ export function initScrollTimelines(refs) {
       }
     });
 
-    ScrollTrigger.create({
-      trigger: refs.processSection,
-      start: "top bottom",
-      end: "bottom top",
-      onEnter: () => pulseTween.play(),
-      onEnterBack: () => pulseTween.play(),
-      onLeave: () => pulseTween.pause(),
-      onLeaveBack: () => pulseTween.pause()
-    });
+    if (pulseTween) {
+      ScrollTrigger.create({
+        trigger: refs.processSection,
+        start: "top bottom",
+        end: "bottom top",
+        onEnter: () => pulseTween.play(),
+        onEnterBack: () => pulseTween.play(),
+        onLeave: () => pulseTween.pause(),
+        onLeaveBack: () => pulseTween.pause()
+      });
+    }
   }
 
   gsap.utils.toArray(".intro-grid, .stats-grid article, .service-tabs .service-tab, .service-products-grid article, .rating-card, .faq-list details").forEach((el) => {

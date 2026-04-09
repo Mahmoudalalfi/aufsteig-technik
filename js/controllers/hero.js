@@ -1,11 +1,13 @@
 import { HERO_FRAME_COUNT, HERO_FRAME_BASE, HERO_FRAME_EXT } from "../model/hero-config.js";
 import { appState } from "../model/app-state.js";
 import { clamp } from "../utils/math.js";
+import { getDeviceHints } from "../utils/device.js";
 
 const images = new Array(HERO_FRAME_COUNT);
 const HERO_BG = "#050607";
 /** Limit parallel hero frame downloads on slow networks (esp. mobile). */
 const MOBILE_LOAD_CONCURRENCY = 5;
+const MOBILE_LOAD_CONCURRENCY_SAVE = 3;
 const DESKTOP_LOAD_CONCURRENCY = 12;
 
 function framePath(index) {
@@ -45,7 +47,10 @@ export function initHero(refs) {
     state.viewportW = w;
     state.viewportH = h;
     const rawDpr = window.devicePixelRatio || 1;
-    const cap = isCoarsePointer() || isNarrowViewport() ? 2 : 2.5;
+    const hints = getDeviceHints();
+    let cap = isCoarsePointer() || isNarrowViewport() ? 2 : 2.5;
+    if (hints.saveData) cap = Math.min(cap, 1.5);
+    else if (hints.lightMode && rawDpr > 2) cap = Math.min(cap, 1.75);
     const ratio = Math.min(rawDpr, cap);
     canvas.width = Math.round(state.viewportW * ratio);
     canvas.height = Math.round(state.viewportH * ratio);
@@ -108,7 +113,13 @@ export function initHero(refs) {
       images[i] = img;
     }
 
-    const concurrency = isCoarsePointer() || isNarrowViewport() ? MOBILE_LOAD_CONCURRENCY : DESKTOP_LOAD_CONCURRENCY;
+    const hints = getDeviceHints();
+    const concurrency =
+      isCoarsePointer() || isNarrowViewport()
+        ? hints.saveData
+          ? MOBILE_LOAD_CONCURRENCY_SAVE
+          : MOBILE_LOAD_CONCURRENCY
+        : DESKTOP_LOAD_CONCURRENCY;
     let inFlight = 0;
     let nextIndex = 0;
 

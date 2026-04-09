@@ -3217,3 +3217,39 @@ a {
     font-size: 1.16rem;
   }
 }
+
+/* Touch phones: backdrop-filter is a common source of scroll jank on Android. */
+html.is-touch .nav-pill,
+html.is-touch .menu-panel,
+html.is-touch .menu-strip {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+html.is-touch .nav-pill,
+html.is-touch .menu-panel {
+  background: rgba(249, 249, 250, 0.98);
+}
+
+html.is-touch .menu-strip {
+  background: rgba(246, 246, 247, 0.98);
+}
+
+/* Data Saver / light mode: shorter pinned scroll = less work while swiping. */
+html.is-save-data .sequence-track {
+  height: 360vh;
+}
+
+@media (max-width: 980px) {
+  html.is-save-data .sequence-track {
+    height: 280vh;
+  }
+
+  html.is-save-data .services-track {
+    height: 220vh;
+  }
+
+  html.is-light-mode .container {
+    width: min(1180px, 94vw);
+  }
+}
