@@ -14,6 +14,13 @@ export function initProjectDeck() {
   const lastIndex = cards.length - 1;
   deck.setAttribute("tabindex", "0");
 
+  function deckPeekPx() {
+    const w = window.innerWidth;
+    if (w <= 640) return 52;
+    if (w <= 980) return 96;
+    return 172;
+  }
+
   function syncDots() {
     dots.forEach((dot) => {
       const idx = Number(dot.getAttribute("data-deck-dot"));
@@ -23,7 +30,7 @@ export function initProjectDeck() {
   }
 
   function renderDeck() {
-    const peek = 172;
+    const peek = deckPeekPx();
 
     cards.forEach((card, idx) => {
       const rel = idx - deckState.active;
@@ -109,6 +116,31 @@ export function initProjectDeck() {
         goToIndex(deckState.active - 1);
       }
     });
+  });
+
+  let swipeX0 = null;
+  deck.addEventListener(
+    "touchstart",
+    (e) => {
+      if (!e.changedTouches[0]) return;
+      swipeX0 = e.changedTouches[0].clientX;
+    },
+    { passive: true }
+  );
+  deck.addEventListener(
+    "touchend",
+    (e) => {
+      if (swipeX0 == null || !e.changedTouches[0]) return;
+      const dx = e.changedTouches[0].clientX - swipeX0;
+      swipeX0 = null;
+      if (Math.abs(dx) < 48) return;
+      if (dx < 0) goToIndex(deckState.active + 1);
+      else goToIndex(deckState.active - 1);
+    },
+    { passive: true }
+  );
+  deck.addEventListener("touchcancel", () => {
+    swipeX0 = null;
   });
 
   window.addEventListener("resize", renderDeck, { passive: true });
