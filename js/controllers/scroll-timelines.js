@@ -43,13 +43,24 @@ export function initScrollTimelines(refs) {
 
   if (refs.serviceTrack && refs.servicesSection && refs.serviceCard && refs.serviceSlides.length > 0) {
     const setStoryTrackY = gsap.quickSetter(refs.serviceStoryTrack, "y", "px");
+    /** Pixel offset of each slide’s top within the stack (handles unequal slide heights on mobile). */
+    let serviceSlideYs = [0];
 
     function refreshServiceStepSize() {
-      const firstSlide = refs.serviceSlides[0];
-      if (!firstSlide) return;
+      const slides = refs.serviceSlides;
+      if (!slides.length) return;
       const stackStyle = window.getComputedStyle(refs.serviceStoryTrack);
       const gap = parseFloat(stackStyle.rowGap || stackStyle.gap || "26") || 26;
-      appState.serviceSlideStepY = firstSlide.offsetHeight + gap;
+      const ys = [];
+      let acc = 0;
+      slides.forEach((slide, i) => {
+        ys.push(acc);
+        acc += slide.offsetHeight;
+        if (i < slides.length - 1) acc += gap;
+      });
+      serviceSlideYs = ys;
+      appState.serviceSlideStepY =
+        ys.length > 1 ? ys[1] - ys[0] : slides[0].offsetHeight + gap;
     }
 
     refreshServiceStepSize();
@@ -75,9 +86,17 @@ export function initScrollTimelines(refs) {
       invalidateOnRefresh: true,
       onRefresh: refreshServiceStepSize,
       onUpdate(self) {
-        const p = self.progress * (refs.serviceSlides.length - 1);
+        const slides = refs.serviceSlides;
+        const last = slides.length - 1;
+        const p = clamp(self.progress * last, 0, last);
+        const i0 = Math.min(Math.floor(p), last);
+        const i1 = Math.min(Math.ceil(p), last);
+        const y0 = serviceSlideYs[i0] ?? 0;
+        const y1 = serviceSlideYs[i1] ?? y0;
+        const y = i0 === i1 ? y0 : y0 + (y1 - y0) * (p - i0);
+
         if (refs.serviceStoryTrack) {
-          setStoryTrackY(-(p * appState.serviceSlideStepY));
+          setStoryTrackY(-y);
         }
 
         setServiceStep(Math.round(p));

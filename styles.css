@@ -2983,15 +2983,21 @@ a {
     z-index: 0;
   }
 
-  /* Taller viewport on phones so story text + image aren’t clipped (was fixed 560px). */
+  /* Taller viewport; slide padding avoids text sitting flush against overflow clip. */
   .service-story-viewport {
-    height: min(82dvh, 820px);
-    min-height: min(82dvh, 820px);
+    height: min(86dvh, 880px);
+    min-height: min(86dvh, 880px);
   }
 
   .service-story-slide {
-    min-height: min(82dvh, 820px);
+    min-height: min(86dvh, 880px);
     box-sizing: border-box;
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+
+  .service-story-slide h4 {
+    margin-bottom: 10px;
   }
 
   .service-story-stack {
