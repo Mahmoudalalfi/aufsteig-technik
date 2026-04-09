@@ -5,9 +5,9 @@ import { getDeviceHints } from "../utils/device.js";
 
 const images = new Array(HERO_FRAME_COUNT);
 const HERO_BG = "#050607";
-/** Limit parallel hero frame downloads on slow networks (esp. mobile). */
-const MOBILE_LOAD_CONCURRENCY = 5;
-const MOBILE_LOAD_CONCURRENCY_SAVE = 3;
+/** After frame 0 is decoded, keep a thin pipeline so lazy imgs / PNGs can load. */
+const MOBILE_LOAD_CONCURRENCY = 2;
+const MOBILE_LOAD_CONCURRENCY_SAVE = 2;
 const DESKTOP_LOAD_CONCURRENCY = 12;
 
 function framePath(index) {
@@ -20,6 +20,37 @@ function isCoarsePointer() {
 
 function isNarrowViewport() {
   return window.matchMedia("(max-width: 900px)").matches;
+}
+
+/** Fewer unique frames on touch = less bandwidth; scroll still maps to full range. */
+function heroStride(hints) {
+  if (!isCoarsePointer()) return 1;
+  if (hints.saveData) return 3;
+  return 2;
+}
+
+function buildLoadOrder(stride) {
+  if (stride <= 1) {
+    return Array.from({ length: HERO_FRAME_COUNT }, (_, i) => i);
+  }
+  const order = [];
+  for (let i = 0; i < HERO_FRAME_COUNT; i += stride) {
+    order.push(i);
+  }
+  const last = HERO_FRAME_COUNT - 1;
+  if (order[order.length - 1] !== last) {
+    order.push(last);
+  }
+  return order;
+}
+
+function ensureSlot(i) {
+  if (!images[i]) {
+    const img = new Image();
+    img.decoding = "async";
+    images[i] = img;
+  }
+  return images[i];
 }
 
 export function initHero(refs) {
@@ -94,26 +125,23 @@ export function initHero(refs) {
     const best = nearestLoadedFrame(index);
     if (!forceRedraw && best >= 0 && best === state.activeBase) return;
 
-    ctx.fillStyle = HERO_BG;
-    ctx.fillRect(0, 0, state.viewportW, state.viewportH);
+    ctx.clearRect(0, 0, state.viewportW, state.viewportH);
 
     if (best < 0) {
       state.activeBase = -1;
       return;
     }
 
+    ctx.fillStyle = HERO_BG;
+    ctx.fillRect(0, 0, state.viewportW, state.viewportH);
     drawCover(images[best]);
     state.activeBase = best;
   }
 
   function preloadFrames() {
-    for (let i = 0; i < HERO_FRAME_COUNT; i += 1) {
-      const img = new Image();
-      img.decoding = "async";
-      images[i] = img;
-    }
-
     const hints = getDeviceHints();
+    const stride = heroStride(hints);
+    const loadOrder = buildLoadOrder(stride);
     const concurrency =
       isCoarsePointer() || isNarrowViewport()
         ? hints.saveData
@@ -121,32 +149,44 @@ export function initHero(refs) {
           : MOBILE_LOAD_CONCURRENCY
         : DESKTOP_LOAD_CONCURRENCY;
     let inFlight = 0;
-    let nextIndex = 0;
+    let queuePos = 0;
+    let firstFrameReady = false;
 
     const kick = () => {
       drawSequenceFrame(state.currentFrame, true);
     };
 
     const startOne = (i) => {
-      const img = images[i];
+      const img = ensureSlot(i);
       inFlight += 1;
-      img.onload = img.onerror = () => {
+      const done = () => {
         inFlight -= 1;
+        if (i === 0) firstFrameReady = true;
         kick();
         pump();
       };
+      img.onload = () => {
+        if (i === 0 && typeof img.decode === "function") {
+          img.decode().then(done).catch(done);
+        } else {
+          done();
+        }
+      };
+      img.onerror = done;
       img.src = framePath(i);
     };
 
     function pump() {
-      while (inFlight < concurrency && nextIndex < HERO_FRAME_COUNT) {
-        startOne(nextIndex);
-        nextIndex += 1;
+      while (inFlight < concurrency && queuePos < loadOrder.length) {
+        const idx = loadOrder[queuePos];
+        if (idx > 0 && !firstFrameReady) break;
+        startOne(idx);
+        queuePos += 1;
       }
     }
 
-    nextIndex = 1;
     startOne(0);
+    queuePos = 1;
     pump();
   }
 
