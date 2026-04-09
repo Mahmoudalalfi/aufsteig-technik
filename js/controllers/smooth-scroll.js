@@ -1,13 +1,5 @@
-import { getMotionProfile } from "../utils/motion-profile.js";
-
 export function initSmoothScroll() {
   if (!window.Lenis) return;
-  const { useLenis } = getMotionProfile();
-  if (!useLenis) {
-    document.documentElement.classList.add("native-scroll");
-    return;
-  }
-
   let lenis;
   try {
     lenis = new window.Lenis({

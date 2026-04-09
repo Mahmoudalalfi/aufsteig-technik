@@ -1,7 +1,6 @@
 import { HERO_FRAME_COUNT } from "../model/hero-config.js";
 import { appState } from "../model/app-state.js";
 import { clamp } from "../utils/math.js";
-import { getMotionProfile } from "../utils/motion-profile.js";
 
 export function initScrollTimelines(refs) {
   if (!window.gsap || !window.ScrollTrigger) return;
@@ -10,22 +9,11 @@ export function initScrollTimelines(refs) {
   const ScrollTrigger = window.ScrollTrigger;
   gsap.registerPlugin(ScrollTrigger);
 
-  const mp = getMotionProfile();
-  let stRefreshTimer = 0;
-  const scheduleStRefresh = () => {
-    window.clearTimeout(stRefreshTimer);
-    stRefreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 160);
-  };
-  window.addEventListener("resize", scheduleStRefresh, { passive: true });
-  window.addEventListener("orientationchange", () => {
-    requestAnimationFrame(() => ScrollTrigger.refresh());
-  });
-
   ScrollTrigger.create({
     trigger: refs.heroSequence,
     start: "top top",
     end: () => `+=${Math.max(0, refs.sequenceTrack.offsetHeight - window.innerHeight)}`,
-    scrub: mp.scrubHero,
+    scrub: 1.15,
     onUpdate(self) {
       appState.hero.targetFrame = self.progress * (HERO_FRAME_COUNT - 1);
 
@@ -71,7 +59,7 @@ export function initScrollTimelines(refs) {
       trigger: refs.serviceTrack,
       start: "top top",
       end: "bottom bottom",
-      scrub: mp.scrubService,
+      scrub: 1.05,
       invalidateOnRefresh: true,
       onRefresh: refreshServiceStepSize,
       onUpdate(self) {
@@ -175,7 +163,7 @@ export function initScrollTimelines(refs) {
       trigger: refs.processSection,
       start: "top 82%",
       end: "bottom 38%",
-      scrub: mp.scrub,
+      scrub: 1,
       invalidateOnRefresh: true,
       onRefresh() {
         refreshRoutePins();
@@ -209,7 +197,7 @@ export function initScrollTimelines(refs) {
           trigger: el,
           start: "top 88%",
           end: "top 56%",
-          scrub: mp.scrub
+          scrub: 1
         }
       }
     );
@@ -251,7 +239,7 @@ export function initScrollTimelines(refs) {
             trigger: card,
             start: "top 88%",
             end: "top 58%",
-            scrub: mp.scrub,
+            scrub: 1,
             onEnter: () => cards.forEach((item, itemIdx) => item.classList.toggle("is-active", itemIdx === idx)),
             onEnterBack: () => cards.forEach((item, itemIdx) => item.classList.toggle("is-active", itemIdx === idx))
           }
@@ -263,7 +251,7 @@ export function initScrollTimelines(refs) {
       trigger: capabilitiesScroll,
       start: "top 82%",
       end: "bottom 34%",
-      scrub: mp.scrub,
+      scrub: 1,
       onUpdate(self) {
         if (capabilitiesProgress) {
           capabilitiesProgress.style.transform = `scaleX(${Math.max(0.06, self.progress).toFixed(4)})`;
@@ -286,7 +274,7 @@ export function initScrollTimelines(refs) {
             trigger: refs.impactSection,
             start: "top 84%",
             end: "top 58%",
-            scrub: mp.scrub
+            scrub: 1
           }
         }
       );
@@ -298,7 +286,7 @@ export function initScrollTimelines(refs) {
       trigger: refs.brainSection,
       start: "top bottom",
       end: "bottom top",
-      scrub: mp.scrub,
+      scrub: 1,
       onUpdate(self) {
         refs.root.style.setProperty("--brain-parallax", `${(self.progress - 0.5) * 34}px`);
       }
@@ -316,7 +304,7 @@ export function initScrollTimelines(refs) {
           trigger: refs.brainSection,
           start: "top 86%",
           end: "top 48%",
-          scrub: mp.scrub
+          scrub: 1
         }
       }
     );
@@ -333,7 +321,7 @@ export function initScrollTimelines(refs) {
           trigger: refs.bottomSlogan,
           start: "top 92%",
           end: "bottom top",
-          scrub: mp.scrubBottom
+          scrub: 1.08
         }
       }
     );
@@ -351,7 +339,7 @@ export function initScrollTimelines(refs) {
             trigger: refs.bottomSlogan,
             start: "top 88%",
             end: "bottom top",
-            scrub: mp.scrubBottom
+            scrub: 1.08
           }
         }
       );

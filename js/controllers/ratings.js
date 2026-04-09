@@ -3,10 +3,6 @@ export function initRatingsMarquee() {
   const track = document.getElementById("ratingsTrack");
   if (!marquee || !track) return;
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const touchLike =
-    window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(max-width: 900px)").matches;
-
   const baseCards = Array.from(track.children);
   if (baseCards.length < 2) return;
 
@@ -59,7 +55,7 @@ export function initRatingsMarquee() {
     lastTick = now;
 
     if (!paused && !dragState.active) {
-      const speed = reduceMotion ? 0 : touchLike ? 13 : 18;
+      const speed = 18;
       offset = wrap(offset + speed * dt);
       render();
     }

@@ -1,7 +1,6 @@
 import { HERO_FRAME_COUNT, HERO_FRAME_BASE, HERO_FRAME_EXT } from "../model/hero-config.js";
 import { appState } from "../model/app-state.js";
 import { clamp } from "../utils/math.js";
-import { getMotionProfile } from "../utils/motion-profile.js";
 
 const images = new Array(HERO_FRAME_COUNT);
 
@@ -14,12 +13,11 @@ export function initHero(refs) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const state = appState.hero;
-  const motion = getMotionProfile();
 
   function setCanvasSize() {
     state.viewportW = window.innerWidth;
     state.viewportH = window.innerHeight;
-    const ratio = Math.min(window.devicePixelRatio || 1, motion.maxCanvasDpr);
+    const ratio = window.devicePixelRatio || 1;
     canvas.width = Math.round(state.viewportW * ratio);
     canvas.height = Math.round(state.viewportH * ratio);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -61,21 +59,20 @@ export function initHero(refs) {
   }
 
   function renderLoop() {
-    state.currentFrame += (state.targetFrame - state.currentFrame) * motion.heroLerp;
+    state.currentFrame += (state.targetFrame - state.currentFrame) * 0.16;
     drawSequenceFrame(state.currentFrame);
     requestAnimationFrame(renderLoop);
   }
 
   setCanvasSize();
   preloadFrames();
-  const onViewportChange = () => {
-    setCanvasSize();
-    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
-  };
-  window.addEventListener("resize", onViewportChange, { passive: true });
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", onViewportChange, { passive: true });
-  }
-  window.addEventListener("orientationchange", onViewportChange, { passive: true });
+  window.addEventListener(
+    "resize",
+    () => {
+      setCanvasSize();
+      if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+    },
+    { passive: true }
+  );
   requestAnimationFrame(renderLoop);
 }
