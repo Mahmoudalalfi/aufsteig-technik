@@ -2,13 +2,30 @@ import { HERO_FRAME_COUNT } from "../model/hero-config.js";
 import { appState } from "../model/app-state.js";
 import { clamp } from "../utils/math.js";
 
-/** Coarser scrub on touch = less fighting with momentum scroll (fewer micro-updates). */
+/**
+ * Touch: hero keeps a bit of scrub smoothing; services use a short scrub so the stack
+ * stays tied to scroll (long scrub + iOS momentum + stale ST measurements reads as “broken”).
+ */
 function touchScrollTuning() {
   const touch = window.matchMedia("(pointer: coarse)").matches;
   if (!touch) {
     return { scrubHero: 1.15, scrubService: 1.05, scrub: 1, scrubBottom: 1.08 };
   }
-  return { scrubHero: 1.72, scrubService: 1.48, scrub: 1.38, scrubBottom: 1.55 };
+  return { scrubHero: 1.72, scrubService: 0.42, scrub: 1.38, scrubBottom: 1.55 };
+}
+
+function debounceScrollTriggerRefresh(ScrollTrigger, ms = 120) {
+  let t = 0;
+  return () => {
+    window.clearTimeout(t);
+    t = window.setTimeout(() => {
+      try {
+        ScrollTrigger.refresh();
+      } catch {
+        /* ignore */
+      }
+    }, ms);
+  };
 }
 
 export function initScrollTimelines(refs) {
@@ -65,6 +82,21 @@ export function initScrollTimelines(refs) {
 
     refreshServiceStepSize();
 
+    const scheduleStRefresh = debounceScrollTriggerRefresh(ScrollTrigger);
+
+    if (refs.serviceStoryTrack && window.ResizeObserver) {
+      const ro = new ResizeObserver(() => scheduleStRefresh());
+      ro.observe(refs.serviceStoryTrack);
+      refs.serviceSlides.forEach((slide) => ro.observe(slide));
+    }
+
+    if (window.visualViewport && window.matchMedia("(pointer: coarse)").matches) {
+      window.visualViewport.addEventListener("resize", scheduleStRefresh, { passive: true });
+    }
+
+    window.addEventListener("load", scheduleStRefresh, { passive: true });
+    window.setTimeout(scheduleStRefresh, 0);
+
     function setServiceStep(step) {
       if (step === appState.activeServiceStep) return;
       appState.activeServiceStep = step;
@@ -81,8 +113,9 @@ export function initScrollTimelines(refs) {
     ScrollTrigger.create({
       trigger: refs.serviceTrack,
       start: "top top",
-      end: "bottom bottom",
+      end: () => `+=${Math.max(1, refs.serviceTrack.offsetHeight - window.innerHeight)}`,
       scrub: st.scrubService,
+      fastScrollEnd: true,
       invalidateOnRefresh: true,
       onRefresh: refreshServiceStepSize,
       onUpdate(self) {
@@ -93,7 +126,9 @@ export function initScrollTimelines(refs) {
         const i1 = Math.min(Math.ceil(p), last);
         const y0 = serviceSlideYs[i0] ?? 0;
         const y1 = serviceSlideYs[i1] ?? y0;
-        const y = i0 === i1 ? y0 : y0 + (y1 - y0) * (p - i0);
+        let y = i0 === i1 ? y0 : y0 + (y1 - y0) * (p - i0);
+        const maxY = serviceSlideYs[last] ?? 0;
+        y = clamp(y, 0, maxY);
 
         if (refs.serviceStoryTrack) {
           setStoryTrackY(-y);
