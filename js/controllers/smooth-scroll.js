@@ -1,5 +1,15 @@
 export function initSmoothScroll() {
   if (!window.Lenis) return;
+
+  /**
+   * Lenis + touch scrolling on Android/iOS often conflicts with ScrollTrigger (stuck / rubber-band).
+   * Desktop mouse/wheel keeps Lenis; touch-primary devices use native scroll.
+   */
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    document.documentElement.classList.add("native-scroll");
+    return;
+  }
+
   let lenis;
   try {
     lenis = new window.Lenis({

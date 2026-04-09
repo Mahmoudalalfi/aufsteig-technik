@@ -305,8 +305,10 @@ a {
   position: sticky;
   top: 0;
   min-height: 100vh;
+  min-height: -webkit-fill-available;
   min-height: 100dvh;
   height: 100vh;
+  height: -webkit-fill-available;
   height: 100dvh;
   overflow: hidden;
   background: #050607;
@@ -2948,8 +2950,9 @@ a {
     display: none;
   }
 
+  /* Shorter hero scroll on phones: less time in sticky + faster path to main content */
   .sequence-track {
-    height: 520vh;
+    height: 420vh;
   }
 
   .hero-overlay {
@@ -2970,7 +2973,38 @@ a {
   }
 
   .services-sticky .container.two-col {
-    padding-top: 56px;
+    padding-top: 72px;
+    gap: 28px;
+  }
+
+  .services-left h3 {
+    padding-top: 6px;
+    position: relative;
+    z-index: 0;
+  }
+
+  /* Taller viewport on phones so story text + image aren’t clipped (was fixed 560px). */
+  .service-story-viewport {
+    height: min(82dvh, 820px);
+    min-height: min(82dvh, 820px);
+  }
+
+  .service-story-slide {
+    min-height: min(82dvh, 820px);
+    box-sizing: border-box;
+  }
+
+  .service-story-stack {
+    contain: none;
+  }
+
+  #serviceStoryCard.floating-card {
+    overflow: visible;
+    padding: 18px;
+  }
+
+  .services-card .service-photo {
+    min-height: 200px;
   }
 
   .two-col,
@@ -2998,6 +3032,13 @@ a {
 
   .services-track {
     height: 280vh;
+  }
+
+  /* Don’t vertically center the grid — it was clipping the card top/bottom on short viewports. */
+  .services-sticky {
+    align-items: start;
+    padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
   }
 
   .services-left {
