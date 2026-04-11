@@ -1,4 +1,46 @@
 {
+  "redirects": [
+    {
+      "source": "/shaft-layout-matrix.html",
+      "destination": "/pages/shaft-layout-matrix.html",
+      "permanent": true
+    },
+    {
+      "source": "/detailed-shaft-plan-sheets.html",
+      "destination": "/pages/detailed-shaft-plan-sheets.html",
+      "permanent": true
+    },
+    {
+      "source": "/technical-configurations.html",
+      "destination": "/pages/technical-configurations.html",
+      "permanent": true
+    },
+    {
+      "source": "/escalator-safety-devices.html",
+      "destination": "/pages/escalator-safety-devices.html",
+      "permanent": true
+    },
+    {
+      "source": "/design-catalog.html",
+      "destination": "/pages/design-catalog.html",
+      "permanent": true
+    },
+    {
+      "source": "/start-project.html",
+      "destination": "/pages/start-project.html",
+      "permanent": true
+    },
+    {
+      "source": "/styles.css",
+      "destination": "/css/styles.css",
+      "permanent": true
+    },
+    {
+      "source": "/start-project.css",
+      "destination": "/css/start-project.css",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
