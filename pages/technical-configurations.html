@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Technical Configurations | Aufsteig Technik</title>
+  <meta
+    name="description"
+    content="Standard and optional escalator parts configuration matrix for balustrade, landing plate, step, pallets, handrail color, and drive unit."
+  />
+  <link rel="icon" href="../aufsteig-logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #ececef;
+      --bg-soft: #f4f4f6;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-hover: rgba(255, 255, 255, 0.92);
+      --glass: rgba(255, 255, 255, 0.6);
+      --glass-border: rgba(18, 22, 30, 0.09);
+      --ink: #111217;
+      --muted: #626874;
+      --accent: #2d67aa;
+      --accent-soft: #3d7ed4;
+      --gold: #9a7c3a;
+      --gold-soft: #b5923e;
+      --line: rgba(18, 22, 30, 0.07);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      filter: blur(180px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .ambient-glow.visible { opacity: 1; }
+    .glow-1 {
+      top: -18%;
+      left: -8%;
+      background: radial-gradient(circle, rgba(45, 103, 170, 0.1), transparent 70%);
+    }
+    .glow-2 {
+      bottom: -10%;
+      right: -10%;
+      background: radial-gradient(circle, rgba(154, 124, 58, 0.07), transparent 70%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1320px, 94vw);
+      margin: 0 auto;
+      padding: 60px 0 120px;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .back-link:hover {
+      color: var(--ink);
+      border-color: rgba(18, 22, 30, 0.16);
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(18, 30, 50, 0.1);
+    }
+    .back-link svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+    }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* ── HERO ── */
+    .hero {
+      margin-bottom: 80px;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    .hero-kicker::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 2px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 1.0;
+      color: var(--ink);
+      max-width: 14ch;
+      margin-bottom: 28px;
+    }
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+    }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    .hero-title .accent-word {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-lead {
+      max-width: 56ch;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.65;
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+    .section-count {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding-bottom: 4px;
+    }
+
+    /* ── CONFIG CARDS ── */
+    .config-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .config-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 0.85fr 1fr 1fr;
+      gap: 0;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--glass-border);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .config-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .config-card:hover {
+      border-color: rgba(45, 103, 170, 0.18);
+      background: var(--surface-hover);
+      transform: translateY(-4px);
+      box-shadow:
+        0 24px 60px rgba(18, 30, 50, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    }
+
+    /* left column: part identity */
+    .config-card-left {
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--line);
+      position: relative;
+    }
+
+    .config-number {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+
+    .config-part-name {
+      font-size: 1.36rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+      color: var(--ink);
+      margin-bottom: 6px;
+      transition: color 0.3s ease;
+    }
+    .config-card:hover .config-part-name {
+      color: var(--accent);
+    }
+
+    .config-german {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+      line-height: 1.35;
+    }
+
+    .config-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 14px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(154, 124, 58, 0.08);
+      border: 1px solid rgba(154, 124, 58, 0.16);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--gold);
+      width: fit-content;
+    }
+
+    /* center & right: standard / optional */
+    .config-option {
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-right: 1px solid var(--line);
+      position: relative;
+    }
+    .config-option:last-child {
+      border-right: none;
+    }
+
+    .config-option-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .config-option:last-child .config-option-label {
+      color: var(--accent);
+    }
+
+    .config-option-img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(18, 22, 30, 0.08);
+      background-color: rgba(255, 255, 255, 0.7);
+      background-size: cover;
+      background-position: center;
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .config-card:hover .config-option-img {
+      border-color: rgba(45, 103, 170, 0.2);
+      box-shadow: 0 12px 32px rgba(18, 30, 50, 0.1);
+      transform: scale(1.02);
+    }
+
+    .config-option-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .config-option-desc {
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #4a5060;
+      font-weight: 400;
+    }
+    .config-card:hover .config-option-desc {
+      color: #2a3040;
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+      margin: 60px 0;
+      opacity: 0;
+    }
+
+    /* ── TECHNICAL FACTS ── */
+    .facts-section {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .facts-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .fact-chip {
+      padding: 18px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .fact-chip::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .fact-chip:hover {
+      border-color: rgba(45, 103, 170, 0.22);
+      background: rgba(255, 255, 255, 0.88);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(18, 30, 50, 0.1);
+    }
+    .fact-chip:hover::before { opacity: 1; }
+
+    .fact-value {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+    .fact-desc {
+      display: block;
+      font-size: 0.78rem;
+      color: #4a5060;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* ── BOTTOM CTA ── */
+    .bottom-cta {
+      text-align: center;
+      padding: 60px 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .bottom-cta p {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+    .bottom-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: none;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 8px 28px rgba(45, 103, 170, 0.2);
+    }
+    .bottom-cta a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(45, 103, 170, 0.3);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .facts-grid { grid-template-columns: repeat(3, 1fr); }
+      .config-card { grid-template-columns: 1fr; }
+      .config-card-left { border-right: none; border-bottom: 1px solid var(--line); }
+      .config-option { border-right: none; border-bottom: 1px solid var(--line); }
+      .config-option:last-child { border-bottom: none; }
+    }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 36px 0 80px; }
+      .hero { margin-bottom: 50px; }
+      .facts-grid { grid-template-columns: repeat(2, 1fr); }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .hero-title .line-inner,
+      .hero-kicker, .hero-lead, .back-link,
+      .section-header, .config-card,
+      .facts-section, .section-divider, .bottom-cta {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  
+    /* ── Language switcher ── */
+    .page-lang-switcher{position:fixed;top:18px;right:18px;z-index:999;display:flex;gap:4px;background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--glass-border);border-radius:20px;padding:3px;}
+    .page-lang-btn{font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.04em;padding:5px 12px;border-radius:16px;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
+    .page-lang-btn.is-active{background:var(--ink);color:#fff}
+    .page-lang-btn:hover:not(.is-active){color:var(--ink)}
+
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <div class="page-lang-switcher"><button class="page-lang-btn is-active" data-lang="en" type="button">EN</button><button class="page-lang-btn" data-lang="de" type="button">DE</button></div>
+    <a class="back-link" href="../index.html#servicesGrid" data-i18n="back">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+      Back to Services
+    </a>
+
+    <section class="hero">
+      <span class="hero-kicker" data-i18n="hero.eyebrow">Technical Matrix</span>
+      <h1 class="hero-title">
+        <span class="line"><span class="line-inner" data-i18n="hero.t1">Technical</span></span>
+        <span class="line"><span class="line-inner" data-i18n="hero.t2">Configurations</span></span>
+        <span class="line"><span class="line-inner"><span class="accent-word" data-i18n="hero.t3">& Parts</span></span></span>
+      </h1>
+      <p class="hero-lead" data-i18n="hero.desc">
+        Standard configuration and optional configuration of escalator parts.
+        All entries below are written in full to preserve detailed selection
+        information for technical review.
+      </p>
+    </section>
+
+    <div class="section-header">
+      <h2 class="section-title" data-i18n="matrix.title">Configuration Matrix</h2>
+      <span class="section-count" data-i18n="matrix.count">06 Parts</span>
+    </div>
+
+    <div class="config-list" aria-label="Standard and optional parts matrix">
+
+      <article class="config-card">
+        <div class="config-card-left">
+          <span class="config-number">01</span>
+          <h3 class="config-part-name" data-i18n="p1.name">Balustrade type</h3>
+          <p class="config-german">Balustradentyp</p>
+          <span class="config-badge">Part 01</span>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="std.label">Standard Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/voD1v.png');"></div>
+          <p class="config-option-title" data-i18n="p1.std.t">Tempered stainless steel + transparent glass</p>
+          <p class="config-option-desc" data-i18n="p1.std.d">High-clarity panel with robust balustrade framing for modern architectural finishes.</p>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="opt.label">Optional Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/LnfAa.png');"></div>
+          <p class="config-option-title" data-i18n="p1.opt.t">Tempered stainless steel (inclined)</p>
+          <p class="config-option-desc" data-i18n="p1.opt.d">Inclined stainless enclosure option for high-traffic environments and reinforced edge protection.</p>
+        </div>
+      </article>
+
+      <article class="config-card">
+        <div class="config-card-left">
+          <span class="config-number">02</span>
+          <h3 class="config-part-name" data-i18n="p2.name">Landing plate</h3>
+          <p class="config-german">Landebrett</p>
+          <span class="config-badge">Part 02</span>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="std.label">Standard Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/4Js2e.png');"></div>
+          <p class="config-option-title" data-i18n="p2.std.t">Stainless steel series</p>
+          <p class="config-option-desc" data-i18n="p2.std.d">Durable anti-slip stainless plate for long-life use in demanding entry/exit zones.</p>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="opt.label">Optional Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/YXtnc.png');"></div>
+          <p class="config-option-title" data-i18n="p2.opt.t">Aluminum series</p>
+          <p class="config-option-desc" data-i18n="p2.opt.d">Lighter-weight aluminum option with textured surface and simplified replacement cycle.</p>
+        </div>
+      </article>
+
+      <article class="config-card">
+        <div class="config-card-left">
+          <span class="config-number">03</span>
+          <h3 class="config-part-name" data-i18n="p3.name">Step</h3>
+          <p class="config-german">Schritt</p>
+          <span class="config-badge">Part 03</span>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="std.label">Standard Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/qdkzE.png');"></div>
+          <p class="config-option-title" data-i18n="p3.std.t">Stainless steel series</p>
+          <p class="config-option-desc" data-i18n="p3.std.d">High-strength step configuration for continuous operation under frequent passenger flow.</p>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="opt.label">Optional Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/khJWP.png');"></div>
+          <p class="config-option-title" data-i18n="p3.opt.t">Aluminum series</p>
+          <p class="config-option-desc" data-i18n="p3.opt.d">Weight-optimized step option suitable for energy-conscious modernization projects.</p>
+        </div>
+      </article>
+
+      <article class="config-card">
+        <div class="config-card-left">
+          <span class="config-number">04</span>
+          <h3 class="config-part-name" data-i18n="p4.name">Pallets</h3>
+          <p class="config-german">Paletten</p>
+          <span class="config-badge">Part 04</span>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="std.label">Standard Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/YXtnc.png');"></div>
+          <p class="config-option-title" data-i18n="p4.std.t">Aluminum series</p>
+          <p class="config-option-desc" data-i18n="p4.std.d">Corrosion-resistant aluminum pallet format for consistent travel behavior.</p>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="opt.label">Optional Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/67gEt.png');"></div>
+          <p class="config-option-title" data-i18n="p4.opt.t">Optional custom profile</p>
+          <p class="config-option-desc" data-i18n="p4.opt.d">Application-specific profile and finish combinations available on request.</p>
+        </div>
+      </article>
+
+      <article class="config-card">
+        <div class="config-card-left">
+          <span class="config-number">05</span>
+          <h3 class="config-part-name" data-i18n="p5.name">Handrail color</h3>
+          <p class="config-german">Handlauffarbe</p>
+          <span class="config-badge">Part 05</span>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="std.label">Standard Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/F0szC.png');"></div>
+          <p class="config-option-title" data-i18n="p5.std.t">Standard black</p>
+          <p class="config-option-desc" data-i18n="p5.std.d">Neutral black finish for broad architectural compatibility.</p>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="opt.label">Optional Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/yZaU1.png');"></div>
+          <p class="config-option-title" data-i18n="p5.opt.t">Black / red / blue / green</p>
+          <p class="config-option-desc" data-i18n="p5.opt.d">Multiple color options available for wayfinding, branding, or zone coding.</p>
+        </div>
+      </article>
+
+      <article class="config-card">
+        <div class="config-card-left">
+          <span class="config-number">06</span>
+          <h3 class="config-part-name" data-i18n="p6.name">Drive Unit</h3>
+          <p class="config-german">Traktionsmaschine</p>
+          <span class="config-badge">Part 06</span>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="std.label">Standard Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/UOdCJ.png');"></div>
+          <p class="config-option-title" data-i18n="p6.std.t">Worm gear drive</p>
+          <p class="config-option-desc" data-i18n="p6.std.d">Standard drive package for stable start, braking, and consistent operation.</p>
+        </div>
+        <div class="config-option">
+          <p class="config-option-label" data-i18n="opt.label">Optional Configuration</p>
+          <div class="config-option-img" style="background-image:url('../assets/DwdRr.png');"></div>
+          <p class="config-option-title" data-i18n="p6.opt.t">Worm gear drive (high-performance option)</p>
+          <p class="config-option-desc" data-i18n="p6.opt.d">Enhanced reducer/drive tuning for high torque and broader performance envelopes.</p>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="section-divider"></div>
+
+    <section class="facts-section" aria-label="Technical facts">
+      <p class="facts-label" data-i18n="facts.label">Technical Facts</p>
+      <div class="facts-grid">
+        <div class="fact-chip">
+          <span class="fact-value">57 dB</span>
+          <span class="fact-desc" data-i18n="tf1">Low-noise operating level</span>
+        </div>
+        <div class="fact-chip">
+          <span class="fact-value">&gt;88%</span>
+          <span class="fact-desc" data-i18n="tf2">Drive efficiency in normal operation</span>
+        </div>
+        <div class="fact-chip">
+          <span class="fact-value">5.5–15 kW</span>
+          <span class="fact-desc" data-i18n="tf3">Variable-frequency support range</span>
+        </div>
+        <div class="fact-chip">
+          <span class="fact-value">11–37 kW</span>
+          <span class="fact-desc" data-i18n="tf4">Total configured machine range</span>
+        </div>
+        <div class="fact-chip">
+          <span class="fact-value">&gt;22%</span>
+          <span class="fact-desc" data-i18n="tf5">Kadion machine driving efficiency uplift</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <div class="bottom-cta">
+      <p data-i18n="cta.text">Need help selecting the right configuration?</p>
+      <a href="../index.html#contact" data-i18n="cta.btn">
+        Start a Consultation
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
+  <script>
+    (() => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const coarse = matchMedia("(pointer: coarse)").matches;
+      let lenis;
+      if (!reduced && !coarse && window.Lenis) {
+        try {
+          lenis = new Lenis({
+            lerp: 0.085,
+            wheelMultiplier: 0.94,
+            smoothWheel: true,
+            autoRaf: true,
+            autoResize: true,
+          });
+          lenis.on("scroll", ScrollTrigger.update);
+          gsap.ticker.add((t) => { lenis.raf(t * 1000); });
+          gsap.ticker.lagSmoothing(0);
+        } catch (_) { /* fallback: native */ }
+      }
+
+      if (reduced) return;
+
+      const ease = "power3.out";
+      const easeSnap = "power4.out";
+
+      document.querySelectorAll(".ambient-glow").forEach((g) => {
+        setTimeout(() => g.classList.add("visible"), 300);
+      });
+
+      gsap.to(".back-link", { opacity: 1, y: 0, duration: 0.7, delay: 0.1, ease });
+
+      gsap.to(".hero-kicker", { opacity: 1, y: 0, duration: 0.7, delay: 0.25, ease });
+
+      gsap.utils.toArray(".hero-title .line-inner").forEach((el, i) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          delay: 0.35 + i * 0.1,
+          ease: easeSnap,
+        });
+      });
+
+      gsap.to(".hero-lead", { opacity: 1, y: 0, duration: 0.8, delay: 0.7, ease });
+
+      gsap.to(".section-header", {
+        scrollTrigger: { trigger: ".section-header", start: "top 85%" },
+        opacity: 1, y: 0, duration: 0.7, ease,
+      });
+
+      gsap.utils.toArray(".config-card").forEach((card, i) => {
+        gsap.to(card, {
+          scrollTrigger: { trigger: card, start: "top 88%", once: true },
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          delay: i * 0.05,
+          ease: easeSnap,
+        });
+      });
+
+      gsap.utils.toArray(".section-divider").forEach((d) => {
+        gsap.to(d, {
+          scrollTrigger: { trigger: d, start: "top 88%" },
+          opacity: 1, duration: 1.2, ease: "power2.out",
+        });
+      });
+
+      gsap.to(".facts-section", {
+        scrollTrigger: { trigger: ".facts-section", start: "top 85%" },
+        opacity: 1, y: 0, duration: 0.8, ease,
+      });
+
+      gsap.utils.toArray(".fact-chip").forEach((chip, i) => {
+        gsap.fromTo(chip,
+          { opacity: 0, y: 16, scale: 0.97 },
+          {
+            scrollTrigger: { trigger: chip, start: "top 90%" },
+            opacity: 1, y: 0, scale: 1,
+            duration: 0.6,
+            delay: i * 0.06,
+            ease,
+          }
+        );
+      });
+
+      gsap.to(".bottom-cta", {
+        scrollTrigger: { trigger: ".bottom-cta", start: "top 88%" },
+        opacity: 1, y: 0, duration: 0.8, ease,
+      });
+
+      document.querySelectorAll(".config-card").forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.querySelectorAll(".config-option-img").forEach((img) => {
+            gsap.to(img, {
+              x: x * 6,
+              y: y * 4,
+              duration: 0.4,
+              ease: "power2.out",
+            });
+          });
+        });
+        card.addEventListener("mouseleave", () => {
+          card.querySelectorAll(".config-option-img").forEach((img) => {
+            gsap.to(img, { x: 0, y: 0, duration: 0.6, ease: "power3.out" });
+          });
+        });
+      });
+    })();
+  </script>
+<script>
+(function(){
+  var SK="aufsteig_sp_lang",DL="en",cL=DL;
+  var T={
+    en:{
+      "back": "Back to Services",
+      "hero.eyebrow": "Technical Matrix",
+      "hero.t1": "Technical",
+      "hero.t2": "Configurations",
+      "hero.t3": "& Parts",
+      "hero.desc": "Standard configuration and optional configuration of escalator parts. All entries below are written in full to preserve detailed selection information for technical review.",
+      "matrix.title": "Configuration Matrix",
+      "matrix.count": "06 Parts",
+      "std.label": "Standard Configuration",
+      "opt.label": "Optional Configuration",
+      "p1.name": "Balustrade type",
+      "p1.std.t": "Tempered stainless steel + transparent glass",
+      "p1.std.d": "High-clarity panel with robust balustrade framing",
+      "p1.opt.t": "Tempered stainless steel (inclined)",
+      "p1.opt.d": "Inclined stainless enclosure option for high-traffic",
+      "p2.name": "Landing plate",
+      "p2.std.t": "Stainless steel series",
+      "p2.std.d": "Durable anti-slip stainless plate for long-life use",
+      "p2.opt.t": "Aluminum series",
+      "p2.opt.d": "Lighter-weight aluminum option with textured surface",
+      "p3.name": "Step",
+      "p3.std.t": "Stainless steel series",
+      "p3.std.d": "High-strength step configuration for continuous",
+      "p3.opt.t": "Aluminum series",
+      "p3.opt.d": "Weight-optimized step option suitable for energy",
+      "p4.name": "Pallets",
+      "p4.std.t": "Aluminum series",
+      "p4.std.d": "Corrosion-resistant aluminum pallet format",
+      "p4.opt.t": "Optional custom profile",
+      "p4.opt.d": "Application-specific profile and finish combinations",
+      "p5.name": "Handrail color",
+      "p5.std.t": "Standard black",
+      "p5.std.d": "Neutral black finish for broad architectural",
+      "p5.opt.t": "Black / red / blue / green",
+      "p5.opt.d": "Multiple color options available for wayfinding",
+      "p6.name": "Drive Unit",
+      "p6.std.t": "Worm gear drive",
+      "p6.std.d": "Standard drive package for stable start",
+      "p6.opt.t": "Worm gear drive (high-performance option)",
+      "p6.opt.d": "Enhanced reducer/drive tuning for high torque",
+      "facts.label": "Technical Facts",
+      "tf1": "Low-noise operating level",
+      "tf2": "Drive efficiency in normal operation",
+      "tf3": "Variable-frequency support range",
+      "tf4": "Total configured machine range",
+      "tf5": "Kadion machine driving efficiency uplift",
+      "cta.text": "Need help selecting the right configuration?",
+      "cta.btn": "Start a Consultation"
+    },
+    de:{
+      "back": "Zurück zu Dienstleistungen",
+      "hero.eyebrow": "Technische Matrix",
+      "hero.t1": "Technische",
+      "hero.t2": "Konfigurationen",
+      "hero.t3": "& Teile",
+      "hero.desc": "Standard- und optionale Konfiguration von Rolltreppenteilen. Alle Einträge sind vollständig ausgeschrieben, um detaillierte Auswahlinformationen für die technische Überprüfung zu erhalten.",
+      "matrix.title": "Konfigurationsmatrix",
+      "matrix.count": "06 Teile",
+      "std.label": "Standardkonfiguration",
+      "opt.label": "Optionale Konfiguration",
+      "p1.name": "Balustradentyp",
+      "p1.std.t": "Gehärteter Edelstahl + transparentes Glas",
+      "p1.std.d": "Hochklare Platte mit robuster Balustradenrahmung für moderne architektonische Oberflächen.",
+      "p1.opt.t": "Gehärteter Edelstahl (geneigt)",
+      "p1.opt.d": "Geneigte Edelstahlgehäuse-Option für stark frequentierte Umgebungen und verstärkten Kantenschutz.",
+      "p2.name": "Landeplatte",
+      "p2.std.t": "Edelstahlserie",
+      "p2.std.d": "Langlebige rutschfeste Edelstahlplatte für den Langzeiteinsatz in beanspruchten Ein-/Ausstiegszonen.",
+      "p2.opt.t": "Aluminiumserie",
+      "p2.opt.d": "Leichtere Aluminiumoption mit strukturierter Oberfläche und vereinfachtem Austauschzyklus.",
+      "p3.name": "Stufe",
+      "p3.std.t": "Edelstahlserie",
+      "p3.std.d": "Hochfeste Stufenkonfiguration für den Dauerbetrieb bei häufigem Fahrgastfluss.",
+      "p3.opt.t": "Aluminiumserie",
+      "p3.opt.d": "Gewichtsoptimierte Stufenoption für energiebewusste Modernisierungsprojekte.",
+      "p4.name": "Paletten",
+      "p4.std.t": "Aluminiumserie",
+      "p4.std.d": "Korrosionsbeständiges Aluminiumpalettenformat für gleichmäßiges Fahrverhalten.",
+      "p4.opt.t": "Optionales kundenspezifisches Profil",
+      "p4.opt.d": "Anwendungsspezifische Profil- und Oberflächenkombinationen auf Anfrage verfügbar.",
+      "p5.name": "Handlauffarbe",
+      "p5.std.t": "Standard Schwarz",
+      "p5.std.d": "Neutrale schwarze Oberfläche für breite architektonische Kompatibilität.",
+      "p5.opt.t": "Schwarz / Rot / Blau / Grün",
+      "p5.opt.d": "Mehrere Farboptionen für Wegweisung, Branding oder Zonenkodierung.",
+      "p6.name": "Antriebseinheit",
+      "p6.std.t": "Schneckengetriebe",
+      "p6.std.d": "Standard-Antriebspaket für stabilen Start, Bremsung und gleichmäßigen Betrieb.",
+      "p6.opt.t": "Schneckengetriebe (Hochleistungsoption)",
+      "p6.opt.d": "Erweiterte Getriebe-/Antriebsabstimmung für hohes Drehmoment und breitere Leistungshüllen.",
+      "facts.label": "Technische Fakten",
+      "tf1": "Geräuscharmes Betriebsniveau",
+      "tf2": "Antriebseffizienz im Normalbetrieb",
+      "tf3": "Frequenzumrichter-Unterstützungsbereich",
+      "tf4": "Gesamtkonfigurierter Maschinenbereich",
+      "tf5": "Kadion-Maschinen-Antriebseffizienz-Steigerung",
+      "cta.text": "Brauchen Sie Hilfe bei der richtigen Konfiguration?",
+      "cta.btn": "Beratung starten"
+    }
+  };
+  function t(k){var d=T[cL]||T[DL];return d[k]!==undefined?d[k]:(T[DL][k]||k)}
+  function apply(l){
+    if(!T[l])l=DL;cL=l;
+    try{localStorage.setItem(SK,l)}catch(e){}
+    document.documentElement.lang=l;
+    var els=document.querySelectorAll("[data-i18n]");
+    for(var i=0;i<els.length;i++){
+      var el=els[i],k=el.getAttribute("data-i18n"),v=t(k);
+      var svg=el.querySelector("svg");
+      if(svg){var ns=el.childNodes;for(var n=0;n<ns.length;n++){if(ns[n].nodeType===3&&ns[n].textContent.trim()){ns[n].textContent=" "+v+" ";break}}continue}
+      el.textContent=v;
+    }
+    var bs=document.querySelectorAll("[data-lang]");
+    for(var b=0;b<bs.length;b++)bs[b].classList.toggle("is-active",bs[b].getAttribute("data-lang")===l);
+  }
+  function boot(){
+    var bs=document.querySelectorAll("[data-lang]");
+    for(var i=0;i<bs.length;i++)bs[i].addEventListener("click",function(){apply(this.getAttribute("data-lang"))});
+    var s=DL;try{s=localStorage.getItem(SK)||DL}catch(e){}
+    if(T[s])apply(s);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+</body>
+</html>

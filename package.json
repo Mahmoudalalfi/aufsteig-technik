@@ -1,4 +1,8 @@
 {
+  "name": "aufsteig-technik-site",
   "private": true,
-  "description": "Static site; GSAP and Lenis load from CDN. No npm install required for deployment."
+  "description": "Static marketing site. Deploy: upload repo root to any static host, or connect this repo to Vercel/Netlify (root = site root). GSAP/Lenis from CDN — no build step.",
+  "scripts": {
+    "preview": "python -m http.server 5500 --bind 127.0.0.1"
+  }
 }

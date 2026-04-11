@@ -5,14 +5,12 @@ export function initMenu(refs) {
   menuToggle.addEventListener("click", () => {
     const isOpen = menuPanel.classList.toggle("open");
     menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    menuToggle.querySelector(".menu-icon").textContent = isOpen ? "x" : "=";
   });
 
   menuPanel.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       menuPanel.classList.remove("open");
       menuToggle.setAttribute("aria-expanded", "false");
-      menuToggle.querySelector(".menu-icon").textContent = "=";
     });
   });
 }

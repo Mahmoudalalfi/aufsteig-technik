@@ -5,3 +5,7 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Local editor / agent settings (not for the repo)
+.claude/
+.cursor/

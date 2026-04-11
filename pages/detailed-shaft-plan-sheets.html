@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="hero.eyebrow">Detailed Shaft Plan Sheets | Aufsteig Technik</title>
+  <meta
+    name="description"
+    content="Detailed escalator shaft plan sheets for HD-1200 configurations HDB-30-2, HDB-30-3, and HDB-35-2."
+  />
+  <link rel="icon" href="../aufsteig-logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #ececef;
+      --bg-soft: #f4f4f6;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-hover: rgba(255, 255, 255, 0.92);
+      --glass: rgba(255, 255, 255, 0.6);
+      --glass-border: rgba(18, 22, 30, 0.09);
+      --ink: #111217;
+      --muted: #626874;
+      --accent: #2d67aa;
+      --accent-soft: #3d7ed4;
+      --gold: #9a7c3a;
+      --gold-soft: #b5923e;
+      --line: rgba(18, 22, 30, 0.07);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      filter: blur(180px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .ambient-glow.visible { opacity: 1; }
+    .glow-1 {
+      top: -18%;
+      left: -8%;
+      background: radial-gradient(circle, rgba(45, 103, 170, 0.1), transparent 70%);
+    }
+    .glow-2 {
+      bottom: -10%;
+      right: -10%;
+      background: radial-gradient(circle, rgba(154, 124, 58, 0.07), transparent 70%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1320px, 94vw);
+      margin: 0 auto;
+      padding: 60px 0 120px;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .back-link:hover {
+      color: var(--ink);
+      border-color: rgba(18, 22, 30, 0.16);
+      background: rgba(255,255,255,0.85);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(18, 30, 50, 0.1);
+    }
+    .back-link svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+    }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* ── HERO ── */
+    .hero {
+      margin-bottom: 80px;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    .hero-kicker::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 2px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 1.0;
+      color: var(--ink);
+      max-width: 18ch;
+      margin-bottom: 28px;
+    }
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+    }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    .hero-title .accent-word {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-lead {
+      max-width: 56ch;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.65;
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ── SHEET GRID ── */
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    /* ── SHEET CARD ── */
+    .sheet-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--glass-border);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      padding: 10px;
+      overflow: hidden;
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .sheet-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .sheet-card:hover {
+      border-color: rgba(45, 103, 170, 0.18);
+      background: var(--surface-hover);
+      transform: translateY(-4px);
+      box-shadow:
+        0 24px 60px rgba(18, 30, 50, 0.1),
+        0 0 0 1px rgba(255,255,255,0.5) inset;
+    }
+    .sheet-card:focus-visible {
+      outline: 2px solid rgba(45, 103, 170, 0.42);
+      outline-offset: 3px;
+    }
+
+    .sheet-card-media {
+      width: 100%;
+      height: 300px;
+      border-radius: var(--radius-md);
+      display: grid;
+      place-items: start center;
+      background: linear-gradient(145deg, rgba(245, 248, 252, 0.6), rgba(240, 243, 248, 0.3));
+      border: 1px solid rgba(18, 22, 30, 0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .sheet-card-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(45, 103, 170, 0.05), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .sheet-card:hover .sheet-card-media::after { opacity: 1; }
+
+    .sheet-card img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+      border-radius: var(--radius-md);
+      display: block;
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .sheet-card:hover img {
+      transform: scale(1.04);
+      border-color: rgba(45, 103, 170, 0.2);
+      box-shadow: 0 16px 40px rgba(18, 30, 50, 0.12);
+    }
+
+    .sheet-card-label {
+      margin: 12px 6px 4px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      transition: color 0.3s ease;
+    }
+    .sheet-card:hover .sheet-card-label {
+      color: var(--accent);
+    }
+
+    /* ── SUBHEADER SECTION ── */
+    .sheet-subheader {
+      margin-top: 24px;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .sheet-subheader-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .sheet-subheader-kicker::before {
+      content: "";
+      width: 22px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 2px;
+    }
+    .sheet-subheader h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .sheet-subheader p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 64ch;
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+      margin: 60px 0;
+      opacity: 0;
+    }
+
+    /* ── BOTTOM CTA ── */
+    .bottom-cta {
+      text-align: center;
+      padding: 60px 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .bottom-cta p {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+    .bottom-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: none;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 8px 28px rgba(45, 103, 170, 0.2);
+    }
+    .bottom-cta a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(45, 103, 170, 0.3);
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+      background: rgba(6, 12, 22, 0.88);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
+    .lightbox.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .lightbox-inner {
+      position: relative;
+      width: min(1520px, 99vw);
+      max-height: 96vh;
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .lightbox-toolbar {
+      position: absolute;
+      top: -44px;
+      left: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(216, 229, 248, 0.35);
+      background: rgba(20, 32, 48, 0.82);
+    }
+
+    .lightbox-tool {
+      min-width: 34px;
+      height: 30px;
+      border: 1px solid rgba(216, 229, 248, 0.32);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #eef5ff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 10px;
+      transition: background 0.2s ease;
+    }
+    .lightbox-tool:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .lightbox-zoom {
+      min-width: 52px;
+      text-align: center;
+      color: #e3efff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -44px;
+      right: 0;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(216, 229, 248, 0.4);
+      border-radius: 999px;
+      background: rgba(20, 32, 48, 0.82);
+      color: #eef5ff;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .lightbox-close:hover {
+      background: rgba(40, 52, 68, 0.9);
+    }
+
+    .lightbox-stage {
+      width: 100%;
+      max-height: 91vh;
+      overflow: auto;
+      overscroll-behavior: contain;
+      border-radius: 8px;
+      border: 0;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .lightbox-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-width: none;
+      max-height: none;
+      image-rendering: auto;
+      image-rendering: -webkit-optimize-contrast;
+      transform-origin: top center;
+      transition: width 120ms ease;
+    }
+
+    .lightbox-caption {
+      margin: 0;
+      color: #d7e6fb;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1080px) {
+      .sheet-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .wrap { padding: 36px 0 80px; }
+      .hero { margin-bottom: 50px; }
+      .sheet-grid {
+        grid-template-columns: 1fr;
+      }
+      .sheet-card-media {
+        height: 240px;
+      }
+      .lightbox { padding: 8px; }
+      .lightbox-close { top: -40px; }
+      .lightbox-toolbar { top: -40px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .hero-title .line-inner,
+      .hero-kicker, .hero-lead, .back-link,
+      .sheet-subheader, .sheet-card,
+      .section-divider, .bottom-cta {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  
+    /* ── Language switcher ── */
+    .page-lang-switcher{position:fixed;top:18px;right:18px;z-index:999;display:flex;gap:4px;background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--glass-border);border-radius:20px;padding:3px;}
+    .page-lang-btn{font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.04em;padding:5px 12px;border-radius:16px;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
+    .page-lang-btn.is-active{background:var(--ink);color:#fff}
+    .page-lang-btn:hover:not(.is-active){color:var(--ink)}
+
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <div class="page-lang-switcher"><button class="page-lang-btn is-active" data-lang="en" type="button">EN</button><button class="page-lang-btn" data-lang="de" type="button">DE</button></div>
+    <a class="back-link" href="../index.html#servicesGrid" data-i18n="back">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+      Back to Services
+    </a>
+
+    <section class="hero">
+      <span class="hero-kicker">Detailed Shaft Plan Sheets</span>
+      <h1 class="hero-title">
+        <span class="line"><span class="line-inner" data-i18n="hero.t1">Escalator / Moving Walk</span></span>
+        <span class="line"><span class="line-inner"><span class="accent-word" data-i18n="hero.t2">Detailed Plans</span></span></span>
+      </h1>
+      <p class="hero-lead" data-i18n="hero.desc">
+        Detailed engineering plan sheets for HD-1200 configurations. Click any sheet to open the full-size image.
+      </p>
+    </section>
+
+    <section class="sheet-grid" aria-label="Detailed shaft plan sheets">
+      <a class="sheet-card" href="../assets/HDB-30-2.png" data-sheet-src="../assets/HDB-30-2.png" data-sheet-title="HDB-30-2" aria-label="Open HDB-30-2 detailed shaft plan sheet">
+        <div class="sheet-card-media">
+          <img src="../assets/HDB-30-2.png" alt="Detailed shaft plan sheet HDB-30-2" loading="lazy" />
+        </div>
+        <p class="sheet-card-label">HDB-30-2</p>
+      </a>
+      <a class="sheet-card" href="../assets/HDB-30-3.png" data-sheet-src="../assets/HDB-30-3.png" data-sheet-title="HDB-30-3" aria-label="Open HDB-30-3 detailed shaft plan sheet">
+        <div class="sheet-card-media">
+          <img src="../assets/HDB-30-3.png" alt="Detailed shaft plan sheet HDB-30-3" loading="lazy" />
+        </div>
+        <p class="sheet-card-label">HDB-30-3</p>
+      </a>
+      <a class="sheet-card" href="../assets/HDB-35-2.png" data-sheet-src="../assets/HDB-35-2.png" data-sheet-title="HDB-35-2" aria-label="Open HDB-35-2 detailed shaft plan sheet">
+        <div class="sheet-card-media">
+          <img src="../assets/HDB-35-2.png" alt="Detailed shaft plan sheet HDB-35-2" loading="lazy" />
+        </div>
+        <p class="sheet-card-label">HDB-35-2</p>
+      </a>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="sheet-subheader" aria-label="Additional public transport section header">
+      <span class="sheet-subheader-kicker" data-i18n="add.kicker">Additional Series</span>
+      <h2 data-i18n="add.title">Additional Public Transport Sheets</h2>
+      <p data-i18n="add.desc">Expanded technical sheets for public transport escalators and heavy-duty use cases.</p>
+    </section>
+
+    <section class="sheet-grid" aria-label="Additional public transport detailed sheets">
+      <a class="sheet-card" href="../assets/HDG-30.png" data-sheet-src="../assets/HDG-30.png" data-sheet-title="HDG-30" aria-label="Open HDG-30 detailed shaft plan sheet">
+        <div class="sheet-card-media">
+          <img src="../assets/HDG-30.png" alt="Detailed shaft plan sheet HDG-30 public transport escalator" loading="lazy" />
+        </div>
+        <p class="sheet-card-label">HDG-30</p>
+      </a>
+      <a class="sheet-card" href="../assets/HD-2200.png" data-sheet-src="../assets/HD-2200.png" data-sheet-title="HD-2200" aria-label="Open HD-2200 detailed shaft plan sheet">
+        <div class="sheet-card-media">
+          <img src="../assets/HD-2200.png" alt="Detailed shaft plan sheet HD-2200 public transport heavy duty escalator" loading="lazy" />
+        </div>
+        <p class="sheet-card-label">HD-2200</p>
+      </a>
+      <a class="sheet-card" href="../assets/HD-2200(2).png" data-sheet-src="../assets/HD-2200(2).png" data-sheet-title="HD-2200 (Variant 2)" aria-label="Open HD-2200 variant 2 detailed shaft plan sheet">
+        <div class="sheet-card-media">
+          <img src="../assets/HD-2200(2).png" alt="Detailed shaft plan sheet HD-2200 variant 2" loading="lazy" />
+        </div>
+        <p class="sheet-card-label">HD-2200 (2)</p>
+      </a>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <div class="bottom-cta">
+      <p data-i18n="cta.text">Need detailed engineering plans for your project?</p>
+      <a href="../index.html#contact" data-i18n="cta.btn">
+        Start a Consultation
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+    </div>
+  </main>
+
+  <aside id="sheetLightbox" class="lightbox" aria-hidden="true">
+    <div class="lightbox-inner">
+      <div class="lightbox-toolbar" aria-label="Zoom controls">
+        <button id="sheetZoomOut" class="lightbox-tool" type="button" aria-label="Zoom out">−</button>
+        <button id="sheetZoomIn" class="lightbox-tool" type="button" aria-label="Zoom in">+</button>
+        <button id="sheetZoomReset" class="lightbox-tool" type="button" aria-label="Reset zoom">Reset</button>
+        <span id="sheetZoomValue" class="lightbox-zoom">100%</span>
+      </div>
+      <button id="sheetLightboxClose" class="lightbox-close" type="button" aria-label="Close image viewer">×</button>
+      <div id="sheetLightboxStage" class="lightbox-stage">
+        <img id="sheetLightboxImage" class="lightbox-image" src="" alt="" />
+      </div>
+      <p id="sheetLightboxCaption" class="lightbox-caption"></p>
+    </div>
+  </aside>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
+  <script>
+    (() => {
+      /* ── LIGHTBOX ── */
+      const lightbox = document.getElementById("sheetLightbox");
+      const lightboxStage = document.getElementById("sheetLightboxStage");
+      const lightboxImage = document.getElementById("sheetLightboxImage");
+      const lightboxCaption = document.getElementById("sheetLightboxCaption");
+      const closeButton = document.getElementById("sheetLightboxClose");
+      const zoomOutButton = document.getElementById("sheetZoomOut");
+      const zoomInButton = document.getElementById("sheetZoomIn");
+      const zoomResetButton = document.getElementById("sheetZoomReset");
+      const zoomValue = document.getElementById("sheetZoomValue");
+      const sheetLinks = Array.from(document.querySelectorAll("[data-sheet-src]"));
+      const MIN_ZOOM = 1;
+      const ZOOM_STEP = 0.5;
+      const ABSOLUTE_MAX_ZOOM = 1.5;
+      const MIN_USABLE_MAX_ZOOM = 1.5;
+      let zoom = 1;
+      let baseImageWidth = 0;
+      let maxZoom = ABSOLUTE_MAX_ZOOM;
+      let initialZoom = 1;
+
+      function clampZoom(value) {
+        return Math.min(maxZoom, Math.max(MIN_ZOOM, value));
+      }
+
+      function applyZoom(nextZoom) {
+        zoom = clampZoom(nextZoom);
+        const targetWidth = Math.round(baseImageWidth * zoom);
+        if (targetWidth > 0) lightboxImage.style.width = `${targetWidth}px`;
+        zoomValue.textContent = `${Math.round(zoom * 100)}%`;
+      }
+
+      function resetZoom() {
+        const naturalWidth = lightboxImage.naturalWidth || 1;
+        const naturalHeight = lightboxImage.naturalHeight || 1;
+        const stageWidth = lightboxStage.clientWidth || 900;
+        const stageHeight = lightboxStage.clientHeight || 700;
+        const fitWidthZoom = stageWidth / naturalWidth;
+        const fitHeightZoom = stageHeight / naturalHeight;
+        initialZoom = Math.max(1, Math.min(fitWidthZoom, fitHeightZoom));
+
+        baseImageWidth = naturalWidth;
+        if (!baseImageWidth) baseImageWidth = stageWidth;
+        const pixelRatio = window.devicePixelRatio || 1;
+        const crispLimit = (naturalWidth * pixelRatio) / Math.max(baseImageWidth, 1);
+        const preferredMax = Math.max(MIN_USABLE_MAX_ZOOM, crispLimit);
+        maxZoom = Math.max(MIN_ZOOM, Math.min(ABSOLUTE_MAX_ZOOM, preferredMax));
+        applyZoom(Math.min(initialZoom * 0.9, maxZoom));
+        lightboxStage.scrollTop = 0;
+        lightboxStage.scrollLeft = 0;
+      }
+
+      function openLightbox(src, title) {
+        lightboxImage.src = src;
+        lightboxImage.alt = `Detailed shaft plan sheet ${title}`;
+        lightboxCaption.textContent = title;
+        lightbox.classList.add("is-open");
+        lightbox.setAttribute("aria-hidden", "false");
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove("is-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        lightboxImage.src = "";
+      }
+
+      sheetLinks.forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          openLightbox(link.dataset.sheetSrc || "", link.dataset.sheetTitle || "Detailed plan");
+        });
+      });
+
+      lightboxImage.addEventListener("load", () => {
+        resetZoom();
+      });
+
+      zoomInButton.addEventListener("click", () => applyZoom(zoom + ZOOM_STEP));
+      zoomOutButton.addEventListener("click", () => applyZoom(zoom - ZOOM_STEP));
+      zoomResetButton.addEventListener("click", resetZoom);
+
+      lightboxStage.addEventListener(
+        "wheel",
+        (event) => {
+          if (!lightbox.classList.contains("is-open")) return;
+        },
+        { passive: false }
+      );
+
+      closeButton.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) closeLightbox();
+      });
+      window.addEventListener("keydown", (event) => {
+        if (!lightbox.classList.contains("is-open")) return;
+        if (event.key === "Escape") closeLightbox();
+        if (event.key === "+" || event.key === "=") applyZoom(zoom + ZOOM_STEP);
+        if (event.key === "-") applyZoom(zoom - ZOOM_STEP);
+        if (event.key === "0") resetZoom();
+      });
+
+      /* ── GSAP + SCROLL ── */
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const coarse = matchMedia("(pointer: coarse)").matches;
+      let lenis;
+      if (!reduced && !coarse && window.Lenis) {
+        try {
+          lenis = new Lenis({
+            lerp: 0.085,
+            wheelMultiplier: 0.94,
+            smoothWheel: true,
+            autoRaf: true,
+            autoResize: true,
+            prevent: (node) => node.closest(".lightbox-stage"),
+          });
+          lenis.on("scroll", ScrollTrigger.update);
+          gsap.ticker.add((t) => { lenis.raf(t * 1000); });
+          gsap.ticker.lagSmoothing(0);
+        } catch (_) { /* fallback: native */ }
+      }
+
+      if (reduced) return;
+
+      const ease = "power3.out";
+      const easeSnap = "power4.out";
+
+      /* ── Ambient glow fade-in ── */
+      document.querySelectorAll(".ambient-glow").forEach((g) => {
+        setTimeout(() => g.classList.add("visible"), 300);
+      });
+
+      /* ── Back link ── */
+      gsap.to(".back-link", { opacity: 1, y: 0, duration: 0.7, delay: 0.1, ease });
+
+      /* ── Hero kicker ── */
+      gsap.to(".hero-kicker", { opacity: 1, y: 0, duration: 0.7, delay: 0.25, ease });
+
+      /* ── Hero title line reveals ── */
+      gsap.utils.toArray(".hero-title .line-inner").forEach((el, i) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          delay: 0.35 + i * 0.1,
+          ease: easeSnap,
+        });
+      });
+
+      /* ── Hero lead ── */
+      gsap.to(".hero-lead", { opacity: 1, y: 0, duration: 0.8, delay: 0.7, ease });
+
+      /* ── Sheet cards ── */
+      gsap.utils.toArray(".sheet-card").forEach((card, i) => {
+        gsap.to(card, {
+          scrollTrigger: { trigger: card, start: "top 88%", once: true },
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          delay: i * 0.06,
+          ease: easeSnap,
+        });
+      });
+
+      /* ── Dividers ── */
+      gsap.utils.toArray(".section-divider").forEach((d) => {
+        gsap.to(d, {
+          scrollTrigger: { trigger: d, start: "top 88%" },
+          opacity: 1, duration: 1.2, ease: "power2.out",
+        });
+      });
+
+      /* ── Subheader section ── */
+      gsap.to(".sheet-subheader", {
+        scrollTrigger: { trigger: ".sheet-subheader", start: "top 85%" },
+        opacity: 1, y: 0, duration: 0.8, ease,
+      });
+
+      /* ── Bottom CTA ── */
+      gsap.to(".bottom-cta", {
+        scrollTrigger: { trigger: ".bottom-cta", start: "top 88%" },
+        opacity: 1, y: 0, duration: 0.8, ease,
+      });
+
+      /* ── Card hover parallax on images ── */
+      document.querySelectorAll(".sheet-card").forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          const img = card.querySelector("img");
+          if (img) {
+            gsap.to(img, {
+              x: x * 8,
+              y: y * 6,
+              duration: 0.4,
+              ease: "power2.out",
+            });
+          }
+        });
+        card.addEventListener("mouseleave", () => {
+          const img = card.querySelector("img");
+          if (img) gsap.to(img, { x: 0, y: 0, duration: 0.6, ease: "power3.out" });
+        });
+      });
+    })();
+  </script>
+<script>
+(function(){
+  var SK="aufsteig_sp_lang",DL="en",cL=DL;
+  var T={
+    en:{
+      "back": "Back to Services",
+      "hero.eyebrow": "Detailed Shaft Plan Sheets",
+      "hero.t1": "Escalator / Moving Walk",
+      "hero.t2": "Detailed Plans",
+      "hero.desc": "Detailed engineering plan sheets for HD-1200 configurations. Click any sheet to open the full-size image.",
+      "add.kicker": "Additional Series",
+      "add.title": "Additional Public Transport Sheets",
+      "add.desc": "Expanded technical sheets for public transport escalators and heavy-duty use cases.",
+      "cta.text": "Need detailed engineering plans for your project?",
+      "cta.btn": "Start a Consultation"
+    },
+    de:{
+      "back": "Zurück zu Dienstleistungen",
+      "hero.eyebrow": "Detaillierte Schachtplanblätter",
+      "hero.t1": "Rolltreppen / Fahrsteig",
+      "hero.t2": "Detaillierte Pläne",
+      "hero.desc": "Detaillierte technische Planblätter für HD-1200 Konfigurationen. Klicken Sie auf ein Blatt, um das Bild in voller Größe zu öffnen.",
+      "add.kicker": "Zusätzliche Serien",
+      "add.title": "Zusätzliche ÖPNV-Blätter",
+      "add.desc": "Erweiterte technische Blätter für ÖPNV-Rolltreppen und Schwerlast-Anwendungsfälle.",
+      "cta.text": "Benötigen Sie detaillierte technische Pläne für Ihr Projekt?",
+      "cta.btn": "Beratung starten"
+    }
+  };
+  function t(k){var d=T[cL]||T[DL];return d[k]!==undefined?d[k]:(T[DL][k]||k)}
+  function apply(l){
+    if(!T[l])l=DL;cL=l;
+    try{localStorage.setItem(SK,l)}catch(e){}
+    document.documentElement.lang=l;
+    var els=document.querySelectorAll("[data-i18n]");
+    for(var i=0;i<els.length;i++){
+      var el=els[i],k=el.getAttribute("data-i18n"),v=t(k);
+      var svg=el.querySelector("svg");
+      if(svg){var ns=el.childNodes;for(var n=0;n<ns.length;n++){if(ns[n].nodeType===3&&ns[n].textContent.trim()){ns[n].textContent=" "+v+" ";break}}continue}
+      el.textContent=v;
+    }
+    var bs=document.querySelectorAll("[data-lang]");
+    for(var b=0;b<bs.length;b++)bs[b].classList.toggle("is-active",bs[b].getAttribute("data-lang")===l);
+  }
+  function boot(){
+    var bs=document.querySelectorAll("[data-lang]");
+    for(var i=0;i<bs.length;i++)bs[i].addEventListener("click",function(){apply(this.getAttribute("data-lang"))});
+    var s=DL;try{s=localStorage.getItem(SK)||DL}catch(e){}
+    if(T[s])apply(s);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+</body>
+</html>

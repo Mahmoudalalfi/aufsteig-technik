@@ -1,6 +1,10 @@
 export function initRatingsMarquee() {
-  const marquee = document.getElementById("ratingsMarquee");
-  const track = document.getElementById("ratingsTrack");
+  initSingleMarquee("ratingsMarquee", "ratingsTrack");
+}
+
+function initSingleMarquee(marqueeId, trackId) {
+  const marquee = document.getElementById(marqueeId);
+  const track = document.getElementById(trackId);
   if (!marquee || !track) return;
 
   const baseCards = Array.from(track.children);

@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="hero.eyebrow">Design Catalog | Aufsteig Technik</title>
+  <meta
+    name="description"
+    content="Elevator cabin design catalog with models, materials, finishes, and door options."
+  />
+  <link rel="icon" href="../aufsteig-logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #ececef;
+      --bg-soft: #f4f4f6;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-hover: rgba(255, 255, 255, 0.92);
+      --glass: rgba(255, 255, 255, 0.6);
+      --glass-border: rgba(18, 22, 30, 0.09);
+      --ink: #111217;
+      --muted: #626874;
+      --accent: #2d67aa;
+      --accent-soft: #3d7ed4;
+      --gold: #9a7c3a;
+      --gold-soft: #b5923e;
+      --line: rgba(18, 22, 30, 0.07);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      filter: blur(180px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .ambient-glow.visible { opacity: 1; }
+    .glow-1 {
+      top: -18%;
+      left: -8%;
+      background: radial-gradient(circle, rgba(45, 103, 170, 0.1), transparent 70%);
+    }
+    .glow-2 {
+      bottom: -10%;
+      right: -10%;
+      background: radial-gradient(circle, rgba(154, 124, 58, 0.07), transparent 70%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1320px, 94vw);
+      margin: 0 auto;
+      padding: 60px 0 120px;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .back-link:hover {
+      color: var(--ink);
+      border-color: rgba(18, 22, 30, 0.16);
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(18, 30, 50, 0.1);
+    }
+    .back-link svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+    }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* ── HERO ── */
+    .hero { margin-bottom: 56px; }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    .hero-kicker::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 2px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 1.0;
+      color: var(--ink);
+      max-width: 14ch;
+      margin-bottom: 28px;
+    }
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+    }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    .hero-title .accent-word {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-lead {
+      max-width: 64ch;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.65;
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ── FILTERS ── */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .filter-btn {
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(45, 103, 170, 0.18);
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      color: var(--accent);
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .filter-btn:hover {
+      border-color: rgba(45, 103, 170, 0.32);
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(18, 30, 50, 0.08);
+    }
+    .filter-btn.is-active {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(45, 103, 170, 0.25);
+      transform: translateY(0);
+    }
+    .filter-btn.is-active:hover {
+      box-shadow: 0 12px 30px rgba(45, 103, 170, 0.32);
+      transform: translateY(-1px);
+    }
+
+    /* ── CARD GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--glass-border);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .card:hover {
+      border-color: rgba(45, 103, 170, 0.18);
+      background: var(--surface-hover);
+      transform: translateY(-4px);
+      box-shadow:
+        0 24px 60px rgba(45, 80, 140, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    }
+
+    .card-img-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 16 / 11;
+      object-fit: cover;
+      display: block;
+      background: var(--bg-soft);
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card:hover .card-img {
+      transform: scale(1.03);
+    }
+
+    .card-meta {
+      padding: 18px 20px 22px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .card-tag {
+      display: inline-block;
+      width: fit-content;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(45, 103, 170, 0.08);
+      border: 1px solid rgba(45, 103, 170, 0.12);
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card-meta h3 {
+      font-size: 1.06rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--ink);
+      transition: color 0.3s ease;
+    }
+    .card:hover .card-meta h3 {
+      color: var(--accent);
+    }
+
+    .card-meta p {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      place-items: center;
+      padding: 16px;
+      background: rgba(8, 12, 22, 0.88);
+      backdrop-filter: blur(8px);
+    }
+    .lightbox.is-open { display: grid; }
+
+    .lightbox-inner {
+      position: relative;
+      width: min(1460px, 97vw);
+      max-height: 96vh;
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -48px;
+      right: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(20, 28, 44, 0.7);
+      backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, 0.85);
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .lightbox-close:hover {
+      background: rgba(20, 28, 44, 0.9);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .lightbox-close svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .lightbox-stage {
+      width: 100%;
+      max-height: 88vh;
+      overflow: auto;
+      overscroll-behavior: contain;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      border-radius: var(--radius-md);
+    }
+
+    .lightbox-image {
+      width: min(1420px, 100%);
+      height: auto;
+      display: block;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #0d1420;
+    }
+
+    .lightbox-caption {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1060px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 36px 0 80px; }
+      .hero { margin-bottom: 36px; }
+      .grid { grid-template-columns: 1fr; gap: 16px; }
+      .filters { gap: 8px; }
+      .lightbox-close { top: -42px; padding: 7px 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .hero-title .line-inner,
+      .hero-kicker, .hero-lead, .back-link,
+      .filters, .card {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  
+    /* ── Language switcher ── */
+    .page-lang-switcher{position:fixed;top:18px;right:18px;z-index:999;display:flex;gap:4px;background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--glass-border);border-radius:20px;padding:3px;}
+    .page-lang-btn{font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.04em;padding:5px 12px;border-radius:16px;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
+    .page-lang-btn.is-active{background:var(--ink);color:#fff}
+    .page-lang-btn:hover:not(.is-active){color:var(--ink)}
+
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <div class="page-lang-switcher"><button class="page-lang-btn is-active" data-lang="en" type="button">EN</button><button class="page-lang-btn" data-lang="de" type="button">DE</button></div>
+    <a class="back-link" href="../index.html#whatWeOffer" data-i18n="back">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+      Back to What We Offer
+    </a>
+
+    <section class="hero">
+      <span class="hero-kicker">Design Catalog</span>
+      <h1 class="hero-title">
+        <span class="line"><span class="line-inner" data-i18n="hero.t1">Cabin Designs,</span></span>
+        <span class="line"><span class="line-inner" data-i18n="hero.t2">Materials</span></span>
+        <span class="line"><span class="line-inner"><span class="accent-word" data-i18n="hero.t3">& Doors</span></span></span>
+      </h1>
+      <p class="hero-lead" data-i18n="hero.desc">
+        Browse curated design catalog sheets for cabin styles, materials and finishes, and door systems. Select a category or open any sheet for full-size review.
+      </p>
+    </section>
+
+    <div class="filters" role="tablist" aria-label="Design catalog filters">
+      <button class="filter-btn is-active" type="button" data-filter="all" data-i18n="filter.all">All</button>
+      <button class="filter-btn" type="button" data-filter="cabin" data-i18n="filter.cabin">Cabin Styles</button>
+      <button class="filter-btn" type="button" data-filter="materials" data-i18n="filter.materials">Materials &amp; Finishes</button>
+      <button class="filter-btn" type="button" data-filter="doors" data-i18n="filter.doors">Door Systems</button>
+    </div>
+
+    <section id="catalogGrid" class="grid" aria-label="Design catalog sheets">
+      <article class="card" data-category="cabin" data-title="Purity S - Stainless & Plastic Coated Walls" data-src="../assets/CAT-1.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-1.png" alt="Purity S cabin design with stainless and plastic-coated wall options" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Cabin Styles</span>
+          <h3 data-i18n="c1.t">Purity S - Stainless &amp; Plastic Coated Walls</h3>
+          <p data-i18n="c1.d">Purity S cabin variants with stainless and plastic-coated wall finishes.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="cabin" data-title="Purity S - Colour & Wood Effect Walls" data-src="../assets/CAT-2.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-2.png" alt="Purity S cabin design with color and wood effect walls" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Cabin Styles</span>
+          <h3 data-i18n="c2.t">Purity S - Colour &amp; Wood Effect Walls</h3>
+          <p data-i18n="c2.d">Purity S cabin variants with color finishes and wood-effect panels.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="materials" data-title="Purity Interior Materials & Ceilings" data-src="../assets/CAT-3.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-3.png" alt="Purity interior materials and ceiling options catalog sheet" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Materials</span>
+          <h3 data-i18n="c3.t">Purity Interior Materials &amp; Ceilings</h3>
+          <p data-i18n="c3.d">Interior material palettes and ceiling finish combinations.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="cabin" data-title="A310 Cabin Collection" data-src="../assets/CAT-4.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-4.png" alt="A310 cabin catalog sheet with wall laminate options" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Cabin Styles</span>
+          <h3 data-i18n="c4.t">A310 Cabin Collection</h3>
+          <p data-i18n="c4.d">A310 cabin family with laminate wall material options.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="cabin" data-title="L310 Cabin Collection" data-src="../assets/CAT-5.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-5.png" alt="L310 cabin catalog sheet with stainless wall options" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Cabin Styles</span>
+          <h3 data-i18n="c5.t">L310 Cabin Collection</h3>
+          <p data-i18n="c5.d">L310 cabin collection focused on durable stainless options.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="cabin" data-title="L320 Cabin Collection" data-src="../assets/CAT-6.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-6.png" alt="L320 cabin catalog sheet with plastic-coated wall options" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Cabin Styles</span>
+          <h3 data-i18n="c6.t">L320 Cabin Collection</h3>
+          <p data-i18n="c6.d">L320 cabin series with practical coated wall finishes.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="materials" data-title="Wall Color Palette Catalog" data-src="../assets/CAT-7.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-7.png" alt="Wall color palette catalog sheet" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Materials</span>
+          <h3 data-i18n="c7.t">Wall Color Palette Catalog</h3>
+          <p data-i18n="c7.d">Expanded color palette map for wall design selections.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="cabin" data-title="L510 Glass Cabin Collection" data-src="../assets/CAT-8.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-8.png" alt="L510 glass cabin catalog sheet" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Cabin Styles</span>
+          <h3 data-i18n="c8.t">L510 Glass Cabin Collection</h3>
+          <p data-i18n="c8.d">L510 glass-forward cabin design series for modern spaces.</p>
+        </div>
+      </article>
+
+      <article class="card" data-category="doors" data-title="Automatic & Swing Door Systems" data-src="../assets/CAT-9.png">
+        <div class="card-img-wrap">
+          <img class="card-img" src="../assets/CAT-9.png" alt="Automatic and swing elevator door systems catalog sheet" loading="lazy" />
+        </div>
+        <div class="card-meta">
+          <span class="card-tag">Door Systems</span>
+          <h3 data-i18n="c9.t">Automatic &amp; Swing Door Systems</h3>
+          <p data-i18n="c9.d">Door system options including automatic and swing door variants.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <aside id="catalogLightbox" class="lightbox" aria-hidden="true">
+    <div class="lightbox-inner">
+      <button id="catalogLightboxClose" class="lightbox-close" type="button" aria-label="Close image viewer" data-i18n="close">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4L4 12M4 4l8 8"/></svg>
+        Close
+      </button>
+      <div class="lightbox-stage">
+        <img id="catalogLightboxImage" class="lightbox-image" src="" alt="" />
+      </div>
+      <p id="catalogLightboxCaption" class="lightbox-caption"></p>
+    </div>
+  </aside>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
+  <script>
+    (() => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const coarse = matchMedia("(pointer: coarse)").matches;
+      let lenis;
+
+      if (!reduced && !coarse && window.Lenis) {
+        try {
+          lenis = new Lenis({
+            lerp: 0.085,
+            wheelMultiplier: 0.94,
+            smoothWheel: true,
+            autoRaf: true,
+            autoResize: true,
+            prevent: (node) => node.closest(".lightbox-stage"),
+          });
+          lenis.on("scroll", ScrollTrigger.update);
+          gsap.ticker.add((t) => { lenis.raf(t * 1000); });
+          gsap.ticker.lagSmoothing(0);
+        } catch (_) { /* fallback: native */ }
+      }
+
+      /* ── Filter & lightbox logic ── */
+      const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
+      const cards = Array.from(document.querySelectorAll(".card"));
+      const lightbox = document.getElementById("catalogLightbox");
+      const lightboxImage = document.getElementById("catalogLightboxImage");
+      const lightboxCaption = document.getElementById("catalogLightboxCaption");
+      const closeButton = document.getElementById("catalogLightboxClose");
+
+      function applyFilter(filter) {
+        cards.forEach((card) => {
+          const show = filter === "all" || card.dataset.category === filter;
+          card.style.display = show ? "" : "none";
+        });
+      }
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach((btn) => btn.classList.toggle("is-active", btn === button));
+          applyFilter(button.dataset.filter || "all");
+        });
+      });
+
+      cards.forEach((card) => {
+        card.addEventListener("click", () => {
+          lightboxImage.src = card.dataset.src || "";
+          lightboxImage.alt = card.dataset.title || "Catalog sheet";
+          lightboxCaption.textContent = card.dataset.title || "Catalog sheet";
+          lightbox.classList.add("is-open");
+          lightbox.setAttribute("aria-hidden", "false");
+          if (lenis) lenis.stop();
+        });
+      });
+
+      function closeLightbox() {
+        lightbox.classList.remove("is-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        lightboxImage.src = "";
+        if (lenis) lenis.start();
+      }
+
+      closeButton.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && lightbox.classList.contains("is-open")) closeLightbox();
+      });
+
+      /* ── GSAP animations ── */
+      if (reduced) return;
+
+      const ease = "power3.out";
+      const easeSnap = "power4.out";
+
+      document.querySelectorAll(".ambient-glow").forEach((g) => {
+        setTimeout(() => g.classList.add("visible"), 300);
+      });
+
+      gsap.to(".back-link", { opacity: 1, y: 0, duration: 0.7, delay: 0.1, ease });
+      gsap.to(".hero-kicker", { opacity: 1, y: 0, duration: 0.7, delay: 0.25, ease });
+
+      gsap.utils.toArray(".hero-title .line-inner").forEach((el, i) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          delay: 0.35 + i * 0.1,
+          ease: easeSnap,
+        });
+      });
+
+      gsap.to(".hero-lead", { opacity: 1, y: 0, duration: 0.8, delay: 0.7, ease });
+      gsap.to(".filters", { opacity: 1, y: 0, duration: 0.7, delay: 0.85, ease });
+
+      gsap.utils.toArray(".card").forEach((card, i) => {
+        gsap.to(card, {
+          scrollTrigger: { trigger: card, start: "top 90%", once: true },
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          delay: i * 0.06,
+          ease: easeSnap,
+        });
+      });
+
+      /* ── Card hover parallax on images ── */
+      document.querySelectorAll(".card").forEach((card) => {
+        const img = card.querySelector(".card-img");
+        if (!img) return;
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          gsap.to(img, { x: x * 10, y: y * 8, duration: 0.4, ease: "power2.out" });
+        });
+        card.addEventListener("mouseleave", () => {
+          gsap.to(img, { x: 0, y: 0, duration: 0.6, ease: "power3.out" });
+        });
+      });
+    })();
+  </script>
+<script>
+(function(){
+  var SK="aufsteig_sp_lang",DL="en",cL=DL;
+  var T={
+    en:{
+      "back": "Back to What We Offer",
+      "hero.eyebrow": "Design Catalog",
+      "hero.t1": "Cabin Designs,",
+      "hero.t2": "Materials",
+      "hero.t3": "& Doors",
+      "hero.desc": "Browse curated design catalog sheets for cabin styles, materials and finishes, and door systems. Select a category or open any sheet for full-size review.",
+      "filter.all": "All",
+      "filter.cabin": "Cabin Styles",
+      "filter.materials": "Materials & Finishes",
+      "filter.doors": "Door Systems",
+      "c1.t": "Purity S - Stainless & Plastic Coated Walls",
+      "c1.d": "Purity S cabin variants with stainless and plastic-coated wall finishes.",
+      "c2.t": "Purity S - Colour & Wood Effect Walls",
+      "c2.d": "Purity S cabin variants with color finishes and wood-effect panels.",
+      "c3.t": "Purity Interior Materials & Ceilings",
+      "c3.d": "Interior material palettes and ceiling finish combinations.",
+      "c4.t": "A310 Cabin Collection",
+      "c4.d": "A310 cabin family with laminate wall material options.",
+      "c5.t": "L310 Cabin Collection",
+      "c5.d": "L310 cabin collection focused on durable stainless options.",
+      "c6.t": "L320 Cabin Collection",
+      "c6.d": "L320 cabin series with practical coated wall finishes.",
+      "c7.t": "Wall Color Palette Catalog",
+      "c7.d": "Expanded color palette map for wall design selections.",
+      "c8.t": "L510 Glass Cabin Collection",
+      "c8.d": "L510 glass-forward cabin design series for modern spaces.",
+      "c9.t": "Automatic & Swing Door Systems",
+      "c9.d": "Door system options including automatic and swing door variants.",
+      "close": "Close"
+    },
+    de:{
+      "back": "Zurück zum Angebot",
+      "hero.eyebrow": "Designkatalog",
+      "hero.t1": "Kabinendesigns,",
+      "hero.t2": "Materialien",
+      "hero.t3": "& Türen",
+      "hero.desc": "Durchstöbern Sie kuratierte Designkatalogblätter für Kabinenstile, Materialien und Oberflächen sowie Türsysteme. Wählen Sie eine Kategorie oder öffnen Sie ein Blatt zur Vollansicht.",
+      "filter.all": "Alle",
+      "filter.cabin": "Kabinenstile",
+      "filter.materials": "Materialien & Oberflächen",
+      "filter.doors": "Türsysteme",
+      "c1.t": "Purity S - Edelstahl & Kunststoffbeschichtete Wände",
+      "c1.d": "Purity S Kabinenvarianten mit Edelstahl- und kunststoffbeschichteten Wandoberflächen.",
+      "c2.t": "Purity S - Farb- & Holzeffektwände",
+      "c2.d": "Purity S Kabinenvarianten mit Farboberflächen und Holzeffektpaneelen.",
+      "c3.t": "Purity Innenraummaterialien & Decken",
+      "c3.d": "Innenraummaterial-Paletten und Deckenoberflächen-Kombinationen.",
+      "c4.t": "A310 Kabinenkollektion",
+      "c4.d": "A310 Kabinenfamilie mit Laminat-Wandmaterialoptionen.",
+      "c5.t": "L310 Kabinenkollektion",
+      "c5.d": "L310 Kabinenkollektion mit Fokus auf langlebige Edelstahloptionen.",
+      "c6.t": "L320 Kabinenkollektion",
+      "c6.d": "L320 Kabinenserie mit praktischen beschichteten Wandoberflächen.",
+      "c7.t": "Wandfarbpaletten-Katalog",
+      "c7.d": "Erweiterte Farbpalettenkarte für Wanddesign-Auswahl.",
+      "c8.t": "L510 Glaskabinen-Kollektion",
+      "c8.d": "L510 Glaskabinendesign-Serie für moderne Räume.",
+      "c9.t": "Automatik- & Pendeltürsysteme",
+      "c9.d": "Türsystem-Optionen inkl. automatischer und Pendeltürvarianten.",
+      "close": "Schließen"
+    }
+  };
+  function t(k){var d=T[cL]||T[DL];return d[k]!==undefined?d[k]:(T[DL][k]||k)}
+  function apply(l){
+    if(!T[l])l=DL;cL=l;
+    try{localStorage.setItem(SK,l)}catch(e){}
+    document.documentElement.lang=l;
+    var els=document.querySelectorAll("[data-i18n]");
+    for(var i=0;i<els.length;i++){
+      var el=els[i],k=el.getAttribute("data-i18n"),v=t(k);
+      var svg=el.querySelector("svg");
+      if(svg){var ns=el.childNodes;for(var n=0;n<ns.length;n++){if(ns[n].nodeType===3&&ns[n].textContent.trim()){ns[n].textContent=" "+v+" ";break}}continue}
+      el.textContent=v;
+    }
+    var bs=document.querySelectorAll("[data-lang]");
+    for(var b=0;b<bs.length;b++)bs[b].classList.toggle("is-active",bs[b].getAttribute("data-lang")===l);
+  }
+  function boot(){
+    var bs=document.querySelectorAll("[data-lang]");
+    for(var i=0;i<bs.length;i++)bs[i].addEventListener("click",function(){apply(this.getAttribute("data-lang"))});
+    var s=DL;try{s=localStorage.getItem(SK)||DL}catch(e){}
+    if(T[s])apply(s);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+</body>
+</html>

@@ -1,17 +1,16 @@
-import { HERO_FRAME_COUNT } from "../model/hero-config.js";
-import { appState } from "../model/app-state.js";
 import { clamp } from "../utils/math.js";
+import { appState } from "../model/app-state.js";
 
 /**
- * Touch: hero keeps a bit of scrub smoothing; services use a short scrub so the stack
+ * Touch: services use a short scrub so the stack
  * stays tied to scroll (long scrub + iOS momentum + stale ST measurements reads as “broken”).
  */
 function touchScrollTuning() {
   const touch = window.matchMedia("(pointer: coarse)").matches;
   if (!touch) {
-    return { scrubHero: 1.15, scrubService: 1.05, scrub: 1, scrubBottom: 1.08 };
+    return { scrubService: 1.05, scrub: 1, scrubBottom: 1.08 };
   }
-  return { scrubHero: 1.72, scrubService: 0.42, scrub: 1.38, scrubBottom: 1.55 };
+  return { scrubService: 0.42, scrub: 1.38, scrubBottom: 1.55 };
 }
 
 function debounceScrollTriggerRefresh(ScrollTrigger, ms = 120) {
@@ -37,26 +36,6 @@ export function initScrollTimelines(refs) {
 
   const st = touchScrollTuning();
   ScrollTrigger.config({ ignoreMobileResize: true });
-
-  ScrollTrigger.create({
-    trigger: refs.heroSequence,
-    start: "top top",
-    end: () => `+=${Math.max(0, refs.sequenceTrack.offsetHeight - window.innerHeight)}`,
-    scrub: st.scrubHero,
-    onUpdate(self) {
-      appState.hero.targetFrame = self.progress * (HERO_FRAME_COUNT - 1);
-
-      const overlayOpacity = clamp(1 - self.progress * 1.24, 0, 1);
-      const heroShift = self.progress * 42;
-      const heroScale = 1 - self.progress * 0.04;
-
-      refs.root.style.setProperty("--hero-opacity", overlayOpacity.toFixed(4));
-      refs.root.style.setProperty("--hero-shift", `${heroShift.toFixed(2)}px`);
-      refs.root.style.setProperty("--hero-scale", heroScale.toFixed(4));
-      refs.root.style.setProperty("--nav-y", "0px");
-      refs.root.style.setProperty("--nav-scale", "1");
-    }
-  });
 
   if (refs.serviceTrack && refs.servicesSection && refs.serviceCard && refs.serviceSlides.length > 0) {
     const setStoryTrackY = gsap.quickSetter(refs.serviceStoryTrack, "y", "px");
@@ -148,6 +127,9 @@ export function initScrollTimelines(refs) {
     refs.processCards.length > 0
   ) {
     const routeLength = refs.processRoutePath.getTotalLength();
+    if (!Number.isFinite(routeLength) || routeLength <= 0) {
+      /* Path not measurable yet (e.g. display:none) — skip broken ScrollTrigger. */
+    } else {
     // Visual tweak: place the first dot on the clearly-visible part of the stroke.
     // (The very start of the curve reads as "detached" due to the immediate bend.)
     const routeStartOffset = Math.min(180, Math.max(120, routeLength * 0.12));
@@ -179,7 +161,8 @@ export function initScrollTimelines(refs) {
 
     function renderProcessRoute(progress) {
       const clamped = clamp(progress, 0, 1);
-      const currentLength = routeStartOffset + usableRouteLength * clamped;
+      const rawLen = routeStartOffset + usableRouteLength * clamped;
+      const currentLength = Math.min(Math.max(rawLen, 0), routeLength);
       const point = refs.processRoutePath.getPointAtLength(currentLength);
 
       refs.processRouteProgress.style.strokeDashoffset = `${routeLength - currentLength}`;
@@ -195,7 +178,8 @@ export function initScrollTimelines(refs) {
     function refreshRoutePins() {
       refs.processRoutePins.forEach((pin, idx) => {
         const t = stepFractions[idx] ?? 0;
-        const point = refs.processRoutePath.getPointAtLength(routeStartOffset + usableRouteLength * t);
+        const len = Math.min(Math.max(routeStartOffset + usableRouteLength * t, 0), routeLength);
+        const point = refs.processRoutePath.getPointAtLength(len);
         pin.setAttribute("cx", `${point.x}`);
         pin.setAttribute("cy", `${point.y}`);
       });
@@ -228,11 +212,15 @@ export function initScrollTimelines(refs) {
     placeTreasureAtEnd();
     renderProcessRoute(0);
 
+    /* Tight scrub: global st.scrub is ~1s+ on desktop / 1.38s on touch — path feels stuck or “not moving”. */
+    const processRouteScrub = touchDevice ? 0.35 : 0.45;
+
     ScrollTrigger.create({
       trigger: refs.processSection,
       start: "top 82%",
       end: "bottom 38%",
-      scrub: st.scrub,
+      scrub: processRouteScrub,
+      fastScrollEnd: true,
       invalidateOnRefresh: true,
       onRefresh() {
         refreshRoutePins();
@@ -254,9 +242,10 @@ export function initScrollTimelines(refs) {
         onLeaveBack: () => pulseTween.pause()
       });
     }
+    }
   }
 
-  gsap.utils.toArray(".intro-grid, .stats-grid article, .service-tabs .service-tab, .service-products-grid article, .rating-card, .faq-list details").forEach((el) => {
+  gsap.utils.toArray(".intro-grid, .stats-grid article, .service-products-grid article, .rating-card, .faq-list details").forEach((el) => {
     gsap.fromTo(
       el,
       { y: 34, opacity: 0.2 },

@@ -4,7 +4,7 @@ export function collectRefs() {
     root: document.documentElement,
     heroSequence,
     sequenceTrack: heroSequence?.querySelector(".sequence-track") ?? null,
-    canvas: document.getElementById("heroCanvas"),
+    heroVideo: document.getElementById("heroVideo"),
     menuToggle: document.getElementById("menuToggle"),
     menuPanel: document.getElementById("menuPanel"),
     servicePills: Array.from(document.querySelectorAll("#servicePills li")),

@@ -1,4 +1,4 @@
-import { ACHIEVEMENT_PROJECTS } from "../model/achievements.js";
+import { ACHIEVEMENT_PROJECTS, getAchievements } from "../model/achievements.js";
 
 function bindAchievementCompare(compareRoot, handleEl) {
   if (!compareRoot || !handleEl) return;
@@ -69,6 +69,27 @@ function bindAchievementCompare(compareRoot, handleEl) {
   handleEl.addEventListener("keydown", onKeyDown);
 }
 
+/** Warm the browser cache so src swaps don’t flash blank while decoding. */
+function preloadAchievementImages(projectList) {
+  projectList.forEach((p) => {
+    const a = new Image();
+    a.decoding = "async";
+    a.src = p.imageBefore;
+    const b = new Image();
+    b.decoding = "async";
+    b.src = p.imageAfter;
+  });
+}
+
+/** Shortest path on a ring: +1 = “next” visually, -1 = “prev”. */
+function slideDirection(from, to, len) {
+  let d = to - from;
+  if (d > len / 2) d -= len;
+  if (d < -len / 2) d += len;
+  if (d === 0) return 1;
+  return d > 0 ? 1 : -1;
+}
+
 export function initAchievementShowcase() {
   const showcase = document.getElementById("achievementShowcase");
   const compareRoot = document.getElementById("achievementCompare");
@@ -93,10 +114,26 @@ export function initAchievementShowcase() {
     return;
   }
 
-  const projects = ACHIEVEMENT_PROJECTS;
+  const slidePanelEl = showcase.querySelector(".achievement-slide-panel");
+
+  function getLang() {
+    try { return localStorage.getItem("aufsteig_sp_lang") || "en"; } catch(e) { return "en"; }
+  }
+  let projects = getAchievements(getLang());
   const dots = Array.from(dotsWrap.querySelectorAll("[data-achievement-dot]"));
   let active = 0;
+
+  function refreshProjects() {
+    projects = getAchievements(getLang());
+    applyProject(active);
+  }
+  window.addEventListener("site-lang-changed", refreshProjects);
   let intervalId = null;
+  let slideTl = null;
+
+  const reducedMotion =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function setComparePct(pct) {
     const v = Math.max(0, Math.min(100, pct));
@@ -114,35 +151,130 @@ export function initAchievementShowcase() {
     });
   }
 
-  function render(nextIndex, animate = true) {
-    active = ((nextIndex % projects.length) + projects.length) % projects.length;
-    const project = projects[active];
+  function applyProject(index) {
+    const project = projects[index];
+    imageBeforeEl.src = project.imageBefore;
+    imageAfterEl.src = project.imageAfter;
+    titleEl.textContent = project.title;
+    messageEl.textContent = project.message;
+    highlightsEl.innerHTML = project.highlights.map((line) => `<li>${line}</li>`).join("");
+    setComparePct(50);
+  }
 
-    const apply = () => {
-      imageBeforeEl.src = project.imageBefore;
-      imageAfterEl.src = project.imageAfter;
-      titleEl.textContent = project.title;
-      messageEl.textContent = project.message;
-      highlightsEl.innerHTML = project.highlights.map((line) => `<li>${line}</li>`).join("");
-      setComparePct(50);
-      syncDots();
-    };
-
-    if (!animate) {
-      apply();
-      return;
+  function resetSlideTransforms() {
+    const g = window.gsap;
+    if (g && slidePanelEl) {
+      g.set(slidePanelEl, { x: 0, opacity: 1, overwrite: true });
+    } else if (slidePanelEl) {
+      slidePanelEl.style.removeProperty("transform");
+      slidePanelEl.style.removeProperty("opacity");
     }
+  }
 
+  function cancelSlideTimeline() {
+    if (slideTl) {
+      slideTl.kill();
+      slideTl = null;
+    }
+    showcase.classList.remove("is-ach-sliding");
+    resetSlideTransforms();
+  }
+
+  function runFadeTransition(nextIndex) {
     showcase.classList.add("is-transitioning");
     window.setTimeout(() => {
-      apply();
+      applyProject(nextIndex);
       showcase.classList.remove("is-transitioning");
     }, 260);
   }
 
+  function runSlideTransition(dir) {
+    const g = window.gsap;
+    if (!g || !slidePanelEl) {
+      applyProject(active);
+      return;
+    }
+
+    cancelSlideTimeline();
+
+    /*
+     * Travel distance ≈ panel width (we use ~96% to shorten the “empty card” phase slightly).
+     * Too small a nudge leaves most of the panel on-screen and the handoff reads as a snap.
+     *
+     * dir === 1 (next): exit left (−x), swap content, start from the right (+x), ease to 0.
+     * dir === −1 (prev): the inverse.
+     */
+    const rawW = slidePanelEl.offsetWidth || showcase.clientWidth;
+    /* Slightly under full width so less empty card shows during the handoff; keep ≥ ~96% to avoid snap. */
+    const dist = Math.max(Math.ceil(rawW * 0.96), 112);
+    const exitX = -dir * dist;
+    const enterX = dir * dist;
+
+    showcase.classList.add("is-ach-sliding");
+
+    slideTl = g.timeline({
+      onComplete: () => {
+        slideTl = null;
+        showcase.classList.remove("is-ach-sliding");
+        /* Explicit x reset — clearProps:"transform" can leave a bad composited state and a stuck translate. */
+        g.set(slidePanelEl, { x: 0, overwrite: true });
+      },
+    });
+
+    slideTl.to(slidePanelEl, {
+      x: exitX,
+      duration: 0.48,
+      ease: "power2.inOut",
+      force3D: true,
+    });
+
+    slideTl.add(() => {
+      applyProject(active);
+      g.set(slidePanelEl, { x: enterX });
+    });
+
+    slideTl.to(slidePanelEl, {
+      x: 0,
+      duration: 0.55,
+      ease: "power3.out",
+      force3D: true,
+    });
+  }
+
+  function render(nextIndex, animate = true, forcedDir) {
+    const len = projects.length;
+    const next = ((nextIndex % len) + len) % len;
+    const from = active;
+    if (next === from) return;
+
+    const dir =
+      forcedDir === 1 || forcedDir === -1 ? forcedDir : slideDirection(from, next, len);
+
+    active = next;
+    syncDots();
+
+    if (!animate) {
+      cancelSlideTimeline();
+      applyProject(active);
+      return;
+    }
+
+    if (reducedMotion) {
+      cancelSlideTimeline();
+      runFadeTransition(active);
+      return;
+    }
+
+    if (window.gsap && slidePanelEl) {
+      runSlideTransition(dir);
+    } else {
+      runFadeTransition(active);
+    }
+  }
+
   function startAuto() {
     if (intervalId) return;
-    intervalId = window.setInterval(() => render(active + 1, true), 4600);
+    intervalId = window.setInterval(() => render(active + 1, true, 1), 4600);
   }
 
   function stopAuto() {
@@ -159,13 +291,13 @@ export function initAchievementShowcase() {
   });
 
   const achievementCarousel = document.getElementById("achievementCarousel");
-  const achievementPrev = achievementCarousel?.querySelector('[data-achievement-action="prev"]');
-  const achievementNext = achievementCarousel?.querySelector('[data-achievement-action="next"]');
-  achievementPrev?.addEventListener("click", () => {
-    render(active - 1, true);
-  });
-  achievementNext?.addEventListener("click", () => {
-    render(active + 1, true);
+  achievementCarousel?.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-achievement-action]");
+    if (!btn || !achievementCarousel.contains(btn)) return;
+    e.preventDefault();
+    const action = btn.getAttribute("data-achievement-action");
+    if (action === "prev") render(active - 1, true, -1);
+    else if (action === "next") render(active + 1, true, 1);
   });
 
   showcase.addEventListener("mouseenter", stopAuto);
@@ -173,6 +305,7 @@ export function initAchievementShowcase() {
   showcase.addEventListener("focusin", stopAuto);
   showcase.addEventListener("focusout", startAuto);
 
+  preloadAchievementImages(projects);
   render(0, false);
   startAuto();
 }

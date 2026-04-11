@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#ececef" />
+  <link rel="icon" href="../aufsteig-logo.png" type="image/png" />
+  <title>Start Your Project | Aufsteig Technik</title>
+  <meta
+    name="description"
+    content="Start a project request aligned with Aufsteig Technik services, What We Offer, and technical resources. Autosave and review."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../css/start-project.css" />
+  <style>
+    .sp-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.32;
+      mix-blend-mode: multiply;
+    }
+    .sp-ambient {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.45;
+    }
+    .sp-ambient--1 {
+      width: 600px;
+      height: 600px;
+      top: -180px;
+      right: -120px;
+      background: radial-gradient(circle, rgba(45,103,170,0.10) 0%, transparent 70%);
+    }
+    .sp-ambient--2 {
+      width: 500px;
+      height: 500px;
+      bottom: -100px;
+      left: -150px;
+      background: radial-gradient(circle, rgba(154,124,58,0.08) 0%, transparent 70%);
+    }
+    .sp-ambient--3 {
+      width: 400px;
+      height: 400px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(45,103,170,0.05) 0%, transparent 70%);
+    }
+    body { position: relative; }
+    .sp-topbar, .sp-shell { position: relative; z-index: 2; }
+  </style>
+</head>
+<body>
+  <!-- Film grain texture -->
+  <svg class="sp-grain" width="100%" height="100%">
+    <filter id="spGrain"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter>
+    <rect width="100%" height="100%" filter="url(#spGrain)"/>
+  </svg>
+  <!-- Ambient glow orbs -->
+  <div class="sp-ambient sp-ambient--1" aria-hidden="true"></div>
+  <div class="sp-ambient sp-ambient--2" aria-hidden="true"></div>
+  <div class="sp-ambient sp-ambient--3" aria-hidden="true"></div>
+
+  <header class="sp-topbar sp-anim">
+    <a class="sp-brand" href="../index.html">Aufsteig.</a>
+    <div class="sp-lang-switcher"><button class="sp-lang-btn is-active" data-lang="en" type="button">EN</button><button class="sp-lang-btn" data-lang="de" type="button">DE</button></div><div class="sp-topbar-actions">
+      <button class="sp-btn sp-btn-ghost" id="spClearDraft" type="button" data-i18n="clearDraft">Clear draft</button>
+      <a class="sp-btn sp-btn-ghost" href="../index.html#contact" data-i18n="backToSite">Back to site</a>
+    </div>
+  </header>
+
+  <main class="sp-shell" aria-label="Start your project form">
+    <section class="sp-hero sp-anim" aria-label="Intro">
+      <span class="sp-chip sp-anim" data-i18n="hero.chip">Start your project</span>
+      <h1 class="sp-anim" data-i18n="hero.title">Project Request</h1>
+      <p class="sp-anim" data-i18n="hero.lead">
+        Tell us which Aufsteig Technik services and solution categories match your build—aligned with the service
+        categories, “What We Offer” range, and technical resources published on aufsteigtechnik.de. Your progress is
+        saved locally on this device.
+      </p>
+      <div class="sp-progress sp-anim" aria-label="Progress">
+        <div class="sp-progress-top">
+          <strong id="spStepLabel">Step 1 of 7</strong>
+          <span id="spDraftStatus" class="sp-draft-status" aria-live="polite"></span>
+        </div>
+        <div class="sp-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <i id="spProgressBar"></i>
+        </div>
+      </div>
+    </section>
+
+    <section class="sp-card sp-anim" aria-label="Wizard">
+      <form id="spForm" novalidate>
+        <div class="sp-steps" aria-live="polite">
+        <!-- STEP 1 -->
+        <div class="sp-step is-active" data-step="1" aria-label="Client information">
+          <h2 data-i18n="step1.title">Client Information</h2>
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span data-i18n="step1.fullName">Full Name <b>*</b></span>
+              <input name="fullName" autocomplete="name" required />
+              <small class="sp-error" data-error-for="fullName"></small>
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step1.companyName">Company Name</span>
+              <input name="companyName" autocomplete="organization" />
+              <small class="sp-error" data-error-for="companyName"></small>
+            </label>
+          </div>
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span data-i18n="step1.email">Email Address <b>*</b></span>
+              <input name="email" type="email" autocomplete="email" required />
+              <small class="sp-error" data-error-for="email"></small>
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step1.phone">Phone Number <b>*</b></span>
+              <div class="sp-phone">
+                <select name="phoneCountry" id="spPhoneCountry" aria-label="Phone country code" required>
+                  <option value="+49" data-country="Germany">🇩🇪 +49</option>
+                  <option value="+43" data-country="Austria">🇦🇹 +43</option>
+                  <option value="+41" data-country="Switzerland">🇨🇭 +41</option>
+                  <option value="+31" data-country="Netherlands">🇳🇱 +31</option>
+                  <option value="+32" data-country="Belgium">🇧🇪 +32</option>
+                  <option value="+33" data-country="France">🇫🇷 +33</option>
+                  <option value="+34" data-country="Spain">🇪🇸 +34</option>
+                  <option value="+39" data-country="Italy">🇮🇹 +39</option>
+                  <option value="+44" data-country="United Kingdom">🇬🇧 +44</option>
+                  <option value="+20" data-country="Egypt">🇪🇬 +20</option>
+                  <option value="+966" data-country="Saudi Arabia">🇸🇦 +966</option>
+                  <option value="+971" data-country="United Arab Emirates">🇦🇪 +971</option>
+                  <option value="+1" data-country="United States">🇺🇸 +1</option>
+                </select>
+                <input
+                  name="phone"
+                  id="spPhone"
+                  type="tel"
+                  inputmode="tel"
+                  placeholder="(0) 170 1234567"
+                  autocomplete="tel-national"
+                  required
+                />
+              </div>
+              <small class="sp-help" data-i18n="step1.phoneHelp">Use international format (e.g. +49…)</small>
+              <small class="sp-error" data-error-for="phone"></small>
+            </label>
+          </div>
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span data-i18n="step1.country">Country <b>*</b></span>
+              <select name="country" required>
+                <option value="" data-i18n="step1.select">Select…</option>
+                <option>Germany</option>
+                <option>Austria</option>
+                <option>Switzerland</option>
+                <option>Other</option>
+              </select>
+              <small class="sp-error" data-error-for="country"></small>
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step1.city">City <b>*</b></span>
+              <input name="city" autocomplete="address-level2" required />
+              <small class="sp-error" data-error-for="city"></small>
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="sp-step" data-step="2" aria-label="Services and solutions">
+          <h2 data-i18n="step2.title">Services &amp; Solutions</h2>
+          <p class="sp-step-lead" data-i18n="step2.lead">
+            Match the same service lines and solution categories shown under Services and “What We Offer” on the main site.
+          </p>
+          <fieldset class="sp-fieldset">
+            <legend data-i18n="step2.buildingContext">Building or site context <b>*</b></legend>
+            <div class="sp-choice-grid">
+              <label class="sp-choice">
+                <input type="radio" name="buildingContext" value="Residential and housing" required />
+                <strong data-i18n="step2.residential.title">Residential &amp; housing</strong>
+                <span data-i18n="step2.residential.desc">Homes, apartments, and residential-focused vertical transport (e.g. home lift solutions).</span>
+              </label>
+              <label class="sp-choice">
+                <input type="radio" name="buildingContext" value="Commercial and retail" />
+                <strong data-i18n="step2.commercial.title">Commercial &amp; retail</strong>
+                <span data-i18n="step2.commercial.desc">Offices, retail, hotels—aligned with passenger lifts, modernization, and high-traffic escalators.</span>
+              </label>
+              <label class="sp-choice">
+                <input type="radio" name="buildingContext" value="Public transport and infrastructure" />
+                <strong data-i18n="step2.publicTransport.title">Public transport &amp; infrastructure</strong>
+                <span data-i18n="step2.publicTransport.desc">Transit, hubs, and heavy-duty escalator contexts (detailed shaft plans, HD series references).</span>
+              </label>
+              <label class="sp-choice">
+                <input type="radio" name="buildingContext" value="Industrial and logistics" />
+                <strong data-i18n="step2.industrial.title">Industrial &amp; logistics</strong>
+                <span data-i18n="step2.industrial.desc">Freight lifts, heavy-load platforms, and logistics-oriented systems from our supply range.</span>
+              </label>
+              <label class="sp-choice">
+                <input type="radio" name="buildingContext" value="Mixed-use or other" />
+                <strong data-i18n="step2.mixedUse.title">Mixed-use / other</strong>
+                <span data-i18n="step2.mixedUse.desc">Phased upgrades, multi-building rollouts, or custom scope—per Engineering Contracting on the site.</span>
+              </label>
+            </div>
+            <small class="sp-error" data-error-for="buildingContext"></small>
+          </fieldset>
+
+          <fieldset class="sp-fieldset">
+            <legend data-i18n="step2.serviceLines">Which Aufsteig Technik service lines apply? <b>*</b></legend>
+            <p class="sp-field-hint" data-i18n="step2.serviceHint">Same categories as the Services section: Elevators &amp; Lifts Supply through Compliance &amp; Safety Audits.</p>
+            <div class="sp-choice-grid sp-choice-grid--dense">
+              <label class="sp-choice sp-choice--multi">
+                <input type="checkbox" name="serviceLines" value="Elevators &amp; Lifts Supply" />
+                <strong data-i18n="step2.elevatorSupply.title">Elevators &amp; Lifts Supply</strong>
+                <span data-i18n="step2.elevatorSupply.desc">Passenger, panoramic, freight, home mobility, hospital bed, MRL kits—see product grid on the site.</span>
+              </label>
+              <label class="sp-choice sp-choice--multi">
+                <input type="checkbox" name="serviceLines" value="Mechanical &amp; Electrical Installation" />
+                <strong data-i18n="step2.installation.title">Mechanical &amp; Electrical Installation</strong>
+                <span data-i18n="step2.installation.desc">VVVF drive, control cabinets, door operators, safety circuits, landing call panels.</span>
+              </label>
+              <label class="sp-choice sp-choice--multi">
+                <input type="checkbox" name="serviceLines" value="Maintenance &amp; After-Sales" />
+                <strong data-i18n="step2.maintenance.title">Maintenance &amp; After-Sales</strong>
+                <span data-i18n="step2.maintenance.desc">PM checklists, emergency response, lubrication, door cycle tuning, remote diagnostics, spare-parts SLA.</span>
+              </label>
+              <label class="sp-choice sp-choice--multi">
+                <input type="checkbox" name="serviceLines" value="Engineering Contracting" />
+                <strong data-i18n="step2.contracting.title">Engineering Contracting</strong>
+                <span data-i18n="step2.contracting.desc">Site survey package, technical design dossier, execution planning, commissioning, documentation handover.</span>
+              </label>
+              <label class="sp-choice sp-choice--multi">
+                <input type="checkbox" name="serviceLines" value="Premium Technical Supplies" />
+                <strong data-i18n="step2.supplies.title">Premium Technical Supplies</strong>
+                <span data-i18n="step2.supplies.desc">Retrofit components; linked to the standard vs optional parts matrix on the site.</span>
+              </label>
+              <label class="sp-choice sp-choice--multi">
+                <input type="checkbox" name="serviceLines" value="Compliance &amp; Safety Audits" />
+                <strong data-i18n="step2.compliance.title">Compliance &amp; Safety Audits</strong>
+                <span data-i18n="step2.compliance.desc">Audit checklists, TÜV / EN 81–oriented workflows, safety device references.</span>
+              </label>
+            </div>
+            <small class="sp-error" data-error-for="serviceLines"></small>
+          </fieldset>
+
+          <fieldset class="sp-fieldset">
+            <legend data-i18n="step2.solutionCats">Which “What We Offer” solution categories are in scope? <b>*</b></legend>
+            <p class="sp-field-hint" data-i18n="step2.solutionHint">Same titles as the What We Offer tiles (Products section on the homepage).</p>
+            <div class="sp-choice-grid sp-choice-grid--dense">
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Passenger Lifts" /><strong data-i18n="step2.passengerLifts">Passenger Lifts</strong><span data-i18n="step2.passengerLifts.desc">Standard or custom; hydraulic or traction; MR or MRL.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Freight Lifts" /><strong data-i18n="step2.freightLifts">Freight Lifts</strong><span data-i18n="step2.freightLifts.desc">Heavy-duty transport for logistics use.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Home Solutions" /><strong data-i18n="step2.homeSolutions">Home Solutions</strong><span data-i18n="step2.homeSolutions.desc">Compact, accessible residential lift systems.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Modernization Solutions" /><strong data-i18n="step2.modernization">Modernization Solutions</strong><span data-i18n="step2.modernization.desc">Partial upgrades through full replacement.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Escalators &amp; Moving Walks" /><strong data-i18n="step2.escalators">Escalators &amp; Moving Walks</strong><span data-i18n="step2.escalators.desc">People-moving systems for high-frequency environments.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Anti-vandal Lifts" /><strong data-i18n="step2.antiVandal">Anti-vandal Lifts</strong><span data-i18n="step2.antiVandal.desc">Durable configurations for public utility areas.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Firefighting Lifts" /><strong data-i18n="step2.firefighting">Firefighting Lifts</strong><span data-i18n="step2.firefighting.desc">Emergency-response–oriented systems.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Earthquake Resistant Lifts" /><strong data-i18n="step2.earthquake">Earthquake Resistant Lifts</strong><span data-i18n="step2.earthquake.desc">Seismic safety scenarios.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Accessibility Solutions" /><strong data-i18n="step2.accessibility">Accessibility Solutions</strong><span data-i18n="step2.accessibility.desc">Inclusive building access.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Parking Systems" /><strong data-i18n="step2.parking">Parking Systems</strong><span data-i18n="step2.parking.desc">Vertical transport for parking and utility spaces.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Marine Solutions" /><strong data-i18n="step2.marine">Marine Solutions</strong><span data-i18n="step2.marine.desc">Marine-adapted elevator systems.</span></label>
+              <label class="sp-choice sp-choice--multi"><input type="checkbox" name="solutionCategories" value="Custom Solutions" /><strong data-i18n="step2.custom">Custom Solutions</strong><span data-i18n="step2.custom.desc">Tailor-made packages for unique architecture.</span></label>
+            </div>
+            <small class="sp-error" data-error-for="solutionCategories"></small>
+          </fieldset>
+
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span data-i18n="step2.units">Number of units / systems <b>*</b></span>
+              <input name="units" type="number" min="1" step="1" required />
+              <small class="sp-help" data-i18n="step2.unitsHelp">Elevators, escalators, or moving walks you need quoted or phased.</small>
+              <small class="sp-error" data-error-for="units"></small>
+            </label>
+          </div>
+          <label id="spProjectAreaWrap" class="sp-field sp-conditional" style="display:none;">
+            <span data-i18n="step2.scopeDetail">Scope detail <b>*</b></span>
+            <textarea
+              name="projectArea"
+              rows="4"
+              data-i18n-ph="step2.scopePlaceholder" placeholder="If you selected more than one service line or solution category, briefly note zones, phases, or buildings (e.g. Tower A passenger lifts, retail bank escalators, moving walk in connector)."
+            ></textarea>
+            <small class="sp-error" data-error-for="projectArea"></small>
+          </label>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="sp-step" data-step="3" aria-label="Building details">
+          <h2 data-i18n="step3.title">Site &amp; Building</h2>
+          <p class="sp-step-lead" data-i18n="step3.lead">
+            Aligns with our process step “Site Survey &amp; Technical Planning”—shaft review, load analysis, and layout context.
+          </p>
+          <div class="sp-grid sp-grid-3">
+            <label class="sp-field">
+              <span data-i18n="step3.floors">Number of Floors <b>*</b></span>
+              <input name="floors" type="number" min="1" step="1" required />
+              <small class="sp-error" data-error-for="floors"></small>
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step3.buildingHeight">Building Height (meters)</span>
+              <input name="buildingHeightM" type="number" min="0" step="0.1" />
+              <small class="sp-error" data-error-for="buildingHeightM"></small>
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step3.floorToFloor">Floor-to-Floor Height (optional)</span>
+              <input name="floorToFloorM" type="number" min="0" step="0.1" />
+              <small class="sp-error" data-error-for="floorToFloorM"></small>
+            </label>
+          </div>
+
+          <div class="sp-grid sp-grid-2">
+            <fieldset class="sp-fieldset">
+              <legend data-i18n="step3.buildingState">New Building or Existing <b>*</b></legend>
+              <label class="sp-radio"><input type="radio" name="buildingState" value="New Construction" required /> <span data-i18n="step3.newConstruction">New Construction</span></label>
+              <label class="sp-radio"><input type="radio" name="buildingState" value="Existing (Modernization)" /> <span data-i18n="step3.existingBuilding">Existing Building (modernization)</span></label>
+              <small class="sp-error" data-error-for="buildingState"></small>
+            </fieldset>
+            <fieldset class="sp-fieldset">
+              <legend data-i18n="step3.shaftAvailability">Shaft Availability <b>*</b></legend>
+              <label class="sp-radio"><input type="radio" name="shaftAvailable" value="Yes" required/> <span data-i18n="step3.yes">Yes</span></label>
+              <label class="sp-radio"><input type="radio" name="shaftAvailable" value="No"/> <span data-i18n="step3.no">No</span></label>
+              <small class="sp-error" data-error-for="shaftAvailable"></small>
+            </fieldset>
+          </div>
+
+          <div class="sp-grid sp-grid-2">
+            <label class="sp-field">
+              <span data-i18n="step3.loadCapacity">Load Capacity Required (kg) <b>*</b></span>
+              <input name="loadKg" type="number" min="1" step="1" required />
+              <small class="sp-error" data-error-for="loadKg"></small>
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step3.dailyUsage">Estimated Daily Usage <b>*</b></span>
+              <select name="dailyUsage" required>
+                <option value="">Select…</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+              <small class="sp-help" data-i18n="step3.dailyUsageHelp">Helps size durability and dispatch—matching “stable ride quality under high traffic” on the Services section.</small>
+              <small class="sp-error" data-error-for="dailyUsage"></small>
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="sp-step" data-step="4" aria-label="Technical details and resources">
+          <h2 data-i18n="step4.title">Technical Details &amp; Resources</h2>
+          <p class="sp-step-lead" data-i18n="step4.lead">
+            Optional detail tied to our published technical pages: design catalog, shaft layouts, detailed plan sheets, parts matrix, and safety overview.
+          </p>
+
+          <fieldset class="sp-fieldset">
+            <legend data-i18n="step4.resourceDocs">On-site resources to reference (optional)</legend>
+            <p class="sp-field-hint" data-i18n="step4.resourceHint">Check the materials you want our team to walk through with you—the same pages linked from Services and Products.</p>
+            <div class="sp-check-list">
+              <label class="sp-check"><input type="checkbox" name="resourceDocs" value="Design catalog (cabin designs, materials, doors)" /> <span data-i18n="step4.designCatalog">Design catalog — cabin designs, materials &amp; finishes, door systems (CAT-1–CAT-9)</span></label>
+              <label class="sp-check"><input type="checkbox" name="resourceDocs" value="Shaft layout matrix" /> <span data-i18n="step4.shaftMatrix">Shaft layout matrix — escalator / moving walk arrangement types</span></label>
+              <label class="sp-check"><input type="checkbox" name="resourceDocs" value="Detailed shaft plan sheets" /> <span data-i18n="step4.planSheets">Detailed shaft plan sheets — HD-1200 family (HDB-30-2, HDB-30-3, HDB-35-2) and public transport sheets (HDG-30, HD-2200)</span></label>
+              <label class="sp-check"><input type="checkbox" name="resourceDocs" value="Technical configurations matrix" /> <span data-i18n="step4.techConfig">Technical configurations — standard vs optional parts (balustrade, landing plate, step, pallets, handrail, drive)</span></label>
+              <label class="sp-check"><input type="checkbox" name="resourceDocs" value="Escalator safety device overview" /> <span data-i18n="step4.safetyOverview">Escalator safety &amp; detection devices overview diagram</span></label>
+            </div>
+          </fieldset>
+
+          <div id="spElevatorOnly" class="sp-conditional" aria-label="Lift supply options">
+            <h3 class="sp-subsection-title" data-i18n="step4.liftSupplyFocus">Lift supply focus (Elevators &amp; Lifts Supply)</h3>
+            <p class="sp-field-hint" data-i18n="step4.liftSupplyHint">Product names match the Elevators &amp; Lifts Supply grid on the homepage.</p>
+            <fieldset class="sp-fieldset">
+              <legend data-i18n="step4.supplyProducts">Which supply products are you interested in? (optional)</legend>
+              <div class="sp-check-list">
+                <label class="sp-check"><input type="checkbox" name="supplyProductInterest" value="Passenger Lift Unit" /> <span data-i18n="step4.passengerLiftUnit">Passenger Lift Unit</span></label>
+                <label class="sp-check"><input type="checkbox" name="supplyProductInterest" value="Panoramic Glass Lift" /> <span data-i18n="step4.panoramicLift">Panoramic Glass Lift</span></label>
+                <label class="sp-check"><input type="checkbox" name="supplyProductInterest" value="Freight Lift Platform" /> <span data-i18n="step4.freightPlatform">Freight Lift Platform</span></label>
+                <label class="sp-check"><input type="checkbox" name="supplyProductInterest" value="Home Mobility Lift" /> <span data-i18n="step4.homeMobility">Home Mobility Lift</span></label>
+                <label class="sp-check"><input type="checkbox" name="supplyProductInterest" value="Hospital Bed Lift" /> <span data-i18n="step4.hospitalBed">Hospital Bed Lift</span></label>
+                <label class="sp-check"><input type="checkbox" name="supplyProductInterest" value="Machine Room Lift Kit" /> <span data-i18n="step4.machineRoom">Machine Room Lift Kit</span></label>
+              </div>
+            </fieldset>
+            <div class="sp-grid sp-grid-2">
+              <label class="sp-field">
+                <span data-i18n="step4.primaryConfig">Primary lift configuration</span>
+                <select name="elevatorType">
+                  <option value="">Select…</option>
+                  <option>Passenger Lift Unit</option>
+                  <option>Panoramic Glass Lift</option>
+                  <option>Freight Lift Platform</option>
+                  <option>Home Mobility Lift</option>
+                  <option>Hospital Bed Lift</option>
+                  <option>Machine Room Lift Kit</option>
+                </select>
+              </label>
+              <label class="sp-field">
+                <span data-i18n="step4.driveLayout">Drive / layout (as on What We Offer)</span>
+                <select name="driveType">
+                  <option value="">Select…</option>
+                  <option>Hydraulic</option>
+                  <option>Traction</option>
+                  <option>Machine room (MR)</option>
+                  <option>Machine room-less (MRL)</option>
+                </select>
+                <small class="sp-help" data-i18n="step4.driveHelp">Matches passenger lift wording: hydraulic or traction, MR or MRL.</small>
+              </label>
+            </div>
+          </div>
+
+          <div class="sp-grid sp-grid-3">
+            <label class="sp-field">
+              <span data-i18n="step4.speed">Speed requirement (m/s)</span>
+              <input name="speedMs" type="number" min="0" step="0.1" />
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step4.doorSystems">Door systems interest</span>
+              <select name="doorType">
+                <option value="">Select…</option>
+                <option>Review via design catalog (automatic &amp; swing door systems)</option>
+                <option>Automatic sliding (site-specific)</option>
+                <option>Other / to be defined at technical review</option>
+              </select>
+              <small class="sp-help" data-i18n="step4.doorHelp">Door systems catalog sheet CAT-9 covers automatic and swing options.</small>
+            </label>
+            <label class="sp-field">
+              <span data-i18n="step4.cabinInterior">Cabin / interior direction</span>
+              <input name="finish" data-i18n-ph="step4.cabinPlaceholder" placeholder="e.g. Purity, A310, L310, L510 families from the design catalog…" />
+            </label>
+          </div>
+
+          <fieldset class="sp-fieldset sp-fieldset--compact-grid">
+            <legend data-i18n="step4.priorities">Priorities (match site offerings)</legend>
+            <label class="sp-check"><input type="checkbox" name="reqAccessibility" /> <span data-i18n="step4.reqAccessibility">Accessibility Solutions (inclusive access)</span></label>
+            <label class="sp-check"><input type="checkbox" name="reqEnergy" /> <span data-i18n="step4.reqEnergy">Higher drive efficiency / lower energy use (system specs on Services)</span></label>
+            <label class="sp-check"><input type="checkbox" name="reqRemoteMonitoring" /> <span data-i18n="step4.reqRemoteMonitoring">Remote diagnostics &amp; monitoring interest (Maintenance &amp; After-Sales)</span></label>
+            <label class="sp-check"><input type="checkbox" name="reqComplianceAudit" /> <span data-i18n="step4.reqCompliance">Compliance &amp; Safety Audits — TÜV / EN 81–oriented workflow</span></label>
+          </fieldset>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="sp-step" data-step="5" aria-label="Location and installation">
+          <h2 data-i18n="step5.title">Location &amp; Schedule</h2>
+          <p class="sp-step-lead" data-i18n="step5.lead">
+            Supports our process steps: Procurement &amp; Supply → Installation &amp; Commissioning (site access affects installation sequencing).
+          </p>
+          <label class="sp-field">
+            <span data-i18n="step5.address">Project address <b>*</b></span>
+            <input name="address" autocomplete="street-address" required />
+            <small class="sp-error" data-error-for="address"></small>
+          </label>
+          <label class="sp-field">
+            <span data-i18n="step5.siteAccess">Site access &amp; working constraints</span>
+            <textarea name="siteAccess" rows="4" data-i18n-ph="step5.siteAccessPlaceholder" placeholder="Loading bay, crane access, hours, noise limits—relevant for installation &amp; commissioning as described in our process section."></textarea>
+          </label>
+          <fieldset class="sp-fieldset">
+            <legend data-i18n="step5.timeline">Target timeline <b>*</b></legend>
+            <label class="sp-radio"><input type="radio" name="timeline" value="Site survey &amp; planning window (0–3 months)" required /> <span data-i18n="step5.timeline1">Site survey &amp; planning window (0–3 months)</span></label>
+            <label class="sp-radio"><input type="radio" name="timeline" value="Procurement &amp; supply alignment (3–6 months)" /> <span data-i18n="step5.timeline2">Procurement &amp; supply alignment (3–6 months)</span></label>
+            <label class="sp-radio"><input type="radio" name="timeline" value="Flexible / phased commissioning (6+ months)" /> <span data-i18n="step5.timeline3">Flexible / phased commissioning (6+ months)</span></label>
+            <small class="sp-error" data-error-for="timeline"></small>
+          </fieldset>
+        </div>
+
+        <!-- STEP 6 -->
+        <div class="sp-step" data-step="6" aria-label="Budget and additional notes">
+          <h2 data-i18n="step6.title">Budget &amp; Notes</h2>
+          <p class="sp-step-lead" data-i18n="step6.lead">
+            Mention optional deliverables you care about: spare-parts SLA, remote diagnostics, commissioning protocol, TÜV-ready documentation—aligned with Maintenance, Contracting, and Compliance on the site.
+          </p>
+          <fieldset class="sp-fieldset">
+            <legend data-i18n="step6.budgetRange">Estimated budget range <b>*</b></legend>
+            <label class="sp-radio"><input type="radio" name="budget" value="Low" required/> <span data-i18n="step6.low">Low</span></label>
+            <label class="sp-radio"><input type="radio" name="budget" value="Medium"/> <span data-i18n="step6.medium">Medium</span></label>
+            <label class="sp-radio"><input type="radio" name="budget" value="High"/> <span data-i18n="step6.high">High</span></label>
+            <small class="sp-error" data-error-for="budget"></small>
+          </fieldset>
+          <label class="sp-field">
+            <span data-i18n="step6.notes">Additional notes &amp; deliverables</span>
+            <textarea name="notes" rows="5" data-i18n-ph="step6.notesPlaceholder" placeholder="e.g. phased modernization, multi-building rollout, documentation &amp; handover pack, energy tune, cabin retrofit—reference any homepage or service detail that applies."></textarea>
+          </label>
+          <label class="sp-field">
+            <span data-i18n="step6.fileUpload">File upload (optional: drawings, PDFs)</span>
+            <input name="files" type="file" multiple accept=".pdf,image/*" />
+            <small class="sp-help" data-i18n="step6.fileHelp">Files are not uploaded in this demo; we follow up by email for technical design dossier materials if needed.</small>
+          </label>
+        </div>
+
+        <!-- STEP 7 -->
+        <div class="sp-step" data-step="7" aria-label="Review and submit">
+          <h2 data-i18n="step7.title">Review & Submit</h2>
+          <p class="sp-review-lead" data-i18n="step7.lead">
+            Confirm everything looks right. You can go back to edit any step.
+          </p>
+          <div id="spReview" class="sp-review" aria-live="polite"></div>
+          <div class="sp-submit-row">
+            <button id="spSubmit" class="sp-btn sp-btn-primary" type="submit">
+              <span class="sp-btn-label" data-i18n="step7.submit">Submit request</span>
+              <span class="sp-btn-spinner" aria-hidden="true"></span>
+            </button>
+            <div id="spSubmitMsg" class="sp-submit-msg" aria-live="polite"></div>
+          </div>
+        </div>
+        </div>
+
+        <div class="sp-nav">
+          <button class="sp-btn sp-btn-ghost" id="spBack" type="button" data-i18n="nav.back">Back</button>
+          <div class="sp-nav-right">
+            <button class="sp-btn sp-btn-ghost" id="spSave" type="button" data-i18n="nav.saveDraft">Save draft</button>
+            <button class="sp-btn sp-btn-primary" id="spNext" type="button" data-i18n="nav.next">Next</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="../js/vendor/gsap.min.js"></script>
+  <script src="../js/vendor/ScrollTrigger.min.js"></script>
+  <script src="../js/model/start-project-i18n.js"></script>
+  <script type="module" src="../js/controllers/start-project-wizard.js"></script>
+  <script>
+  (function () {
+    if (typeof gsap === "undefined") return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    var anims = document.querySelectorAll(".sp-anim");
+
+    tl.to(".sp-topbar.sp-anim", { opacity: 1, y: 0, duration: 0.6 }, 0.1);
+
+    tl.to(".sp-hero.sp-anim", { opacity: 1, y: 0, duration: 0.7 }, 0.2);
+
+    tl.to(".sp-hero .sp-chip.sp-anim", { opacity: 1, y: 0, duration: 0.5 }, 0.35);
+    tl.to(".sp-hero h1.sp-anim", { opacity: 1, y: 0, duration: 0.6 }, 0.45);
+    tl.to(".sp-hero p.sp-anim", { opacity: 1, y: 0, duration: 0.5 }, 0.55);
+    tl.to(".sp-progress.sp-anim", { opacity: 1, y: 0, duration: 0.5 }, 0.65);
+
+    tl.to(".sp-card.sp-anim", { opacity: 1, y: 0, duration: 0.7 }, 0.75);
+
+    var choices = document.querySelectorAll(".sp-choice, .sp-radio, .sp-check");
+    choices.forEach(function (el) {
+      el.addEventListener("mouseenter", function () {
+        gsap.to(el, { scale: 1.015, duration: 0.22, ease: "power2.out" });
+      });
+      el.addEventListener("mouseleave", function () {
+        gsap.to(el, { scale: 1, duration: 0.25, ease: "power2.out" });
+      });
+    });
+
+    var btns = document.querySelectorAll(".sp-btn");
+    btns.forEach(function (btn) {
+      btn.addEventListener("mouseenter", function () {
+        gsap.to(btn, { scale: 1.04, duration: 0.2, ease: "power2.out" });
+      });
+      btn.addEventListener("mouseleave", function () {
+        gsap.to(btn, { scale: 1, duration: 0.22, ease: "power2.out" });
+      });
+    });
+
+    var fields = document.querySelectorAll("input, select, textarea");
+    fields.forEach(function (f) {
+      f.addEventListener("focus", function () {
+        gsap.to(f.closest(".sp-field") || f, { scale: 1.01, duration: 0.18, ease: "power2.out" });
+      });
+      f.addEventListener("blur", function () {
+        gsap.to(f.closest(".sp-field") || f, { scale: 1, duration: 0.2, ease: "power2.out" });
+      });
+    });
+
+    var orbs = document.querySelectorAll(".sp-ambient");
+    if (orbs.length && window.matchMedia("(pointer: fine)").matches) {
+      document.addEventListener("mousemove", function (e) {
+        var cx = (e.clientX / window.innerWidth - 0.5) * 2;
+        var cy = (e.clientY / window.innerHeight - 0.5) * 2;
+        orbs.forEach(function (o, i) {
+          var f = (i + 1) * 12;
+          gsap.to(o, { x: cx * f, y: cy * f, duration: 1.2, ease: "power2.out" });
+        });
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
+
