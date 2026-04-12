@@ -1,13 +1,14 @@
 /**
- * Cinematic hero entrance on first page load.
+ * Cinematic hero entrance — v3.
  *
  * Sequence:
- *  1. Eyebrow text fades + rises
- *  2. H1 words stagger up through clip (uses wrapWords from split-reveal.js)
- *  3. Body paragraph fades in
- *  4. CTA bar slides up
- *
- * A subtle "reveal curtain" also wipes up from the nav pill.
+ *  1. Nav pill drops in
+ *  2. Eyebrow fades + slides from left
+ *  3. Serif headline words cascade up through clip
+ *  4. Light tracking subline fades up
+ *  5. Desc fades
+ *  6. Buttons rise
+ *  7. Scroll cue fades
  */
 import { wrapWords } from './split-reveal.js';
 
@@ -17,73 +18,74 @@ export function initHeroLoad() {
 
   const gsap = window.gsap;
 
-  const eyebrow  = document.querySelector('.hero-copy .eyebrow');
-  const h1       = document.querySelector('.hero-copy h1');
-  const bodyText = document.querySelector('.hero-copy > p');
-  const ctaBar   = document.querySelector('.hero-cta-bar');
-  const navPill  = document.querySelector('.nav-pill');
+  const eyebrow   = document.querySelector('.hero-overlay > .eyebrow');
+  const serifLine = document.querySelector('.h1-line--serif');
+  const lightLine = document.querySelector('.h1-line--light');
+  const desc      = document.querySelector('.hero-desc');
+  const actions   = document.querySelector('.hero-actions');
+  const scrollCue = document.querySelector('.hero-scroll-cue');
+  const sidePanel = document.querySelector('.hero-side-panel');
+  const navPill   = document.querySelector('.nav-pill');
 
-  const killList = [eyebrow, bodyText, ctaBar, navPill, h1].filter(Boolean);
-  if (h1) killList.push(...h1.querySelectorAll('.sw-inner'));
-  gsap.killTweensOf(killList);
-
-  /* i18n apply() uses textContent on title spans and strips prior wrapWords() markup. */
-  if (h1 && !h1.querySelector('.sw-inner')) {
-    wrapWords(h1);
+  // Wrap serif headline words for the clip reveal
+  if (serifLine && !serifLine.querySelector('.sw-inner')) {
+    wrapWords(serifLine);
   }
+  const serifSpans = serifLine ? serifLine.querySelectorAll('.sw-inner') : [];
 
-  const h1Spans = h1 ? h1.querySelectorAll('.sw-inner') : [];
+  // Kill stale tweens
+  gsap.killTweensOf([eyebrow, lightLine, desc, actions, scrollCue, sidePanel, navPill].filter(Boolean));
+  if (serifSpans.length) gsap.killTweensOf(serifSpans);
 
-  // Set initial states
-  if (eyebrow)  gsap.set(eyebrow,  { opacity: 0, y: 18 });
-  if (h1Spans.length) gsap.set(h1Spans, { yPercent: 150, opacity: 0 });
-  else if (h1)  gsap.set(h1,       { opacity: 0, y: 32 });
-  if (bodyText) gsap.set(bodyText, { opacity: 0, y: 22 });
-  if (ctaBar)   gsap.set(ctaBar,   { opacity: 0, y: 22 });
-  if (navPill)  gsap.set(navPill,  { opacity: 0, y: -14, scale: 0.94 });
+  // ── Initial states ──────────────────────────────────────────
+  if (navPill)           gsap.set(navPill,     { opacity: 0, y: -12, scale: 0.95 });
+  if (eyebrow)           gsap.set(eyebrow,     { opacity: 0, x: -22 });
+  if (serifSpans.length) gsap.set(serifSpans,  { yPercent: 105, opacity: 0 });
+  else if (serifLine)    gsap.set(serifLine,   { opacity: 0, y: 30 });
+  if (lightLine)         gsap.set(lightLine,   { opacity: 0, y: 14 });
+  if (desc)              gsap.set(desc,        { opacity: 0, y: 12 });
+  if (actions)           gsap.set(actions,     { opacity: 0, y: 10 });
+  if (scrollCue)         gsap.set(scrollCue,   { opacity: 0 });
+  if (sidePanel)         gsap.set(sidePanel,   { opacity: 0, x: 36 });
 
-  const tl = gsap.timeline({ delay: 0.18 });
+  // ── Timeline ────────────────────────────────────────────────
+  const tl = gsap.timeline({ delay: 0.12 });
 
-  // Nav pill drops in first
   if (navPill) {
-    tl.to(navPill, {
-      opacity: 1, y: 0, scale: 1,
-      duration: 0.6, ease: 'power3.out',
-    });
+    tl.to(navPill, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power3.out' });
   }
 
-  // Eyebrow
   if (eyebrow) {
-    tl.to(eyebrow, {
-      opacity: 1, y: 0,
-      duration: 0.65, ease: 'power2.out',
-    }, '-=0.3');
+    tl.to(eyebrow, { opacity: 1, x: 0, duration: 0.65, ease: 'power2.out' }, '-=0.28');
   }
 
-  // H1 words stagger
-  if (h1Spans.length) {
-    tl.to(h1Spans, {
+  if (serifSpans.length) {
+    tl.to(serifSpans, {
       yPercent: 0, opacity: 1,
-      duration: 0.82, ease: 'power3.out',
-      stagger: 0.055,
+      duration: 1.05, ease: 'power3.out',
+      stagger: 0.036,
     }, '-=0.38');
-  } else if (h1) {
-    tl.to(h1, { opacity: 1, y: 0, duration: 0.82, ease: 'power3.out' }, '-=0.38');
+  } else if (serifLine) {
+    tl.to(serifLine, { opacity: 1, y: 0, duration: 0.95, ease: 'power3.out' }, '-=0.38');
   }
 
-  // Body paragraph
-  if (bodyText) {
-    tl.to(bodyText, {
-      opacity: 1, y: 0,
-      duration: 0.68, ease: 'power2.out',
-    }, '-=0.52');
+  if (lightLine) {
+    tl.to(lightLine, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.62');
   }
 
-  // CTA bar
-  if (ctaBar) {
-    tl.to(ctaBar, {
-      opacity: 1, y: 0,
-      duration: 0.68, ease: 'power2.out',
-    }, '-=0.48');
+  if (desc) {
+    tl.to(desc, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, '-=0.42');
+  }
+
+  if (actions) {
+    tl.to(actions, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.48');
+  }
+
+  if (sidePanel) {
+    tl.to(sidePanel, { opacity: 1, x: 0, duration: 0.85, ease: 'power3.out' }, '-=0.6');
+  }
+
+  if (scrollCue) {
+    tl.to(scrollCue, { opacity: 1, duration: 0.5, ease: 'power1.out' }, '-=0.3');
   }
 }

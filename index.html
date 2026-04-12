@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Outfit:wght@300;400;500;600&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.css" />
@@ -100,21 +100,72 @@
           preload="auto"
           aria-hidden="true"
         ></video>
+
+        <!-- Cinematic vignette -->
+        <div class="hero-vignette" aria-hidden="true"></div>
+
+        <!-- Right-side decorative panel -->
+        <aside class="hero-side-panel" aria-hidden="true">
+          <div class="hsp-tag">
+            <span class="hsp-dot"></span>
+            <span>Live monitoring</span>
+          </div>
+          <div class="hsp-divider"></div>
+          <div class="hsp-spec">
+            <span class="hsp-spec-val">DEKRA</span>
+            <span class="hsp-spec-key">Certified Partner</span>
+          </div>
+          <div class="hsp-spec">
+            <span class="hsp-spec-val">TÜV</span>
+            <span class="hsp-spec-key">Approved</span>
+          </div>
+          <div class="hsp-divider"></div>
+          <div class="hsp-uptime">
+            <svg viewBox="0 0 36 36" fill="none" width="36" height="36" aria-hidden="true">
+              <circle cx="18" cy="18" r="15" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+              <circle cx="18" cy="18" r="15" stroke="rgba(255,255,255,0.55)" stroke-width="2"
+                stroke-dasharray="88 6" stroke-linecap="round"
+                transform="rotate(-90 18 18)"/>
+            </svg>
+            <span class="hsp-uptime-label">98% uptime</span>
+          </div>
+        </aside>
+
         <div class="hero-overlay">
+
+          <!-- Floating eyebrow — top left, clears nav -->
+          <p class="eyebrow" data-i18n="hero.eyebrow">Elevators & Escalators / Germany</p>
+
+          <!-- Centre-stage headline -->
           <div class="hero-copy">
-            <p class="eyebrow" data-i18n="hero.eyebrow">Elevators & Escalators / Germany</p>
             <h1>
-              <span data-i18n="hero.title1">Vertical mobility</span>
-              <span data-i18n="hero.title2">without friction</span>
+              <span class="h1-line h1-line--serif" data-i18n="hero.title1">Vertical mobility</span>
+              <span class="h1-line h1-line--light" data-i18n="hero.title2">without friction</span>
             </h1>
-            <p>
-              <span data-i18n="hero.desc">Aufsteig Technik builds, modernizes, and maintains premium systems for offices, retail, transit hubs, and residential towers.</span>
-            </p>
           </div>
-          <div class="hero-cta-bar">
-            <span data-i18n="hero.cta.tagline">24/7 Monitoring. Fast dispatch. TÜV-ready maintenance.</span>
-            <a href="#contact" data-i18n="hero.cta.btn">Book a site assessment</a>
+
+          <!-- Bottom row: desc + CTA -->
+          <div class="hero-footer">
+            <div class="hero-footer-left">
+              <p class="hero-desc">
+                <span data-i18n="hero.desc">Aufsteig Technik builds, modernizes, and maintains premium systems for offices, retail, transit hubs, and residential towers.</span>
+              </p>
+              <div class="hero-actions">
+                <a href="#contact" class="hero-btn-primary" data-i18n="hero.cta.btn">Book a site assessment</a>
+                <a href="#about" class="hero-btn-ghost">
+                  <span>Explore our work</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
           </div>
+
+          <!-- Scroll cue -->
+          <div class="hero-scroll-cue" aria-hidden="true">
+            <div class="hero-scroll-line"></div>
+            <span>Scroll</span>
+          </div>
+
         </div>
       </div>
     </div>
@@ -223,7 +274,7 @@
               </ul>
               <div class="services-bottom-cta">
                 <p><span data-i18n="svc.bottom1">No downtime. No complicated operations.</span><br /><span data-i18n="svc.bottom2">Just reliable movement, clearly managed.</span></p>
-                <a class="btn-light btn-magnetic" href="#contact" data-i18n="svc.cta">Request proposal</a>
+                <a class="btn-light btn-cta" href="#contact" data-i18n="svc.cta">Request proposal</a>
               </div>
             </div>
             <article class="floating-card services-card" id="serviceStoryCard">
@@ -1073,6 +1124,13 @@
       </div>
     </div>
   </footer>
+
+  <!-- Back to top button -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" type="button">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 12V4M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
