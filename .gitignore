@@ -9,3 +9,4 @@ Thumbs.db
 # Local editor / agent settings (not for the repo)
 .claude/
 .cursor/
+.vercel
