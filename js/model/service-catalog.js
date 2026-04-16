@@ -3,9 +3,9 @@ export const SERVICE_CATALOG = {
       title: "Elevators & Lifts Supply Products",
       lead: "Passenger, freight, and specialized lift systems for different building profiles.",
       ctaLabel: "View shaft layout matrix",
-      ctaHref: "shaft-layout-matrix.html",
+      ctaHref: "pages/shaft-layout-matrix.html",
       secondaryCtaLabel: "Detailed shaft plan sheets",
-      secondaryCtaHref: "detailed-shaft-plan-sheets.html",
+      secondaryCtaHref: "pages/detailed-shaft-plan-sheets.html",
       products: [
         { name: "Passenger Lift Unit", desc: "Energy-efficient passenger elevator for offices and residential towers.", img: "assets/U3DmE.png" },
         { name: "Panoramic Glass Lift", desc: "Premium panoramic cabin with low-noise movement and skyline visibility.", img: "assets/voD1v.png" },
@@ -55,7 +55,7 @@ export const SERVICE_CATALOG = {
       title: "Premium Technical Supplies Products",
       lead: "High-quality components and retrofit products for reliable system upgrades.",
       ctaLabel: "View full standard vs optional parts matrix",
-      ctaHref: "technical-configurations.html",
+      ctaHref: "pages/technical-configurations.html",
       products: [
         { name: "Controller PCB Set", desc: "High-grade controller boards with tested firmware compatibility.", img: "assets/67gEt.png" },
         { name: "Door Sensor Array", desc: "Fast-response light curtain and threshold detection assembly.", img: "assets/khJWP.png" },
@@ -69,7 +69,7 @@ export const SERVICE_CATALOG = {
       title: "Compliance & Safety Audit Products",
       lead: "Audit-ready products and checklists aligned to T\u00dcV and EN 81 workflows.",
       ctaLabel: "View safety device overview",
-      ctaHref: "escalator-safety-devices.html",
+      ctaHref: "pages/escalator-safety-devices.html",
       products: [
         { name: "Safety Audit Checklist Kit", desc: "Structured checklist templates for recurring compliance audits.", img: "assets/cW9Gx.png" },
         { name: "Risk Assessment Workbook", desc: "Risk scoring worksheets and mitigation action tracker.", img: "assets/OKyn8.png" },
@@ -86,9 +86,9 @@ const SERVICE_CATALOG_DE = {
     title: "Aufz\u00fcge & Aufzugsversorgung Produkte",
     lead: "Personen-, Lasten- und Spezialliftanlagen f\u00fcr verschiedene Geb\u00e4udeprofile.",
     ctaLabel: "Schachtlayout-Matrix ansehen",
-    ctaHref: "shaft-layout-matrix.html",
+    ctaHref: "pages/shaft-layout-matrix.html",
     secondaryCtaLabel: "Detaillierte Schachtplanbl\u00e4tter",
-    secondaryCtaHref: "detailed-shaft-plan-sheets.html",
+    secondaryCtaHref: "pages/detailed-shaft-plan-sheets.html",
     products: [
       { name: "Personenaufzug", desc: "Energieeffizienter Personenaufzug f\u00fcr B\u00fcros und Wohnt\u00fcrme.", img: "assets/U3DmE.png" },
       { name: "Panorama-Glasaufzug", desc: "Premium-Panoramakabine mit ger\u00e4uscharmer Bewegung und Skyline-Sicht.", img: "assets/voD1v.png" },
@@ -138,7 +138,7 @@ const SERVICE_CATALOG_DE = {
     title: "Premium Technische Versorgungsprodukte",
     lead: "Hochwertige Komponenten und Nachr\u00fcstprodukte f\u00fcr zuverl\u00e4ssige System-Upgrades.",
     ctaLabel: "Vollst\u00e4ndige Standard- vs. Optionalteile-Matrix ansehen",
-    ctaHref: "technical-configurations.html",
+    ctaHref: "pages/technical-configurations.html",
     products: [
       { name: "Controller-PCB-Set", desc: "Hochwertige Steuerungsplatinen mit getesteter Firmware-Kompatibilit\u00e4t.", img: "assets/67gEt.png" },
       { name: "T\u00fcrsensor-Array", desc: "Schnellansprechender Lichtvorhang und Schwellenerkennung.", img: "assets/khJWP.png" },
@@ -152,7 +152,7 @@ const SERVICE_CATALOG_DE = {
     title: "Compliance & Sicherheitsaudit Produkte",
     lead: "Auditf\u00e4hige Produkte und Checklisten gem\u00e4\u00df T\u00dcV- und EN 81-Workflows.",
     ctaLabel: "Sicherheitsger\u00e4te\u00fcbersicht ansehen",
-    ctaHref: "escalator-safety-devices.html",
+    ctaHref: "pages/escalator-safety-devices.html",
     products: [
       { name: "Sicherheitsaudit-Checklistenkit", desc: "Strukturierte Checklistenvorlagen f\u00fcr wiederkehrende Compliance-Audits.", img: "assets/cW9Gx.png" },
       { name: "Risikobewertungs-Arbeitsbuch", desc: "Risikobewertungsbl\u00e4tter und Ma\u00dfnahmentracker.", img: "assets/OKyn8.png" },
