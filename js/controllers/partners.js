@@ -1,6 +1,8 @@
 import { getDeviceHints } from "../utils/device.js";
 
 export function initPartnersMotion() {
+  // Touch: stagger-reveals.js handles these elements via IntersectionObserver
+  if (window.matchMedia('(pointer: coarse)').matches) return;
   if (!window.gsap || !window.ScrollTrigger) return;
   const gsap = window.gsap;
   const enterDur = getDeviceHints().lightMode ? 0.42 : 0.7;

@@ -109,70 +109,44 @@ export function initIndustrialVision() {
 
   if (prefersReducedMotion) return;
 
-
-
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
   const enterTargets = panel ? [intro, panel] : [intro];
 
-  gsap.set(enterTargets, { opacity: 0, y: 36 });
+  if (isTouch) {
+    // Touch: IntersectionObserver, zero ScrollTrigger
+    const allEls = [...enterTargets, ...Array.from(items)];
+    allEls.forEach((el) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+    });
+    let delay = 0;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const d = delay; delay += 60;
+        setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, d);
+        io.unobserve(el);
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+    allEls.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight) { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
+      else io.observe(el);
+    });
+    return;
+  }
 
+  // Desktop: GSAP ScrollTrigger entrance
+  gsap.set(enterTargets, { opacity: 0, y: 36 });
   gsap.set(items, { opacity: 0, y: 28 });
 
+  const tl = gsap.timeline({ scrollTrigger: { trigger: section, start: "top 90%", once: true } });
+  tl.to(enterTargets, { opacity: 1, y: 0, duration: 0.75, stagger: 0.12, ease: "power3.out" })
+    .to(items, { opacity: 1, y: 0, duration: 0.55, stagger: 0.07, ease: "power3.out" }, "-=0.35");
 
-
-  const tl = gsap.timeline({
-
-    scrollTrigger: {
-
-      trigger: section,
-
-      start: "top 90%",
-
-      once: true,
-
-    },
-
-  });
-
-
-
-  tl.to(enterTargets, {
-
-    opacity: 1,
-
-    y: 0,
-
-    duration: 0.75,
-
-    stagger: 0.12,
-
-    ease: "power3.out",
-
-  }).to(
-
-    items,
-
-    {
-
-      opacity: 1,
-
-      y: 0,
-
-      duration: 0.55,
-
-      stagger: 0.07,
-
-      ease: "power3.out",
-
-    },
-
-    "-=0.35"
-
-  );
-
-
-
-  // Skip parallax orbs on touch — scrub ScrollTriggers cause scroll jank on mobile
-  if (!window.matchMedia('(pointer: coarse)').matches) {
+  if (!isTouch) {
     orbs.forEach((orb, i) => {
 
       gsap.to(orb, {

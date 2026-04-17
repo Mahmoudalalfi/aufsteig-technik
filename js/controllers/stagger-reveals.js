@@ -1,155 +1,223 @@
-/**
- * Staggered entrance animations for every card/grid section.
- * Uses GSAP ScrollTrigger.batch() so items animate in as a group
- * the first time they enter the viewport.
- *
- * Dynamic bindings (optional): declare behavior in HTML so animations attach
- * without editing this file. Scanned on init, after i18n (see main.js), and when
- * new nodes are added (MutationObserver).
- *
- *   data-reveal-group          — container; children get staggered fade-up
- *   data-reveal-items=".sel"   — optional child selector (default :scope > *)
- *   data-reveal-stagger="0.12" — stagger gap in seconds
- *   data-reveal-y="32"         — initial y offset in px
- *
- *   data-reveal                — single block fade-up (not used with data-reveal-group)
- *   data-reveal-start="top 91%"
- *   data-reveal-y="26"
- */
-
 const boundRevealGroups = new WeakSet();
 const boundRevealSingles = new WeakSet();
+
+const IS_TOUCH = window.matchMedia('(pointer: coarse)').matches;
 
 function parseStartThreshold(start) {
   const pct = parseFloat((String(start).match(/(\d+(?:\.\d+)?)%/) || [, '88'])[1]) / 100;
   return Number.isFinite(pct) ? pct : 0.88;
 }
 
-/**
- * Binds [data-reveal-group] and [data-reveal] under root (default document.body).
- * Safe to call repeatedly; already-bound elements are skipped.
- */
+/* ─── IntersectionObserver reveal (touch path — zero ScrollTrigger overhead) ─── */
+function ioFadeUp(els, yPx = 28, staggerMs = 55) {
+  if (!els || !els.length) return;
+  const arr = Array.isArray(els) ? els : Array.from(els);
+
+  arr.forEach((el) => {
+    el.style.opacity = '0';
+    el.style.transform = `translateY(${yPx}px)`;
+    el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+  });
+
+  let nextDelay = 0;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const d = nextDelay;
+      nextDelay += staggerMs;
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, d);
+      io.unobserve(el);
+    });
+  }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+
+  arr.forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.bottom > 0 && r.top < window.innerHeight * 0.98) {
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    } else {
+      io.observe(el);
+    }
+  });
+}
+
+/* ─── bindDynamicReveals ─── */
 export function bindDynamicReveals(root = document.body) {
-  if (!window.gsap || !window.ScrollTrigger) return;
   if (!root || (root.nodeType !== 1 && root.nodeType !== 9)) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+  const scope = root.nodeType === 9 ? root.body || root.documentElement : root;
+
+  if (IS_TOUCH) {
+    // Touch: use IO for data-reveal-group
+    const groupEls = [];
+    if (scope.nodeType === 1 && scope.hasAttribute('data-reveal-group')) groupEls.push(scope);
+    scope.querySelectorAll?.('[data-reveal-group]').forEach((el) => {
+      if (!groupEls.includes(el)) groupEls.push(el);
+    });
+    groupEls.forEach((group) => {
+      if (boundRevealGroups.has(group)) return;
+      boundRevealGroups.add(group);
+      const itemSel = group.dataset.revealItems || ':scope > *';
+      let els;
+      try { els = group.querySelectorAll(itemSel); } catch { return; }
+      if (!els.length) return;
+      const y = parseFloat(group.dataset.revealY || '28') || 28;
+      const stagger = Math.round((parseFloat(group.dataset.revealStagger || '0.08') || 0.08) * 1000);
+      ioFadeUp(els, y, stagger);
+    });
+
+    // Touch: use IO for data-reveal singles
+    const singleEls = [];
+    if (scope.nodeType === 1 && scope.hasAttribute('data-reveal') && !scope.hasAttribute('data-reveal-group')) singleEls.push(scope);
+    scope.querySelectorAll?.('[data-reveal]:not([data-reveal-group])').forEach((el) => {
+      if (!singleEls.includes(el)) singleEls.push(el);
+    });
+    singleEls.forEach((el) => {
+      if (boundRevealSingles.has(el)) return;
+      boundRevealSingles.add(el);
+      const y = parseFloat(el.dataset.revealY || '28') || 28;
+      ioFadeUp([el], y, 0);
+    });
+    return;
+  }
+
+  // Desktop: GSAP / ScrollTrigger path
+  if (!window.gsap || !window.ScrollTrigger) return;
   const gsap = window.gsap;
   const ST = window.ScrollTrigger;
-
-  const scope = root.nodeType === 9 ? root.body || root.documentElement : root;
 
   const groupEls = [];
   if (scope.nodeType === 1 && scope.hasAttribute('data-reveal-group')) groupEls.push(scope);
   scope.querySelectorAll?.('[data-reveal-group]').forEach((el) => {
     if (!groupEls.includes(el)) groupEls.push(el);
   });
-
   groupEls.forEach((group) => {
     if (boundRevealGroups.has(group)) return;
     const itemSel = group.dataset.revealItems || ':scope > *';
     let els;
-    try {
-      els = group.querySelectorAll(itemSel);
-    } catch {
-      return;
-    }
+    try { els = group.querySelectorAll(itemSel); } catch { return; }
     if (!els.length) return;
-
     boundRevealGroups.add(group);
-
     const stagger = parseFloat(group.dataset.revealStagger || '0.1') || 0.1;
     const y = parseFloat(group.dataset.revealY || '32') || 32;
-
     gsap.set(els, { opacity: 0, y });
-
     ST.batch(els, {
-      once: true,
-      start: 'top 91%',
-      onEnter: (batch) =>
-        gsap.to(batch, {
-          opacity: 1,
-          y: 0,
-          duration: 0.72,
-          ease: 'power2.out',
-          stagger,
-          overwrite: true,
-        }),
+      once: true, start: 'top 91%',
+      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.72, ease: 'power2.out', stagger, overwrite: true }),
     });
-
     els.forEach((el) => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.91) {
-        gsap.set(el, { opacity: 1, y: 0 });
-      }
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.91) gsap.set(el, { opacity: 1, y: 0 });
     });
   });
 
   const singleEls = [];
-  if (scope.nodeType === 1 && scope.hasAttribute('data-reveal') && !scope.hasAttribute('data-reveal-group')) {
-    singleEls.push(scope);
-  }
+  if (scope.nodeType === 1 && scope.hasAttribute('data-reveal') && !scope.hasAttribute('data-reveal-group')) singleEls.push(scope);
   scope.querySelectorAll?.('[data-reveal]:not([data-reveal-group])').forEach((el) => {
     if (!singleEls.includes(el)) singleEls.push(el);
   });
-
   singleEls.forEach((el) => {
     if (boundRevealSingles.has(el)) return;
     boundRevealSingles.add(el);
-
     const start = el.dataset.revealStart || 'top 91%';
     const y = parseFloat(el.dataset.revealY || '28') || 28;
     const thresholdPct = parseStartThreshold(start);
-
     gsap.set(el, { opacity: 0, y });
-
     const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight * thresholdPct) {
-      gsap.set(el, { opacity: 1, y: 0 });
-      return;
-    }
-
-    ST.create({
-      trigger: el,
-      start,
-      once: true,
-      onEnter() {
-        gsap.to(el, { opacity: 1, y: 0, duration: 0.88, ease: 'power3.out' });
-      },
-    });
+    if (rect.top < window.innerHeight * thresholdPct) { gsap.set(el, { opacity: 1, y: 0 }); return; }
+    ST.create({ trigger: el, start, once: true, onEnter() { gsap.to(el, { opacity: 1, y: 0, duration: 0.88, ease: 'power3.out' }); } });
   });
 }
 
 let revealObserverBound = false;
-
 function initRevealMutationObserver() {
   if (revealObserverBound || typeof MutationObserver === 'undefined') return;
   revealObserverBound = true;
-
   let t = 0;
   const schedule = () => {
     clearTimeout(t);
     t = window.setTimeout(() => {
       bindDynamicReveals(document.body);
-      if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+      if (!IS_TOUCH && window.ScrollTrigger) window.ScrollTrigger.refresh();
     }, 80);
   };
-
-  const mo = new MutationObserver(schedule);
-  mo.observe(document.body, { childList: true, subtree: true });
+  new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
 }
 
 export function initStaggerReveals() {
-  if (!window.gsap || !window.ScrollTrigger) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const gsap   = window.gsap;
-  const ST     = window.ScrollTrigger;
-  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+  if (IS_TOUCH) {
+    // ── TOUCH: pure IntersectionObserver, zero ScrollTrigger ──
+    const batchSelectors = [
+      ['.capability-card',       32, 60],
+      ['.process-grid article',  36, 70],
+      ['.offer-tile',            28, 40],
+      ['.person-card',           32, 65],
+      ['.rating-card',           28, 50],
+      ['.contact-card',          28, 70],
+      ['.faq-list details',      22, 45],
+      ['.people-showcase-grid .person-card', 36, 65],
+      ['.vmv-card',              40, 70],
+      ['.office-card',           36, 70],
+      ['.facility-card',         36, 70],
+      ['.reel-card',             40, 65],
+      ['.market-approach-item',  40, 70],
+      ['.core-focus-item',       40, 70],
+      ['.tech-innovation-item',  40, 70],
+      ['.technical-standards-item', 40, 70],
+      ['.safety-concept-item',   40, 70],
+    ];
+    batchSelectors.forEach(([sel, y, staggerMs]) => {
+      ioFadeUp(document.querySelectorAll(sel), y, staggerMs);
+    });
 
-  // [CSS selector, stagger seconds, y offset]
+    const singleSelectors = [
+      '.capabilities-viewport', '.achievement-showcase', '.brain-card',
+      '.contact-form-card', '.partners-strip', '.process-route-wrap',
+      '.ratings-marquee', '.timeline-section .section-head',
+      '.partners-reel-hook', '.partners-reel-chip', '.timeline-spine',
+      '.project-deck', '.vmv-header .chip', '.vmv-header p',
+      '.offices-header .chip', '.offices-header p',
+      '.facilities-header .chip', '.facilities-header p',
+      '.partners-head p', '.services-signature-head p',
+      '.offers-head p', '.ratings-head p',
+      '.market-approach-head', '.market-approach-panel',
+      '.core-focus-head', '.core-focus-panel',
+      '.tech-innovation-head', '.tech-innovation-panel',
+      '.technical-standards-head', '.technical-standards-panel',
+      '.safety-concept-head', '.safety-concept-panel',
+    ];
+    singleSelectors.forEach((sel) => {
+      const el = document.querySelector(sel);
+      if (el) ioFadeUp([el], 24, 0);
+    });
+
+    // Timeline items: simple fade-up
+    document.querySelectorAll('.timeline-item').forEach((item) => {
+      ioFadeUp([item], 24, 0);
+      // Also add tl-visible when it enters
+      const io2 = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('tl-visible'); io2.unobserve(e.target); } });
+      }, { threshold: 0.05 });
+      io2.observe(item);
+    });
+
+    bindDynamicReveals(document.body);
+    initRevealMutationObserver();
+    return;
+  }
+
+  // ── DESKTOP: GSAP ScrollTrigger path (unchanged) ──
+  if (!window.gsap || !window.ScrollTrigger) return;
+  const gsap = window.gsap;
+  const ST   = window.ScrollTrigger;
+
   const batches = [
-    /* About list + stats: scroll scrub (scroll-timelines) + about-dynamics.js */
     ['.capability-card',       0.09, 32],
     ['.process-grid article',  0.12, 36],
     ['.offer-tile',            0.055, 28],
@@ -172,34 +240,16 @@ export function initStaggerReveals() {
   batches.forEach(([sel, stagger, y]) => {
     const els = document.querySelectorAll(sel);
     if (!els.length) return;
-
     gsap.set(els, { opacity: 0, y });
-
     ST.batch(els, {
-      once:  true,
-      start: 'top 91%',
-      onEnter: (batch) =>
-        gsap.to(batch, {
-          opacity:  1,
-          y:        0,
-          duration: 0.72,
-          ease:     'power2.out',
-          stagger,
-          overwrite: true,
-        }),
+      once: true, start: 'top 91%',
+      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.72, ease: 'power2.out', stagger, overwrite: true }),
     });
-
-    /* Reveal any elements already fully past the trigger threshold at register time.
-       ST.batch won't fire onEnter for once:true triggers that start already-passed. */
     els.forEach((el) => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.91) {
-        gsap.set(el, { opacity: 1, y: 0 });
-      }
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.91) gsap.set(el, { opacity: 1, y: 0 });
     });
   });
 
-  // Whole-block reveals (single elements that slide in)
   const blocks = [
     ['.capabilities-viewport','top 88%', 0,  32],
     ['.achievement-showcase', 'top 86%', 0,  40],
@@ -239,68 +289,23 @@ export function initStaggerReveals() {
     const el = document.querySelector(sel);
     if (!el) return;
     gsap.set(el, { opacity: 0, y });
-
-    /* Parse the threshold from "top XX%" to check against current position. */
     const thresholdPct = parseFloat((start.match(/(\d+(?:\.\d+)?)%/) || [, '88'])[1]) / 100;
     const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight * thresholdPct) {
-      gsap.set(el, { opacity: 1, y: 0 });
-      return;
-    }
-
-    ST.create({
-      trigger: el,
-      start,
-      once: true,
-      onEnter() {
-        gsap.to(el, { opacity: 1, y: 0, duration: 0.88, ease: 'power3.out' });
-      },
-    });
+    if (rect.top < window.innerHeight * thresholdPct) { gsap.set(el, { opacity: 1, y: 0 }); return; }
+    ST.create({ trigger: el, start, once: true, onEnter() { gsap.to(el, { opacity: 1, y: 0, duration: 0.88, ease: 'power3.out' }); } });
   });
 
-  // Timeline items: horizontal slide on desktop, simple fade-up on mobile
   document.querySelectorAll('.timeline-item').forEach((item) => {
     const isRight = item.classList.contains('tl-right');
-    if (isTouch) {
-      gsap.set(item, { opacity: 0, y: 24 });
-    } else {
-      gsap.set(item, { opacity: 0, x: isRight ? 50 : -50 });
-    }
+    gsap.set(item, { opacity: 0, x: isRight ? 50 : -50 });
     const rect = item.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.91) {
-      gsap.set(item, { opacity: 1, x: 0, y: 0 });
+    if (rect.top < window.innerHeight * 0.91) { gsap.set(item, { opacity: 1, x: 0 }); item.classList.add('tl-visible'); return; }
+    ST.create({ trigger: item, start: 'top 88%', once: true, onEnter() {
+      gsap.to(item, { opacity: 1, x: 0, duration: 0.72, ease: 'power3.out' });
       item.classList.add('tl-visible');
-      return;
-    }
-    ST.create({
-      trigger: item,
-      start: 'top 88%',
-      once: true,
-      onEnter() {
-        gsap.to(item, { opacity: 1, x: 0, y: 0, duration: 0.72, ease: 'power3.out' });
-        item.classList.add('tl-visible');
-      },
-    });
+    }});
   });
 
   bindDynamicReveals(document.body);
   initRevealMutationObserver();
-
-  // Safety net for touch: after page load + 1.5s, force-show anything still hidden.
-  // Prevents elements staying invisible if a ScrollTrigger batch fires late or misses.
-  if (isTouch) {
-    const forceReveal = () => {
-      window.setTimeout(() => {
-        document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach((el) => {
-          el.style.opacity = '1';
-          el.style.transform = 'none';
-        });
-      }, 1500);
-    };
-    if (document.readyState === 'complete') {
-      forceReveal();
-    } else {
-      window.addEventListener('load', forceReveal, { once: true });
-    }
-  }
 }
