@@ -7418,6 +7418,10 @@ html:lang(de) .market-approach-item-text {
   }
 
   /* On mobile: collapse sticky scroll-driven service carousel into flat stacked slides */
+  #services.section {
+    padding-bottom: 60px;
+    overflow: hidden;
+  }
   .services-track {
     height: auto !important;
   }
@@ -7425,8 +7429,12 @@ html:lang(de) .market-approach-item-text {
     position: static !important;
     min-height: auto !important;
     align-items: start;
-    padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    padding-top: 0 !important;
+    padding-bottom: 0;
     box-sizing: border-box;
+  }
+  .services-sticky .container.two-col {
+    padding-top: 24px !important;
   }
   .service-story-viewport {
     height: auto !important;
