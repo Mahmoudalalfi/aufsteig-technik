@@ -4771,24 +4771,7 @@ html:lang(de) .safety-concept-lead {
   text-align: start;
   padding: 0 0 clamp(1.15rem, 2.2vw, 1.45rem);
   border: none;
-  opacity: 0;
-  transform: translateX(-14px);
-  transition:
-    opacity 0.5s cubic-bezier(0.22,1,0.36,1),
-    transform 0.5s cubic-bezier(0.22,1,0.36,1);
 }
-
-.reveal.is-visible .safety-concept-item,
-.is-visible .safety-concept-item {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.safety-concept-item:nth-child(1) { transition-delay: 0.05s; }
-.safety-concept-item:nth-child(2) { transition-delay: 0.13s; }
-.safety-concept-item:nth-child(3) { transition-delay: 0.21s; }
-.safety-concept-item:nth-child(4) { transition-delay: 0.29s; }
-.safety-concept-item:nth-child(5) { transition-delay: 0.37s; }
 
 .safety-concept-item:last-child {
   padding-bottom: 0;
@@ -5243,6 +5226,22 @@ html:lang(de) .safety-concept-item-text {
     padding: 68px 0 80px;
   }
 
+  .industrial-vision-shell {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  .industrial-vision-intro,
+  .industrial-vision-intro-copy {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .industrial-vision-title {
+    font-size: clamp(1.8rem, 9vw, 2.8rem);
+  }
+
   .industrial-vision-panel {
     padding: 18px 16px 20px;
   }
@@ -5397,7 +5396,14 @@ html:lang(de) .safety-concept-item-text {
   .vmv-grid { grid-template-columns: 1fr; }
   .vmv-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
   .vmv-card:last-child { border-bottom: none; }
-  .vmv-header h2 { font-size: clamp(2.2rem, 8vw, 3.2rem); }
+  .vmv-header h2 {
+    font-size: clamp(2.2rem, 8vw, 3.2rem);
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+  }
+  .vmv-card { padding: 36px 24px 40px; }
 }
 /* ===== END VMV ===== */
 
@@ -5959,16 +5965,37 @@ html:lang(de) .safety-concept-item-text {
 .tl-empty { flex: 1; }
 
 @media (max-width: 700px) {
+  /* Single-column stacked timeline — hide snake SVG, left slots, centre node */
+  .tl-snake-svg { display: none; }
+
   .timeline-item {
-    grid-template-columns: 28px 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: auto;
+    margin-bottom: 24px;
   }
+
   .tl-slot-left { display: none; }
-  .tl-node { grid-column: 1; grid-row: 1; align-self: start; padding-top: 32px; }
-  .tl-slot-right { grid-column: 2; padding-left: 18px; }
-  .timeline-item.tl-left { transform: translateX(-24px); }
-  .timeline-item.tl-right { transform: translateX(-24px); }
-  .tl-year { font-size: 3.15rem; }
+  .tl-node { display: none; }
+  .tl-slot-right {
+    grid-column: 1;
+    padding-left: 0;
+  }
+
+  /* All items enter from bottom — no left/right */
+  .timeline-item.tl-left,
+  .timeline-item.tl-right { transform: translateY(24px); }
+  .timeline-item.tl-visible { transform: translateY(0); }
+
+  .tl-year { font-size: 3rem; }
+
+  .tl-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .timeline-track {
+    padding: 0 16px;
+  }
 }
 /* ===== END TIMELINE ===== */
 
@@ -7104,8 +7131,8 @@ html:lang(de) .market-approach-item-text {
 }
 
 .site-footer {
-  
-  margin: -198px 16px;
+
+  margin: -254px 16px;
   position: relative;
   z-index: 6;
   border-radius: 18px 18px 0 0;
@@ -7454,7 +7481,7 @@ html:lang(de) .market-approach-item-text {
   }
 
   .site-footer {
-    margin-top: -176px;
+    margin-top: -216px;
     margin-left: max(12px, env(safe-area-inset-left, 0px));
     margin-right: max(12px, env(safe-area-inset-right, 0px));
     padding-left: max(8px, env(safe-area-inset-left, 0px));
@@ -7565,7 +7592,7 @@ html:lang(de) .market-approach-item-text {
   }
 
   .site-footer {
-    margin-top: -146px;
+    margin-top: -182px;
     margin-left: max(10px, env(safe-area-inset-left, 0px));
     margin-right: max(10px, env(safe-area-inset-right, 0px));
     padding-top: 32px;
@@ -8006,4 +8033,23 @@ html.is-touch .menu-strip {
 .site-lang-btn.is-active {
   color: #fff;
   background: var(--ink);
+}
+
+/* ── Touch / mobile performance: strip costly GPU effects ── */
+@media (hover: none) and (pointer: coarse) {
+  .menu-panel,
+  .menu-toggle,
+  .menu-panel-close,
+  .scroll-nav-pill,
+  .hsp-dot,
+  .service-products-head {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* Disable tilt / magnetic on touch */
+  .tilt-card {
+    transform: none !important;
+    transition: none !important;
+  }
 }
