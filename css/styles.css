@@ -1994,12 +1994,18 @@ a {
   }
 }
 
-/* Touch: no hover — keep speech bubble readable */
+/* Touch: bubble hidden by default, shown on tap (.person-media has tabindex=0) */
 @media (hover: none) {
   .person-bubble {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .person-card:focus-within .person-bubble,
+  .person-media:focus .person-bubble {
     opacity: 1;
     transform: translateY(0) scale(1) rotate(0deg);
     animation: none;
+    pointer-events: auto;
   }
 }
 
