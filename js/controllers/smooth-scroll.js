@@ -111,6 +111,22 @@ export function initSmoothScroll() {
   });
 }
 
+/** JS-driven smooth scroll to top — works even when scroll-behavior:auto is set on html */
+function smoothScrollToTop() {
+  const start = window.scrollY;
+  const duration = 600;
+  const startTime = performance.now();
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // ease-out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    window.scrollTo(0, start * (1 - eased));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
 /**
  * Back-to-top button.
  * @param {object|null} lenis  Pass lenis instance for smooth scroll, null for native.
@@ -121,16 +137,17 @@ function initBackToTop(lenis) {
 
   const SHOW_AFTER = 400; // px scrolled before button appears
 
+  function getScrollY() {
+    return window.scrollY ?? document.documentElement.scrollTop ?? 0;
+  }
+
   function update() {
-    const y = window.scrollY || 0;
-    if (y > SHOW_AFTER) {
-      btn.classList.add("is-visible");
-    } else {
-      btn.classList.remove("is-visible");
-    }
+    const y = getScrollY();
+    btn.classList.toggle("is-visible", y > SHOW_AFTER);
   }
 
   window.addEventListener("scroll", update, { passive: true });
+  document.addEventListener("scroll", update, { passive: true });
   update();
 
   btn.addEventListener("click", () => {
@@ -140,7 +157,7 @@ function initBackToTop(lenis) {
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      smoothScrollToTop();
     }
   });
 }

@@ -40,8 +40,11 @@ export function initTimeline() {
   let pathLen = buildSnakePath();
   window.addEventListener('resize', () => { pathLen = buildSnakePath(); });
 
+  // On touch/mobile the snake SVG is hidden via CSS; skip scrub to reduce jank
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
   // Animate draw on scroll using ScrollTrigger if available
-  if (window.gsap && window.ScrollTrigger) {
+  if (!isTouch && window.gsap && window.ScrollTrigger) {
     window.ScrollTrigger.create({
       trigger: track,
       start: 'top 80%',

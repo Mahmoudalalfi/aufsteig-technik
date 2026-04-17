@@ -171,29 +171,32 @@ export function initIndustrialVision() {
 
 
 
-  orbs.forEach((orb, i) => {
+  // Skip parallax orbs on touch — scrub ScrollTriggers cause scroll jank on mobile
+  if (!window.matchMedia('(pointer: coarse)').matches) {
+    orbs.forEach((orb, i) => {
 
-    gsap.to(orb, {
+      gsap.to(orb, {
 
-      y: i % 2 ? -44 : 52,
+        y: i % 2 ? -44 : 52,
 
-      x: i % 2 ? 24 : -18,
+        x: i % 2 ? 24 : -18,
 
-      scrollTrigger: {
+        scrollTrigger: {
 
-        trigger: section,
+          trigger: section,
 
-        start: "top bottom",
+          start: "top bottom",
 
-        end: "bottom top",
+          end: "bottom top",
 
-        scrub: 1.15,
+          scrub: 1.15,
 
-      },
+        },
+
+      });
 
     });
-
-  });
+  }
 
 }
 
