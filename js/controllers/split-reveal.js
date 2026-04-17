@@ -38,6 +38,8 @@ function wrapWords(el) {
 export function initSplitReveal() {
   if (!window.gsap || !window.ScrollTrigger) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // On touch: skip word-split entirely — too many hidden spans causes invisible headings
+  if (window.matchMedia('(pointer: coarse)').matches) return;
 
   const gsap = window.gsap;
   const ST = window.ScrollTrigger;

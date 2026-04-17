@@ -145,6 +145,7 @@ export function initStaggerReveals() {
 
   const gsap   = window.gsap;
   const ST     = window.ScrollTrigger;
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
 
   // [CSS selector, stagger seconds, y offset]
   const batches = [
@@ -257,13 +258,17 @@ export function initStaggerReveals() {
     });
   });
 
-  // Timeline items: alternate left/right slide-in
+  // Timeline items: horizontal slide on desktop, simple fade-up on mobile
   document.querySelectorAll('.timeline-item').forEach((item) => {
     const isRight = item.classList.contains('tl-right');
-    gsap.set(item, { opacity: 0, x: isRight ? 50 : -50 });
+    if (isTouch) {
+      gsap.set(item, { opacity: 0, y: 24 });
+    } else {
+      gsap.set(item, { opacity: 0, x: isRight ? 50 : -50 });
+    }
     const rect = item.getBoundingClientRect();
     if (rect.top < window.innerHeight * 0.91) {
-      gsap.set(item, { opacity: 1, x: 0 });
+      gsap.set(item, { opacity: 1, x: 0, y: 0 });
       item.classList.add('tl-visible');
       return;
     }
@@ -272,7 +277,7 @@ export function initStaggerReveals() {
       start: 'top 88%',
       once: true,
       onEnter() {
-        gsap.to(item, { opacity: 1, x: 0, duration: 0.72, ease: 'power3.out' });
+        gsap.to(item, { opacity: 1, x: 0, y: 0, duration: 0.72, ease: 'power3.out' });
         item.classList.add('tl-visible');
       },
     });
@@ -280,4 +285,22 @@ export function initStaggerReveals() {
 
   bindDynamicReveals(document.body);
   initRevealMutationObserver();
+
+  // Safety net for touch: after page load + 1.5s, force-show anything still hidden.
+  // Prevents elements staying invisible if a ScrollTrigger batch fires late or misses.
+  if (isTouch) {
+    const forceReveal = () => {
+      window.setTimeout(() => {
+        document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach((el) => {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+      }, 1500);
+    };
+    if (document.readyState === 'complete') {
+      forceReveal();
+    } else {
+      window.addEventListener('load', forceReveal, { once: true });
+    }
+  }
 }

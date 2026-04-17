@@ -417,56 +417,69 @@ export function initScrollTimelines(refs) {
 }
 
 /**
- * Touch-only scroll timelines — zero scrub triggers.
- * Simple once:true entrance animations only. Native scroll stays unblocked.
+ * Touch-only scroll timelines — no scrub, no GSAP opacity:0 traps.
+ * Uses IntersectionObserver (never blocks scroll) for entrance reveals.
  */
 function initTouchScrollTimelines(refs, gsap, ScrollTrigger) {
-  ScrollTrigger.config({ ignoreMobileResize: true });
-
   // Show first service slide immediately
   if (refs.serviceSlides && refs.serviceSlides.length) {
     refs.serviceSlides[0].classList.add('is-active');
-    refs.servicePills && refs.servicePills[0] && refs.servicePills[0].classList.add('is-active');
+    if (refs.servicePills && refs.servicePills[0]) refs.servicePills[0].classList.add('is-active');
   }
 
-  // Simple fade-up entrances — no scrub, no onUpdate
-  const simpleReveal = (selector, trigger, startY = 28) => {
+  // IntersectionObserver-based fade-up — zero scroll event cost
+  function ioReveal(selector, yOffset = 24, staggerMs = 60) {
     const els = typeof selector === 'string'
       ? Array.from(document.querySelectorAll(selector))
-      : (Array.isArray(selector) ? selector : [selector]);
+      : (Array.isArray(selector) ? selector : (selector ? [selector] : []));
     if (!els.length) return;
-    gsap.set(els, { opacity: 0, y: startY });
-    ScrollTrigger.batch(els, {
-      once: true,
-      start: 'top 92%',
-      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out', stagger: 0.06 }),
+
+    els.forEach((el) => {
+      el.style.opacity = '0';
+      el.style.transform = `translateY(${yOffset}px)`;
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     });
-    els.forEach(el => {
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.92) {
-        gsap.set(el, { opacity: 1, y: 0 });
+
+    let delay = 0;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const d = delay;
+        delay += staggerMs;
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, d);
+        io.unobserve(el);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+    els.forEach((el) => {
+      // Already visible — show immediately
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.95) {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      } else {
+        io.observe(el);
       }
     });
-  };
-
-  simpleReveal('.intro-grid, .stats-grid article', document.body);
-  simpleReveal('.service-products-grid article', document.body);
-  simpleReveal('.capability-card', document.body, 24);
-
-  if (refs.impactSection) {
-    const showcase = refs.impactSection.querySelector('.achievement-showcase');
-    if (showcase) simpleReveal(showcase, refs.impactSection);
   }
 
+  ioReveal('.intro-grid, .stats-grid article');
+  ioReveal('.service-products-grid article');
+  ioReveal('.capability-card', 20, 50);
+  ioReveal('.achievement-showcase', 24, 0);
+
   if (refs.brainSection) {
-    simpleReveal(
-      Array.from(refs.brainSection.querySelectorAll('.brain-left h3, .brain-tags span, .brain-right h2, .brain-right .btn-light')),
-      refs.brainSection
+    ioReveal(
+      Array.from(refs.brainSection.querySelectorAll('.brain-left h3, .brain-tags span, .brain-right h2, .brain-right .btn-light'))
     );
   }
 
-  // Bottom slogan: just fade in, no parallax
   if (refs.bottomSloganTitle) {
-    simpleReveal(refs.bottomSloganTitle, document.body, 40);
+    ioReveal(refs.bottomSloganTitle, 32, 0);
   }
 }
 
