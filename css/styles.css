@@ -2995,7 +2995,7 @@ a {
   }
 
   .people-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .people-showcase-grid {
@@ -8114,11 +8114,9 @@ html.is-touch .menu-strip {
 
 /* ── Mobile layout fixes ── */
 @media (max-width: 700px) {
-  /* Partners reel: last card spans full row when count is odd */
-  .partners-reel-track .reel-card:last-child:nth-child(odd) {
+  /* Partners reel: 5th card fills the empty right cell */
+  .partners-reel-track .reel-card:last-child:nth-child(2n+1) {
     grid-column: 1 / -1;
-    max-width: 50%;
-    justify-self: start;
   }
 
   /* VMV header: ensure text doesn't overflow dark panel edges */
