@@ -44,7 +44,6 @@ export function initSplitReveal() {
 
   // [selector, ScrollTrigger start value]
   const targets = [
-    ['.intro h2',                   'top 88%'],
     ['#services .dark h3',          'top 82%'],
     ['#services .service-story-slide h4', 'top 82%'],
     ['.service-photo-meta strong', 'top 86%'],
@@ -58,6 +57,12 @@ export function initSplitReveal() {
     ['.faq-wrap h3',                'top 88%'],
     ['.offers-head h3',             'top 88%'],
     ['.process-grid h4',            'top 90%'],
+    ['.partners-reel-left h2',      'top 88%'],
+    ['.vmv-header h2',              'top 86%'],
+    ['.vmv-card h3',                'top 88%'],
+    ['.offices-header h2',          'top 88%'],
+    ['.facilities-header h2',       'top 88%'],
+    ['.capability-card h4',         'top 90%'],
   ];
 
   targets.forEach(([sel, start]) => {

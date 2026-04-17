@@ -15,10 +15,14 @@ import { initScrollTimelines } from "./controllers/scroll-timelines.js";
 import { initStatsCountUp } from "./controllers/stats-countup.js";
 import { initHeroLoad } from "./controllers/hero-load.js";
 import { initSplitReveal } from "./controllers/split-reveal.js";
-import { initStaggerReveals } from "./controllers/stagger-reveals.js";
+import { initStaggerReveals, bindDynamicReveals } from "./controllers/stagger-reveals.js";
 import { initMagnetic } from "./controllers/magnetic.js";
 import { initCardTilt } from "./controllers/card-tilt.js";
 import { initAboutSlideshow } from "./controllers/about-slideshow.js";
+import { initTimeline } from "./controllers/timeline.js";
+import { initPartnersReel } from "./controllers/partners-reel.js";
+import { initIndustrialVision } from "./controllers/industrial-vision.js";
+import { initAboutDynamics } from "./controllers/about-dynamics.js";
 
 /**
  * Hero intro + split-text reveals must run after i18n apply(), which uses textContent
@@ -33,6 +37,7 @@ window.__runAfterI18nApply = () => {
     window.__scrollTimelinesReady = true;
   }
   initStatsCountUp();
+  bindDynamicReveals(document.body);
   requestAnimationFrame(() => {
     if (window.ScrollTrigger) window.ScrollTrigger.refresh();
   });
@@ -62,6 +67,10 @@ requestAnimationFrame(() => {
 
 // Premium interactions — split reveal runs from __runAfterI18nApply after i18n apply()
 initStaggerReveals(); // grid / card stagger entrances
+initAboutDynamics(); // #about bullets + trust strip (About-only)
+initIndustrialVision();
+initTimeline();       // snake path draw + milestone reveals
+initPartnersReel();   // drag-to-scroll partners film strip
 initMagnetic();       // magnetic CTAs
 initCardTilt();       // 3-D tilt on hover
 

@@ -3,46 +3,38 @@
  *
  * Sequence:
  *  1. Nav pill drops in
- *  2. Eyebrow fades + slides from left
- *  3. Serif headline words cascade up through clip
- *  4. Light tracking subline fades up
+ *  2. Company name (serif) fades up as a single line
+ *  3. Primary + secondary taglines fade up
+ *  4. Corporate highlight fades
  *  5. Desc fades
  *  6. Buttons rise
  *  7. Scroll cue fades
  */
-import { wrapWords } from './split-reveal.js';
-
 export function initHeroLoad() {
   if (!window.gsap) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const gsap = window.gsap;
 
-  const eyebrow   = document.querySelector('.hero-overlay > .eyebrow');
-  const serifLine = document.querySelector('.h1-line--serif');
-  const lightLine = document.querySelector('.h1-line--light');
-  const desc      = document.querySelector('.hero-desc');
+  const serifLine   = document.querySelector('.h1-line--serif');
+  const primaryLine = document.querySelector('.h1-line--primary');
+  const lightLine   = document.querySelector('.h1-line--light');
+  const corporate   = document.querySelector('.hero-corporate');
+  const desc        = document.querySelector('.hero-desc');
   const actions   = document.querySelector('.hero-actions');
   const scrollCue = document.querySelector('.hero-scroll-cue');
   const sidePanel = document.querySelector('.hero-side-panel');
   const navPill   = document.querySelector('.nav-pill');
 
-  // Wrap serif headline words for the clip reveal
-  if (serifLine && !serifLine.querySelector('.sw-inner')) {
-    wrapWords(serifLine);
-  }
-  const serifSpans = serifLine ? serifLine.querySelectorAll('.sw-inner') : [];
-
   // Kill stale tweens
-  gsap.killTweensOf([eyebrow, lightLine, desc, actions, scrollCue, sidePanel, navPill].filter(Boolean));
-  if (serifSpans.length) gsap.killTweensOf(serifSpans);
+  gsap.killTweensOf([serifLine, primaryLine, lightLine, corporate, desc, actions, scrollCue, sidePanel, navPill].filter(Boolean));
 
   // ── Initial states ──────────────────────────────────────────
   if (navPill)           gsap.set(navPill,     { opacity: 0, y: -12, scale: 0.95 });
-  if (eyebrow)           gsap.set(eyebrow,     { opacity: 0, x: -22 });
-  if (serifSpans.length) gsap.set(serifSpans,  { yPercent: 105, opacity: 0 });
-  else if (serifLine)    gsap.set(serifLine,   { opacity: 0, y: 30 });
+  if (serifLine)         gsap.set(serifLine,   { opacity: 0, y: 24 });
+  if (primaryLine)       gsap.set(primaryLine, { opacity: 0, y: 14 });
   if (lightLine)         gsap.set(lightLine,   { opacity: 0, y: 14 });
+  if (corporate)         gsap.set(corporate,   { opacity: 0, y: 12 });
   if (desc)              gsap.set(desc,        { opacity: 0, y: 12 });
   if (actions)           gsap.set(actions,     { opacity: 0, y: 10 });
   if (scrollCue)         gsap.set(scrollCue,   { opacity: 0 });
@@ -55,22 +47,20 @@ export function initHeroLoad() {
     tl.to(navPill, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power3.out' });
   }
 
-  if (eyebrow) {
-    tl.to(eyebrow, { opacity: 1, x: 0, duration: 0.65, ease: 'power2.out' }, '-=0.28');
+  if (serifLine) {
+    tl.to(serifLine, { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' }, '-=0.38');
   }
 
-  if (serifSpans.length) {
-    tl.to(serifSpans, {
-      yPercent: 0, opacity: 1,
-      duration: 1.05, ease: 'power3.out',
-      stagger: 0.036,
-    }, '-=0.38');
-  } else if (serifLine) {
-    tl.to(serifLine, { opacity: 1, y: 0, duration: 0.95, ease: 'power3.out' }, '-=0.38');
+  if (primaryLine) {
+    tl.to(primaryLine, { opacity: 1, y: 0, duration: 0.72, ease: 'power2.out' }, '-=0.58');
   }
 
   if (lightLine) {
-    tl.to(lightLine, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.62');
+    tl.to(lightLine, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.58');
+  }
+
+  if (corporate) {
+    tl.to(corporate, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, '-=0.48');
   }
 
   if (desc) {
