@@ -2999,7 +2999,7 @@ a {
   }
 
   .people-showcase-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .impact-mid {
@@ -7411,17 +7411,41 @@ html:lang(de) .market-approach-item-text {
     margin-top: 0;
   }
 
+  /* On mobile: collapse sticky scroll-driven service carousel into flat stacked slides */
   .services-track {
-    height: 280vh;
+    height: auto !important;
   }
-
-  /* Don’t vertically center the grid — it was clipping the card top/bottom on short viewports. */
   .services-sticky {
+    position: static !important;
+    min-height: auto !important;
     align-items: start;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
     box-sizing: border-box;
   }
-
+  .service-story-viewport {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+  .service-story-stack {
+    overflow: visible !important;
+    height: auto !important;
+  }
+  .service-story-slide {
+    position: static !important;
+    opacity: 1 !important;
+    transform: none !important;
+    display: block !important;
+    min-height: auto !important;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px !important;
+  }
+  .service-story-slide:not(.is-active) {
+    display: block !important;
+    opacity: 1 !important;
+  }
   .services-left {
     min-height: auto;
     gap: 22px;
@@ -8085,5 +8109,27 @@ html.is-touch .menu-strip {
   .ig-card::after,
   .about-org-item::after {
     display: none;
+  }
+}
+
+/* ── Mobile layout fixes ── */
+@media (max-width: 700px) {
+  /* Partners reel: last card spans full row when count is odd */
+  .partners-reel-track .reel-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: 50%;
+    justify-self: start;
+  }
+
+  /* VMV header: ensure text doesn't overflow dark panel edges */
+  .vmv-section .container {
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+
+  /* Safety Concept: prevent left-edge text crop inside dark panel */
+  .safety-concept-section .container {
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
   }
 }
