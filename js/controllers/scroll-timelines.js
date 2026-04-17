@@ -34,6 +34,15 @@ export function initScrollTimelines(refs) {
   const ScrollTrigger = window.ScrollTrigger;
   gsap.registerPlugin(ScrollTrigger);
 
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+  // On touch: skip ALL scrub ScrollTriggers — they consume every scroll event
+  // and make the page feel stuck. Use simple entrance animations instead.
+  if (isTouch) {
+    initTouchScrollTimelines(refs, gsap, ScrollTrigger);
+    return;
+  }
+
   const st = touchScrollTuning();
   ScrollTrigger.config({ ignoreMobileResize: true });
 
@@ -404,6 +413,60 @@ export function initScrollTimelines(refs) {
         }
       );
     }
+  }
+}
+
+/**
+ * Touch-only scroll timelines — zero scrub triggers.
+ * Simple once:true entrance animations only. Native scroll stays unblocked.
+ */
+function initTouchScrollTimelines(refs, gsap, ScrollTrigger) {
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  // Show first service slide immediately
+  if (refs.serviceSlides && refs.serviceSlides.length) {
+    refs.serviceSlides[0].classList.add('is-active');
+    refs.servicePills && refs.servicePills[0] && refs.servicePills[0].classList.add('is-active');
+  }
+
+  // Simple fade-up entrances — no scrub, no onUpdate
+  const simpleReveal = (selector, trigger, startY = 28) => {
+    const els = typeof selector === 'string'
+      ? Array.from(document.querySelectorAll(selector))
+      : (Array.isArray(selector) ? selector : [selector]);
+    if (!els.length) return;
+    gsap.set(els, { opacity: 0, y: startY });
+    ScrollTrigger.batch(els, {
+      once: true,
+      start: 'top 92%',
+      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out', stagger: 0.06 }),
+    });
+    els.forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.92) {
+        gsap.set(el, { opacity: 1, y: 0 });
+      }
+    });
+  };
+
+  simpleReveal('.intro-grid, .stats-grid article', document.body);
+  simpleReveal('.service-products-grid article', document.body);
+  simpleReveal('.capability-card', document.body, 24);
+
+  if (refs.impactSection) {
+    const showcase = refs.impactSection.querySelector('.achievement-showcase');
+    if (showcase) simpleReveal(showcase, refs.impactSection);
+  }
+
+  if (refs.brainSection) {
+    simpleReveal(
+      Array.from(refs.brainSection.querySelectorAll('.brain-left h3, .brain-tags span, .brain-right h2, .brain-right .btn-light')),
+      refs.brainSection
+    );
+  }
+
+  // Bottom slogan: just fade in, no parallax
+  if (refs.bottomSloganTitle) {
+    simpleReveal(refs.bottomSloganTitle, document.body, 40);
   }
 }
 
