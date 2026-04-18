@@ -13,35 +13,48 @@ function ioFadeUp(els, yPx = 28, staggerMs = 55) {
   if (!els || !els.length) return;
   const arr = Array.isArray(els) ? els : Array.from(els);
 
+  // Set initial hidden state; transition is applied after first paint to guarantee the
+  // browser registers the start state before we animate to the end state.
   arr.forEach((el) => {
     el.style.opacity = '0';
     el.style.transform = `translateY(${yPx}px)`;
-    el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+    el.style.transition = 'none';
+    el.style.willChange = 'opacity, transform';
   });
 
   let nextDelay = 0;
+
+  function revealEl(el) {
+    const d = nextDelay;
+    nextDelay += staggerMs;
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1)';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }, d);
+  }
+
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      const el = entry.target;
-      const d = nextDelay;
-      nextDelay += staggerMs;
-      setTimeout(() => {
+      revealEl(entry.target);
+      io.unobserve(entry.target);
+    });
+  }, { rootMargin: '0px 0px -5% 0px', threshold: 0.05 });
+
+  // Use rAF so the hidden state is painted before we start observing
+  requestAnimationFrame(() => {
+    arr.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      // Only skip animation for elements already well above the fold at page load
+      if (r.bottom > 0 && r.top < window.innerHeight * 0.5) {
+        el.style.transition = 'none';
         el.style.opacity = '1';
         el.style.transform = 'translateY(0)';
-      }, d);
-      io.unobserve(el);
+      } else {
+        io.observe(el);
+      }
     });
-  }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
-
-  arr.forEach((el) => {
-    const r = el.getBoundingClientRect();
-    if (r.bottom > 0 && r.top < window.innerHeight * 0.98) {
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    } else {
-      io.observe(el);
-    }
   });
 }
 

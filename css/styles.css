@@ -7447,9 +7447,11 @@ html:lang(de) .market-approach-item-text {
   }
 
   #serviceStoryCard.floating-card {
-    overflow: visible;
+    overflow: hidden;
     padding: 18px;
     isolation: isolate;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .services-card .service-photo {
