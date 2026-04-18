@@ -34,37 +34,47 @@ export function initAboutDynamics() {
     function ioReveal(els, yPx, staggerMs, onDone) {
       const arr = Array.isArray(els) ? els : (els instanceof NodeList ? Array.from(els) : (els ? [els] : []));
       if (!arr.length) { onDone && onDone(); return; }
+      // Set hidden with no transition first
       arr.forEach((el) => {
+        el.style.transition = 'none';
         el.style.opacity = '0';
         el.style.transform = `translateY(${yPx}px)`;
-        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
       });
       let delay = 0;
       let done = 0;
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const el = entry.target;
-          const d = delay;
-          delay += staggerMs;
+      function revealOne(el) {
+        const d = delay; delay += staggerMs;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
           setTimeout(() => {
+            el.style.transition = 'opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)';
             el.style.opacity = '1';
             el.style.transform = 'translateY(0)';
             done++;
             if (done === arr.length && onDone) onDone();
           }, d);
-          io.unobserve(el);
+        }));
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          revealOne(entry.target);
+          io.unobserve(entry.target);
         });
-      }, { rootMargin: '0px 0px -4% 0px', threshold: 0.04 });
-      arr.forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.top < window.innerHeight * 0.98) {
-          setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; done++; if (done === arr.length && onDone) onDone(); }, delay);
-          delay += staggerMs;
-        } else {
-          io.observe(el);
-        }
-      });
+      }, { rootMargin: '0px 0px -5% 0px', threshold: 0.05 });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        arr.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.5) {
+            el.style.transition = 'none';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+            done++;
+            if (done === arr.length && onDone) onDone();
+          } else {
+            io.observe(el);
+          }
+        });
+      }));
     }
 
     ioReveal(bullets, 18, 60, () => section.classList.add("about-live"));

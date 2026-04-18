@@ -13,25 +13,26 @@ function ioFadeUp(els, yPx = 28, staggerMs = 55) {
   if (!els || !els.length) return;
   const arr = Array.isArray(els) ? els : Array.from(els);
 
-  // Set initial hidden state; transition is applied after first paint to guarantee the
-  // browser registers the start state before we animate to the end state.
+  // Hide immediately (no transition yet so the browser paints them invisible)
   arr.forEach((el) => {
+    el.style.transition = 'none';
     el.style.opacity = '0';
     el.style.transform = `translateY(${yPx}px)`;
-    el.style.transition = 'none';
-    el.style.willChange = 'opacity, transform';
   });
 
   let nextDelay = 0;
 
-  function revealEl(el) {
-    const d = nextDelay;
+  function revealEl(el, extraDelay = 0) {
+    const d = nextDelay + extraDelay;
     nextDelay += staggerMs;
-    setTimeout(() => {
-      el.style.transition = 'opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1)';
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    }, d);
+    // Double rAF: first frame commits the hidden state, second frame starts the transition
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      setTimeout(() => {
+        el.style.transition = 'opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, d > 0 ? d : 0);
+    }));
   }
 
   const io = new IntersectionObserver((entries) => {
@@ -42,11 +43,10 @@ function ioFadeUp(els, yPx = 28, staggerMs = 55) {
     });
   }, { rootMargin: '0px 0px -5% 0px', threshold: 0.05 });
 
-  // Use rAF so the hidden state is painted before we start observing
-  requestAnimationFrame(() => {
+  // Double rAF before observing so hidden state is committed to paint
+  requestAnimationFrame(() => requestAnimationFrame(() => {
     arr.forEach((el) => {
       const r = el.getBoundingClientRect();
-      // Only skip animation for elements already well above the fold at page load
       if (r.bottom > 0 && r.top < window.innerHeight * 0.5) {
         el.style.transition = 'none';
         el.style.opacity = '1';
@@ -55,7 +55,7 @@ function ioFadeUp(els, yPx = 28, staggerMs = 55) {
         io.observe(el);
       }
     });
-  });
+  }));
 }
 
 /* ─── bindDynamicReveals ─── */
