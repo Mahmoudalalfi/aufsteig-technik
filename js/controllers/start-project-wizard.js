@@ -1,7 +1,5 @@
-import { CONTACT_INBOX_EMAIL } from "../config/inbox-email.js";
-import { appendLogoAttachment, buildBrandedPlainEmail, buildProjectConfirmationHtml } from "../utils/formsubmit-email.js";
-import { sendConfirmationEmail } from "../utils/emailjs-send.js";
-import { isFormSubmitSuccess } from "../utils/formsubmit.js";
+import { buildBrandedPlainEmail } from "../utils/formsubmit-email.js";
+import { sendConfirmationEmail, sendInboxEmail } from "../utils/emailjs-send.js";
 
 const DRAFT_KEY = "aufsteig_start_project_draft_v2";
 
@@ -508,35 +506,13 @@ async function submitProjectToInbox() {
   const bodyText = buildProjectPlainMessage(data, formEl);
   const subject = `Project request — ${fullName} — ${email}`;
 
-  const payload = new FormData();
-  payload.append("name", fullName);
-  payload.append("email", email);
-  payload.append("_replyto", email);
-  payload.append("_subject", subject);
-  payload.append("message", bodyText);
-  payload.append("_template", "table");
-  payload.append("_autoresponse", buildProjectAutoResponse({
-    name: fullName,
-    sections: buildProjectSections(data, formEl),
-  }));
-  await appendLogoAttachment(payload);
-
-  const fileInput = formEl.querySelector('input[name="files"]');
-  if (fileInput && fileInput.files && fileInput.files.length) {
-    for (let i = 0; i < fileInput.files.length; i++) {
-      payload.append("attachment", fileInput.files[i]);
-    }
-  }
-
-  const url = `https://formsubmit.co/ajax/${encodeURIComponent(CONTACT_INBOX_EMAIL)}`;
-  const res = await fetch(url, {
-    method: "POST",
-    body: payload,
-    headers: { Accept: "application/json" },
+  await sendInboxEmail({
+    fromName:    fullName,
+    fromEmail:   email,
+    subject,
+    message:     bodyText,
   });
-  const json = await res.json().catch(() => null);
-  const ok = res.ok && isFormSubmitSuccess(json);
-  return { ok, message: json && typeof json.message === "string" ? json.message : "" };
+  return { ok: true };
 }
 
 async function runSubmit() {

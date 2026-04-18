@@ -1,16 +1,9 @@
-import { CONTACT_INBOX_EMAIL } from "../config/inbox-email.js";
-import { appendLogoAttachment, buildContactInboxMessage, buildContactConfirmationHtml } from "../utils/formsubmit-email.js";
-import { isFormSubmitSuccess } from "../utils/formsubmit.js";
-import { sendConfirmationEmail } from "../utils/emailjs-send.js";
-
-/** FormSubmit; Reply-To via `_replyto`. Activate inbox on first use if FormSubmit asks. */
+import { sendConfirmationEmail, sendInboxEmail } from "../utils/emailjs-send.js";
 
 function contactT(key, fallback) {
   try {
     if (typeof window.siteT === "function") return window.siteT(key);
-  } catch (_) {
-    /* ignore */
-  }
+  } catch (_) {}
   return fallback;
 }
 
@@ -36,77 +29,56 @@ export function initContactForm() {
     e.preventDefault();
 
     const fd = new FormData(form);
-    const name = String(fd.get("name") || "").trim();
-    const email = String(fd.get("email") || "").trim();
-    const phone = String(fd.get("phone") || "").trim();
+    const name       = String(fd.get("name")    || "").trim();
+    const email      = String(fd.get("email")   || "").trim();
+    const phone      = String(fd.get("phone")   || "").trim();
     const subjectRaw = String(fd.get("subject") || "").trim();
-    const message = String(fd.get("message") || "").trim();
+    const message    = String(fd.get("message") || "").trim();
 
-    const subject =
-      subjectRaw ||
-      contactT("contact.form.defaultSubject", "Website inquiry");
-    const notificationSubject = `${subject} — ${email}`;
+    const subject = subjectRaw || contactT("contact.form.defaultSubject", "Website inquiry");
 
-    /* `message` = visitor text only + footer. Name/email/phone are separate FormSubmit fields. */
-    const inboxMessage = buildContactInboxMessage(message);
+    // Full details for company inbox
+    const inboxMessage = [
+      `Name:    ${name}`,
+      `Email:   ${email}`,
+      phone ? `Phone:   ${phone}` : null,
+      `Subject: ${subject}`,
+      ``,
+      `Message:`,
+      message,
+    ].filter(l => l !== null).join("\n");
 
     setStatus(statusEl, "", null);
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = contactT("contact.form.sending", "Sending…");
+      submitBtn.textContent = contactT("contact.form.sending", "Sending...");
     }
 
-    const payload = new FormData();
-    payload.append("name", name);
-    payload.append("email", email);
-    payload.append("phone", phone);
-    payload.append("subject", subject);
-    payload.append("_subject", notificationSubject);
-    payload.append("message", inboxMessage);
-    payload.append("_replyto", email);
-    payload.append("_template", "table");
-    await appendLogoAttachment(payload);
-
-    const url = `https://formsubmit.co/ajax/${encodeURIComponent(CONTACT_INBOX_EMAIL)}`;
-
     try {
-      const res = await fetch(url, {
-        method: "POST",
-        body: payload,
-        headers: { Accept: "application/json" },
+      await sendInboxEmail({
+        fromName:  name,
+        fromEmail: email,
+        subject:   `${subject} — ${name} — ${email}`,
+        message:   inboxMessage,
       });
 
-      const data = await res.json().catch(() => null);
-      const submitted = res.ok && isFormSubmitSuccess(data);
-      if (submitted) {
-        setStatus(statusEl, contactT("contact.form.success", "Thank you — your message was sent."), "success");
-        form.reset();
-        sendConfirmationEmail({
-          toEmail:  email,
-          toName:   name,
-          subject:  "We received your inquiry — Aufstieg Technik",
-          message:  message,
-        });
-      } else {
-        const errMsg =
-          data && typeof data.message === "string"
-            ? data.message
-            : contactT("contact.form.error", "Something went wrong. Please try again or email us directly.");
-        setStatus(statusEl, errMsg, "error");
-      }
+      setStatus(statusEl, contactT("contact.form.success", "Thank you — your message was sent."), "success");
+      form.reset();
+
+      sendConfirmationEmail({
+        toEmail: email,
+        toName:  name,
+        subject: "We received your inquiry — Aufstieg Technik",
+        message: message,
+      });
     } catch {
-      setStatus(
-        statusEl,
-        contactT("contact.form.error", "Something went wrong. Please try again or email us directly."),
-        "error"
-      );
+      setStatus(statusEl, contactT("contact.form.error", "Something went wrong. Please try again or email us directly."), "error");
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent =
-          typeof window.siteT === "function"
-            ? window.siteT(submitI18nKey)
-            : defaultSubmitLabel;
+        submitBtn.textContent = typeof window.siteT === "function"
+          ? window.siteT(submitI18nKey)
+          : defaultSubmitLabel;
       }
     }
   });

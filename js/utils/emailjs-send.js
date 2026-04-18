@@ -1,4 +1,4 @@
-import { EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID } from "../config/emailjs.js";
+import { EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_INBOX_TEMPLATE_ID } from "../config/emailjs.js";
 
 let initialised = false;
 
@@ -29,5 +29,21 @@ export async function sendConfirmationEmail({ toEmail, toName, subject, message,
     });
   } catch (err) {
     console.warn("[EmailJS] confirmation email failed:", err);
+  }
+}
+
+export async function sendInboxEmail({ fromName, fromEmail, subject, message }) {
+  try {
+    init();
+    if (typeof emailjs === "undefined") return;
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_INBOX_TEMPLATE_ID, {
+      to_email:     "Info@aufstiegtechnik.de",
+      subject:      subject,
+      reply_to:     fromEmail,
+      user_name:    fromName || fromEmail,
+      user_message: message || "",
+    });
+  } catch (err) {
+    console.warn("[EmailJS] inbox email failed:", err);
   }
 }
