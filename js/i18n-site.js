@@ -431,6 +431,11 @@
       "contact.form.message": "Message *",
       "contact.form.consent": "I agree to be contacted about this request.",
       "contact.form.submit": "Submit now",
+      "contact.email.sectionInquiry": "Your inquiry",
+      "contact.form.defaultSubject": "Website inquiry",
+      "contact.form.sending": "Sending\u2026",
+      "contact.form.success": "Thank you \u2014 your message was sent. We\u2019ll get back to you shortly.",
+      "contact.form.error": "Something went wrong. Please try again or email us directly.",
 
       "slogan.l1": "Elevating",
       "slogan.l2": "everyday mobility",
@@ -901,6 +906,11 @@
       "contact.form.message": "Nachricht *",
       "contact.form.consent": "Ich stimme zu, bez\u00fcglich dieser Anfrage kontaktiert zu werden.",
       "contact.form.submit": "Jetzt absenden",
+      "contact.email.sectionInquiry": "Ihre Anfrage",
+      "contact.form.defaultSubject": "Website-Anfrage",
+      "contact.form.sending": "Wird gesendet\u2026",
+      "contact.form.success": "Vielen Dank \u2014 Ihre Nachricht wurde gesendet. Wir melden uns in K\u00fcrze.",
+      "contact.form.error": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt.",
 
       "slogan.l1": "Wir heben",
       "slogan.l2": "allt\u00e4gliche Mobilit\u00e4t",

@@ -1,3 +1,8 @@
+import { CONTACT_INBOX_EMAIL } from "../config/inbox-email.js";
+import { appendLogoAttachment, buildBrandedPlainEmail, buildProjectConfirmationHtml } from "../utils/formsubmit-email.js";
+import { sendConfirmationEmail } from "../utils/emailjs-send.js";
+import { isFormSubmitSuccess } from "../utils/formsubmit.js";
+
 const DRAFT_KEY = "aufsteig_start_project_draft_v2";
 
 const stepsTotal = 7;
@@ -24,11 +29,10 @@ function setDraftStatus(text) {
   $("#spDraftStatus").textContent = text || "";
 }
 
+/** Legacy hook: steps use display:none/flex (no fixed height). Clear any old inline height. */
 function syncStepsHeight() {
   const wrap = $(".sp-steps");
-  const active = $(".sp-step.is-active");
-  if (!wrap || !active) return;
-  wrap.style.height = `${active.scrollHeight}px`;
+  if (wrap) wrap.style.height = "";
 }
 window.syncStepsHeight = syncStepsHeight;
 
@@ -50,11 +54,10 @@ function showStep(step) {
   if (prevEl) prevEl.classList.remove("is-back");
 
   if (nextEl) {
-    // trigger transition reliably
     void nextEl.offsetWidth;
     nextEl.classList.add("is-active");
   }
-  requestAnimationFrame(() => syncStepsHeight());
+  syncStepsHeight();
 
   $("#spBack").disabled = step === 1;
   $("#spNext").style.display = step === stepsTotal ? "none" : "inline-flex";
@@ -134,6 +137,8 @@ function applyDraft(draft) {
         } else {
           el.checked = Boolean(value);
         }
+      } else if (el.type === "hidden" && el.closest(".sp-field")) {
+        // custom select — skip, syncCustomSelectLabels handles it after init
       } else {
         el.value = String(value ?? "");
       }
@@ -364,6 +369,8 @@ function labelFor(key) {
     fullName: "review.fullName",
     companyName: "review.companyName",
     email: "review.email",
+    phoneCountry: "review.phoneCountry",
+    phone: "review.phoneNational",
     phoneE164: "review.phone",
     country: "review.country",
     city: "review.city",
@@ -403,21 +410,173 @@ function labelFor(key) {
   return key;
 }
 
-async function mockSubmit() {
+function prettyFieldValue(value) {
+  if (value === undefined || value === null) return "—";
+  if (typeof value === "boolean") {
+    const y = window.spT ? window.spT("review.boolYes") : "Yes";
+    const n = window.spT ? window.spT("review.boolNo") : "No";
+    return value ? y : n;
+  }
+  if (Array.isArray(value)) return value.length ? value.join(", ") : "—";
+  const s = String(value).trim();
+  return s ? s : "—";
+}
+
+function buildProjectSections(data, formEl) {
+  const _rt = window.spT || ((k) => k);
+  const groups = [
+    [_rt("reviewGroup.client"), ["fullName", "companyName", "email", "phoneCountry", "phone", "phoneE164", "country", "city"]],
+    [_rt("reviewGroup.services"), ["buildingContext", "serviceLines", "solutionCategories", "units", "projectArea"]],
+    [_rt("reviewGroup.building"), ["floors", "buildingHeightM", "floorToFloorM", "buildingState", "shaftAvailable", "loadKg", "dailyUsage"]],
+    [
+      _rt("reviewGroup.technical"),
+      [
+        "resourceDocs",
+        "supplyProductInterest",
+        "elevatorType",
+        "driveType",
+        "speedMs",
+        "doorType",
+        "finish",
+        "reqAccessibility",
+        "reqEnergy",
+        "reqRemoteMonitoring",
+        "reqComplianceAudit",
+      ],
+    ],
+    [_rt("reviewGroup.location"), ["address", "siteAccess", "timeline"]],
+    [_rt("reviewGroup.budget"), ["budget", "notes"]],
+  ];
+
+  const sections = [];
+  const seen = new Set();
+
+  groups.forEach(([sectionTitle, keys]) => {
+    const rows = [];
+    keys.forEach((key) => {
+      if (!(key in data)) return;
+      seen.add(key);
+      rows.push({ label: labelFor(key), value: prettyFieldValue(data[key]) });
+    });
+    if (rows.length) sections.push({ sectionTitle, rows });
+  });
+
+  const extraRows = [];
+  Object.keys(data).forEach((key) => {
+    if (seen.has(key)) return;
+    extraRows.push({ label: labelFor(key), value: prettyFieldValue(data[key]) });
+  });
+  if (extraRows.length) {
+    sections.push({ sectionTitle: _rt("email.extraSection"), rows: extraRows });
+  }
+
+  const fileInput = formEl ? formEl.querySelector('input[name="files"]') : null;
+  const fileRows = [];
+  if (fileInput && fileInput.files && fileInput.files.length) {
+    for (let i = 0; i < fileInput.files.length; i++) {
+      fileRows.push({
+        label: `${_rt("email.fileN")} ${i + 1}`,
+        value: `${fileInput.files[i].name} (${Math.round(fileInput.files[i].size / 1024)} KB)`,
+      });
+    }
+  } else {
+    fileRows.push({ label: _rt("email.attachments"), value: _rt("email.none") });
+  }
+  sections.push({ sectionTitle: _rt("email.attachmentsSection"), rows: fileRows });
+
+  return sections;
+}
+
+function buildProjectPlainMessage(data, formEl) {
+  const _rt = window.spT || ((k) => k);
+  const sections = buildProjectSections(data, formEl);
+  const fullName = String(data.fullName || "").trim();
+  const email = String(data.email || "").trim();
+
+  return buildBrandedPlainEmail({
+    title: _rt("email.projectTitle"),
+    tagline: fullName && email ? `${fullName} · ${email}` : email || fullName || "",
+    sections,
+  });
+}
+
+async function submitProjectToInbox() {
+  const data = getFormData();
+  const formEl = $("#spForm");
+  const email = String(data.email || "").trim();
+  const fullName = String(data.fullName || "").trim();
+  const bodyText = buildProjectPlainMessage(data, formEl);
+  const subject = `Project request — ${fullName} — ${email}`;
+
+  const payload = new FormData();
+  payload.append("name", fullName);
+  payload.append("email", email);
+  payload.append("_replyto", email);
+  payload.append("_subject", subject);
+  payload.append("message", bodyText);
+  payload.append("_template", "table");
+  payload.append("_autoresponse", buildProjectAutoResponse({
+    name: fullName,
+    sections: buildProjectSections(data, formEl),
+  }));
+  await appendLogoAttachment(payload);
+
+  const fileInput = formEl.querySelector('input[name="files"]');
+  if (fileInput && fileInput.files && fileInput.files.length) {
+    for (let i = 0; i < fileInput.files.length; i++) {
+      payload.append("attachment", fileInput.files[i]);
+    }
+  }
+
+  const url = `https://formsubmit.co/ajax/${encodeURIComponent(CONTACT_INBOX_EMAIL)}`;
+  const res = await fetch(url, {
+    method: "POST",
+    body: payload,
+    headers: { Accept: "application/json" },
+  });
+  const json = await res.json().catch(() => null);
+  const ok = res.ok && isFormSubmitSuccess(json);
+  return { ok, message: json && typeof json.message === "string" ? json.message : "" };
+}
+
+async function runSubmit() {
   const btn = $("#spSubmit");
   const msg = $("#spSubmitMsg");
   btn.classList.add("is-loading");
   btn.disabled = true;
+  msg.classList.remove("is-error");
   msg.textContent = window.spT ? window.spT("submit.submitting") : "Submitting…";
 
-  await new Promise((r) => setTimeout(r, 1100));
-
-  btn.classList.remove("is-loading");
-  msg.textContent = window.spT ? window.spT("submit.success") : "Your project request has been submitted successfully. Our team will contact you shortly.";
-
-  // Clear draft after success
-  localStorage.removeItem(DRAFT_KEY);
-  setDraftStatus("");
+  try {
+    const result = await submitProjectToInbox();
+    if (result.ok) {
+      msg.textContent = window.spT
+        ? window.spT("submit.success")
+        : "Your project request has been submitted successfully. Our team will contact you shortly.";
+      localStorage.removeItem(DRAFT_KEY);
+      setDraftStatus("");
+      const data = getFormData();
+      const formEl = $("#spForm");
+      const allRows = buildProjectSections(data, formEl).flatMap(s => s.rows || []);
+      sendConfirmationEmail({
+        toEmail:    String(data.email || "").trim(),
+        toName:     String(data.fullName || "").trim(),
+        subject:    "Your project request — Aufstieg Technik",
+        extraRows:  allRows,
+      });
+    } else {
+      msg.classList.add("is-error");
+      msg.textContent =
+        result.message ||
+        (window.spT ? window.spT("submit.error") : "Could not send your request. Please try again.");
+    }
+  } catch {
+    msg.classList.add("is-error");
+    msg.textContent = window.spT ? window.spT("submit.error") : "Could not send your request. Please try again.";
+  } finally {
+    btn.classList.remove("is-loading");
+    btn.disabled = false;
+  }
 }
 
 function init() {
@@ -442,15 +601,11 @@ function init() {
       const ccDigits = normalize(cc);
       const v = String(phoneInput.value || "").trim();
 
-      // If user pasted full international number, keep it and try to sync the dropdown.
+      // If user pasted full international number, strip the prefix and keep local digits.
       if (v.startsWith("+")) {
         const allDigits = normalize(v);
-        const match = Array.from(phoneCountry.options)
-          .map((o) => ({ o, d: normalize(o.value) }))
-          .sort((a, b) => b.d.length - a.d.length)
-          .find(({ d }) => allDigits.startsWith(d));
-        if (match) phoneCountry.value = match.o.value;
-        phoneInput.value = allDigits.slice(match ? normalize(phoneCountry.value).length : 0);
+        const ccLen = normalize(cc).length;
+        phoneInput.value = ccLen ? allDigits.slice(ccLen) : allDigits;
         return;
       }
 
@@ -509,7 +664,13 @@ function init() {
 
   window.addEventListener("resize", () => syncStepsHeight());
   window.addEventListener("load", () => syncStepsHeight());
-  window.addEventListener("spi18n-changed", () => setProgress(currentStep));
+  window.addEventListener("spi18n-changed", () => {
+    setProgress(currentStep);
+    requestAnimationFrame(() => syncStepsHeight());
+  });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => syncStepsHeight());
+  }
   requestAnimationFrame(() => syncStepsHeight());
 
   $("#spForm").addEventListener("submit", async (e) => {
@@ -522,7 +683,7 @@ function init() {
         return;
       }
     }
-    await mockSubmit();
+    await runSubmit();
   });
 }
 

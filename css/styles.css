@@ -6434,6 +6434,28 @@ html:lang(de) .safety-concept-item-text {
   transform: scale(0.98);
 }
 
+.contact-submit:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.contact-form-status {
+  margin: 14px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #3d424c;
+}
+
+.contact-form-status--success {
+  color: #1b5e20;
+}
+
+.contact-form-status--error {
+  color: #b71c1c;
+}
+
 @media (max-width: 980px) {
   .contact-grid {
     grid-template-columns: 1fr;

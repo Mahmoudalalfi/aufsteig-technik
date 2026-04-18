@@ -179,7 +179,7 @@
       "step6.notes":          "Additional notes & deliverables",
       "step6.notesPlaceholder":"e.g. phased modernization, multi-building rollout, documentation & handover pack, energy tune, cabin retrofit \u2014 reference any homepage or service detail that applies.",
       "step6.fileUpload":     "File upload (optional: drawings, PDFs)",
-      "step6.fileHelp":       "Files are not uploaded in this demo; we follow up by email for technical design dossier materials if needed.",
+      "step6.fileHelp":       "PDFs and images are sent with your request (max 10 MB total per FormSubmit).",
 
       /* ── STEP 7 – Review & Submit ── */
       "step7.title":          "Review & Submit",
@@ -207,11 +207,24 @@
       /* ── SUBMIT ── */
       "submit.submitting":    "Submitting\u2026",
       "submit.success":       "Your project request has been submitted successfully. Our team will contact you shortly.",
+      "submit.error":         "Could not send your request. Please try again or email Info@aufstiegtechnik.de.",
+
+      /* ── EMAIL BODY (FormSubmit HTML) ── */
+      "email.projectTitle":   "Start your project — full submission",
+      "email.extraSection":   "Additional",
+      "email.fileN":          "File",
+      "email.attachments":    "Attachments",
+      "email.attachmentsSection": "Attachments",
+      "email.none":           "None",
 
       /* ── REVIEW LABELS ── */
       "review.fullName":          "Full name",
       "review.companyName":       "Company name",
       "review.email":             "Email",
+      "review.phoneCountry":      "Phone country code",
+      "review.phoneNational":     "Phone (local number)",
+      "review.boolYes":           "Yes",
+      "review.boolNo":            "No",
       "review.phone":             "Phone (international)",
       "review.country":           "Country",
       "review.city":              "City",
@@ -424,7 +437,7 @@
       "step6.notes":          "Zus\u00E4tzliche Hinweise & Leistungen",
       "step6.notesPlaceholder":"z.B. phasenweise Modernisierung, Mehrgeb\u00E4ude-Rollout, Dokumentations- & \u00DCbergabepaket, Energieoptimierung, Kabinennachr\u00FCstung \u2014 verweisen Sie auf alle zutreffenden Details der Startseite oder des Servicebereichs.",
       "step6.fileUpload":     "Datei-Upload (optional: Zeichnungen, PDFs)",
-      "step6.fileHelp":       "Dateien werden in dieser Demo nicht hochgeladen; wir kontaktieren Sie per E-Mail f\u00FCr technische Designunterlagen bei Bedarf.",
+      "step6.fileHelp":       "PDFs und Bilder werden mit Ihrer Anfrage mitgesendet (max. 10 MB gesamt pro FormSubmit).",
 
       "step7.title":          "\u00DCberpr\u00FCfen & Absenden",
       "step7.lead":           "Best\u00E4tigen Sie, dass alles korrekt ist. Sie k\u00F6nnen zur\u00FCckgehen und jeden Schritt bearbeiten.",
@@ -447,10 +460,22 @@
 
       "submit.submitting":    "Wird gesendet\u2026",
       "submit.success":       "Ihre Projektanfrage wurde erfolgreich gesendet. Unser Team wird sich in K\u00FCrze bei Ihnen melden.",
+      "submit.error":         "Senden fehlgeschlagen. Bitte erneut versuchen oder eine E-Mail an Info@aufstiegtechnik.de senden.",
+
+      "email.projectTitle":   "Projekt starten — vollst\u00E4ndige Anfrage",
+      "email.extraSection":   "Weitere Angaben",
+      "email.fileN":          "Datei",
+      "email.attachments":    "Anh\u00E4nge",
+      "email.attachmentsSection": "Anh\u00E4nge",
+      "email.none":           "Keine",
 
       "review.fullName":          "Vollst\u00E4ndiger Name",
       "review.companyName":       "Firmenname",
       "review.email":             "E-Mail",
+      "review.phoneCountry":      "Telefon-Landesvorwahl",
+      "review.phoneNational":     "Telefon (nationale Nummer)",
+      "review.boolYes":           "Ja",
+      "review.boolNo":            "Nein",
       "review.phone":             "Telefon (international)",
       "review.country":           "Land",
       "review.city":              "Stadt",
