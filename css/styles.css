@@ -2011,6 +2011,9 @@ a {
 
 .person-card-body {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 
 .person-card h4 {
@@ -2033,6 +2036,7 @@ a {
   color: #5d626d;
   font-weight: 400;
   letter-spacing: -0.01em;
+  flex: 1 1 auto;
 }
 
 .person-email {
@@ -5680,7 +5684,7 @@ html:lang(de) .safety-concept-item-text {
   }
 }
 
-/* 5-column grid */
+/* 3-column grid */
 .partners-reel-track-wrap {
   position: relative;
   margin-top: 0;
@@ -5688,8 +5692,8 @@ html:lang(de) .safety-concept-item-text {
 
 .partners-reel-track {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   padding: 0;
 }
 
@@ -5760,6 +5764,21 @@ html:lang(de) .safety-concept-item-text {
   transform: scale(1.3);
 }
 
+.reel-img-wrap--text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.reel-text-logo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111;
+}
+
 /* Index number badge */
 .reel-index {
   position: absolute;
@@ -5818,13 +5837,10 @@ html:lang(de) .safety-concept-item-text {
   letter-spacing: 0.04em;
 }
 
-@media (max-width: 1100px) {
-  .partners-reel-track { grid-template-columns: repeat(3, 1fr); }
-}
 @media (max-width: 700px) {
   .partners-reel-header { flex-direction: column; align-items: flex-start; }
   .partners-reel-hook { max-width: 100%; }
-  .partners-reel-track { grid-template-columns: repeat(2, 1fr); }
+  .partners-reel-track { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
 /* ===== END PARTNERS REEL ===== */
@@ -5990,28 +6006,78 @@ html:lang(de) .safety-concept-item-text {
 .tl-empty { flex: 1; }
 
 @media (max-width: 700px) {
-  /* Single-column stacked timeline — hide snake SVG, left slots, centre node */
+  /* Single-column stacked timeline with vertical snake line */
   .tl-snake-svg { display: none; }
 
-  .timeline-item {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    margin-bottom: 24px;
+  /* Vertical connecting line via track pseudo-element — animates height in */
+  .timeline-track::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 0;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to bottom, rgba(29,29,31,0.18), rgba(29,29,31,0.12));
+    pointer-events: none;
+    transition: height 2.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .timeline-track.tl-line-visible::before {
+    height: 100%;
   }
 
-  .tl-slot-left { display: none; }
-  .tl-node { display: none; }
+  .timeline-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    padding-left: 52px;
+    position: relative;
+  }
+
+  /* Dot on the left line */
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 21px;
+    top: 28px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2.5px solid rgba(0,0,0,0.2);
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 2;
+  }
+
+  .timeline-item.tl-visible::before {
+    background: #1d1d1f;
+    border-color: #1d1d1f;
+    transform: scale(1.35);
+  }
+
+  /* Show left-slot cards, hide empty right slots */
+  .tl-slot-left {
+    display: block;
+    padding-right: 0;
+    justify-content: unset;
+  }
   .tl-slot-right {
-    grid-column: 1;
+    grid-column: unset;
     padding-left: 0;
   }
 
-  /* All items enter from bottom — no left/right */
+  /* Hide the empty slots (those with no .tl-card child) */
+  .tl-slot-left:not(:has(.tl-card)),
+  .tl-slot-right:not(:has(.tl-card)) { display: none; }
+
+  /* Hide original node dots (replaced by ::before pseudo) */
+  .tl-node { display: none; }
+
+  /* All items enter from bottom */
   .timeline-item.tl-left,
   .timeline-item.tl-right { transform: translateY(24px); }
   .timeline-item.tl-visible { transform: translateY(0); }
 
-  .tl-year { font-size: 3rem; }
+  .tl-year { font-size: 2.6rem; }
 
   .tl-card {
     width: 100%;
@@ -7139,12 +7205,9 @@ html:lang(de) .market-approach-item-text {
     aspect-ratio: 4 / 3;
   }
 
-  .about-slide figcaption {
-    font-size: 0.78rem;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-    padding: 9px 13px;
+  .about-slide figcaption,
+  .about-slide-caption {
+    display: none;
   }
 
   .about-slideshow-nav {
@@ -7754,14 +7817,11 @@ html.is-touch .menu-strip {
 /* ── Split-text word wrappers ── */
 .sw {
   display: inline-block;
-  overflow: visible;
+  overflow: hidden;
   vertical-align: bottom;
   line-height: inherit;
-  /* Larger padding for deep italic descenders (Cormorant y, g etc.) */
   padding-bottom: 0.22em;
   margin-bottom: -0.22em;
-  padding-right: 0.08em;
-  margin-right: -0.08em;
 }
 
 .sw-inner {
@@ -8032,17 +8092,7 @@ html.is-touch .menu-strip {
   }
 }
 
-/* ── Split-word reveal animation support ── */
-.sw {
-  display: inline-block;
-  overflow: visible;
-  vertical-align: bottom;
-  padding-bottom: 0.22em;
-  margin-bottom: -0.22em;
-}
-
 .sw-inner {
-  display: inline-block;
   will-change: transform, opacity;
 }
 
@@ -8068,28 +8118,36 @@ html.is-touch .menu-strip {
   gap: 4px;
 }
 
+.lang-flag {
+  display: block;
+  width: 28px;
+  height: 18px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
 .site-lang-btn {
   border: none;
   background: transparent;
-  font-family: Inter, Arial, sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  padding: 5px 8px;
+  padding: 4px 5px;
   border-radius: 8px;
   cursor: pointer;
-  color: var(--muted);
-  transition: color 200ms, background 200ms;
+  opacity: 0.45;
+  transition: opacity 200ms, background 200ms, transform 200ms;
+  display: flex;
+  align-items: center;
 }
 
 .site-lang-btn:hover {
-  color: var(--ink);
+  opacity: 0.8;
   background: rgba(0, 0, 0, 0.05);
+  transform: scale(1.12);
 }
 
 .site-lang-btn.is-active {
-  color: #fff;
-  background: var(--ink);
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.08);
+  transform: scale(1.08);
 }
 
 /* ── Touch / mobile performance ── */
@@ -8128,11 +8186,6 @@ html.is-touch .menu-strip {
 
 /* ── Mobile layout fixes ── */
 @media (max-width: 700px) {
-  /* Partners reel: 5th card fills the empty right cell */
-  .partners-reel-track .reel-card:last-child:nth-child(2n+1) {
-    grid-column: 1 / -1;
-  }
-
   /* VMV header: ensure text doesn't overflow dark panel edges */
   .vmv-section .container {
     padding-left: max(20px, env(safe-area-inset-left, 0px));

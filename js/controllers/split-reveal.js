@@ -86,7 +86,7 @@ export function initSplitReveal() {
       const spans = el.querySelectorAll('.sw-inner');
       if (!spans.length) return;
 
-      gsap.set(spans, { yPercent: 150, opacity: 0 });
+      gsap.set(spans, { yPercent: 110, opacity: 0 });
 
       const trigger = ST.create({
         trigger: el,
@@ -96,9 +96,9 @@ export function initSplitReveal() {
           gsap.to(spans, {
             yPercent: 0,
             opacity: 1,
-            duration: 0.82,
-            ease: 'power3.out',
-            stagger: 0.05,
+            duration: 1.0,
+            ease: 'power4.out',
+            stagger: 0.04,
           });
         },
       });

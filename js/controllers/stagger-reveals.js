@@ -108,7 +108,7 @@ export function bindDynamicReveals(root = document.body) {
     gsap.set(els, { opacity: 0, y });
     ST.batch(els, {
       once: true, start: 'top 91%',
-      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.72, ease: 'power2.out', stagger, overwrite: true }),
+      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.95, ease: 'power3.out', stagger, overwrite: true }),
     });
     els.forEach((el) => {
       if (el.getBoundingClientRect().top < window.innerHeight * 0.91) gsap.set(el, { opacity: 1, y: 0 });
@@ -129,7 +129,7 @@ export function bindDynamicReveals(root = document.body) {
     gsap.set(el, { opacity: 0, y });
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight * thresholdPct) { gsap.set(el, { opacity: 1, y: 0 }); return; }
-    ST.create({ trigger: el, start, once: true, onEnter() { gsap.to(el, { opacity: 1, y: 0, duration: 0.88, ease: 'power3.out' }); } });
+    ST.create({ trigger: el, start, once: true, onEnter() { gsap.to(el, { opacity: 1, y: 0, duration: 1.05, ease: 'power4.out' }); } });
   });
 }
 
@@ -243,7 +243,7 @@ export function initStaggerReveals() {
     gsap.set(els, { opacity: 0, y });
     ST.batch(els, {
       once: true, start: 'top 91%',
-      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.72, ease: 'power2.out', stagger, overwrite: true }),
+      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.95, ease: 'power3.out', stagger, overwrite: true }),
     });
     els.forEach((el) => {
       if (el.getBoundingClientRect().top < window.innerHeight * 0.91) gsap.set(el, { opacity: 1, y: 0 });
@@ -292,7 +292,7 @@ export function initStaggerReveals() {
     const thresholdPct = parseFloat((start.match(/(\d+(?:\.\d+)?)%/) || [, '88'])[1]) / 100;
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight * thresholdPct) { gsap.set(el, { opacity: 1, y: 0 }); return; }
-    ST.create({ trigger: el, start, once: true, onEnter() { gsap.to(el, { opacity: 1, y: 0, duration: 0.88, ease: 'power3.out' }); } });
+    ST.create({ trigger: el, start, once: true, onEnter() { gsap.to(el, { opacity: 1, y: 0, duration: 1.05, ease: 'power4.out' }); } });
   });
 
   document.querySelectorAll('.timeline-item').forEach((item) => {
@@ -301,7 +301,7 @@ export function initStaggerReveals() {
     const rect = item.getBoundingClientRect();
     if (rect.top < window.innerHeight * 0.91) { gsap.set(item, { opacity: 1, x: 0 }); item.classList.add('tl-visible'); return; }
     ST.create({ trigger: item, start: 'top 88%', once: true, onEnter() {
-      gsap.to(item, { opacity: 1, x: 0, duration: 0.72, ease: 'power3.out' });
+      gsap.to(item, { opacity: 1, x: 0, duration: 0.95, ease: 'power4.out' });
       item.classList.add('tl-visible');
     }});
   });

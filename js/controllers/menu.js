@@ -13,6 +13,16 @@ export function initMenu(refs) {
       menuToggle.setAttribute("aria-expanded", "false");
     });
   });
+
+  function closeOnOutside(e) {
+    if (!menuPanel.classList.contains("open")) return;
+    if (menuPanel.contains(e.target) || menuToggle.contains(e.target)) return;
+    menuPanel.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+  }
+
+  document.addEventListener("click", closeOnOutside);
+  document.addEventListener("touchstart", closeOnOutside, { passive: true });
 }
 
 export function initMenuStripIndicator() {

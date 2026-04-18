@@ -56,15 +56,15 @@ export function initTimeline() {
       },
     });
   } else {
-    // Fallback: IntersectionObserver fade-draw
+    // Mobile: animate the vertical CSS line by adding class when track enters view
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) {
-          path.style.transition = 'stroke-dashoffset 2.4s cubic-bezier(0.22,1,0.36,1)';
-          path.style.strokeDashoffset = 0;
+          track.classList.add('tl-line-visible');
+          observer.unobserve(track);
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
     observer.observe(track);
   }
 }

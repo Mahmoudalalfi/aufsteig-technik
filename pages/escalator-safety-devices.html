@@ -315,9 +315,9 @@
   
     /* ── Language switcher ── */
     .page-lang-switcher{position:fixed;top:18px;right:18px;z-index:999;display:flex;gap:4px;background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--glass-border);border-radius:20px;padding:3px;}
-    .page-lang-btn{font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.04em;padding:5px 12px;border-radius:16px;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
-    .page-lang-btn.is-active{background:var(--ink);color:#fff}
-    .page-lang-btn:hover:not(.is-active){color:var(--ink)}
+    .page-lang-flag{display:block;width:28px;height:18px;border-radius:3px;overflow:hidden}.page-lang-btn{padding:4px 5px;border-radius:8px;border:none;cursor:pointer;background:transparent;opacity:.45;transition:opacity .2s,transform .2s;display:flex;align-items:center}
+    .page-lang-btn.is-active{opacity:1;background:rgba(0,0,0,.08);transform:scale(1.08)}
+    .page-lang-btn:hover:not(.is-active){opacity:.8;transform:scale(1.12)}
 
   </style>
   <script>
@@ -331,7 +331,7 @@
   <div class="ambient-glow glow-2" aria-hidden="true"></div>
 
   <main class="wrap">
-    <div class="page-lang-switcher"><button class="page-lang-btn is-active" data-lang="en" type="button">EN</button><button class="page-lang-btn" data-lang="de" type="button">DE</button></div>
+    <div class="page-lang-switcher"><button class="page-lang-btn is-active" data-lang="en" type="button" aria-label="Switch to English"><svg class="page-lang-flag" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="30" fill="#B22234"/><rect y="4.6" width="60" height="3.8" fill="#fff"/><rect y="9.2" width="60" height="3.8" fill="#B22234"/><rect y="13.8" width="60" height="3.8" fill="#fff"/><rect y="18.4" width="60" height="3.8" fill="#B22234"/><rect y="23" width="60" height="3.8" fill="#fff"/><rect y="27.6" width="60" height="2.4" fill="#B22234"/><rect width="24" height="16.2" fill="#3C3B6E"/></svg></button><button class="page-lang-btn" data-lang="de" type="button" aria-label="Auf Deutsch wechseln"><svg class="page-lang-flag" viewBox="0 0 5 3" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#D00"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg></button></div>
     <a class="back-link" href="../index.html#servicesGrid" data-i18n="back">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
       Back to Services

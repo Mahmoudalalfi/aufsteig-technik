@@ -141,6 +141,15 @@ export function initFaqAccordion() {
     });
   });
 
+  function closeAllOnOutside(e) {
+    const faqList = document.querySelector(".faq-list");
+    if (!faqList || faqList.contains(e.target)) return;
+    items.forEach((item) => closeItem(item, item.querySelector("summary")));
+  }
+
+  document.addEventListener("click", closeAllOnOutside);
+  document.addEventListener("touchstart", closeAllOnOutside, { passive: true });
+
   window.addEventListener(
     "resize",
     () => {
