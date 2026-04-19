@@ -485,17 +485,26 @@ function buildProjectSections(data, formEl) {
   return sections;
 }
 
-function buildProjectPlainMessage(data, formEl) {
-  const _rt = window.spT || ((k) => k);
-  const sections = buildProjectSections(data, formEl);
-  const fullName = String(data.fullName || "").trim();
-  const email = String(data.email || "").trim();
+function esc(str) {
+  return String(str ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
 
-  return buildBrandedPlainEmail({
-    title: _rt("email.projectTitle"),
-    tagline: fullName && email ? `${fullName} · ${email}` : email || fullName || "",
-    sections,
-  });
+function buildProjectHtmlMessage(data, formEl) {
+  const sections = buildProjectSections(data, formEl);
+  const sectionBlocks = sections.map(sec => {
+    if (!sec.rows || !sec.rows.length) return "";
+    const rows = sec.rows.map((r, i) => `
+      <tr style="background:${i % 2 === 0 ? "#ffffff" : "#f7f9fc"};">
+        <td style="padding:8px 12px 8px 0;font-size:12px;font-weight:600;color:#64748b;vertical-align:top;border-bottom:1px solid #edf0f7;width:40%;">${esc(r.label)}</td>
+        <td style="padding:8px 0 8px 12px;font-size:13px;color:#0d2045;vertical-align:top;border-bottom:1px solid #edf0f7;word-break:break-word;">${esc(String(r.value ?? "—"))}</td>
+      </tr>`).join("");
+    return `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:10px;font-weight:700;color:#1e5fc2;letter-spacing:1.2px;text-transform:uppercase;padding-bottom:6px;border-bottom:2px solid #e4eaf3;margin-bottom:10px;">${esc(sec.sectionTitle || "Details")}</div>
+        <table width="100%" cellpadding="0" cellspacing="0">${rows}</table>
+      </div>`;
+  }).join("");
+  return sectionBlocks;
 }
 
 async function submitProjectToInbox() {
@@ -503,14 +512,14 @@ async function submitProjectToInbox() {
   const formEl = $("#spForm");
   const email = String(data.email || "").trim();
   const fullName = String(data.fullName || "").trim();
-  const bodyText = buildProjectPlainMessage(data, formEl);
+  const htmlMessage = buildProjectHtmlMessage(data, formEl);
   const subject = `Project request — ${fullName} — ${email}`;
 
   await sendInboxEmail({
     fromName:    fullName,
     fromEmail:   email,
     subject,
-    message:     bodyText,
+    message:     htmlMessage,
   });
   return { ok: true };
 }
