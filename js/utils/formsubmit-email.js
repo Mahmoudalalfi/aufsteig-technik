@@ -191,7 +191,7 @@ function contactInfoBlock(t) {
         <div style="font-size:10px;font-weight:700;color:#1e5fc2;letter-spacing:1px;
                     text-transform:uppercase;margin-bottom:8px;">Phone</div>
         <div style="font-size:13px;color:#0d2045;font-weight:600;line-height:1.8;">
-          +49 174 9740 6460
+          +49 174 9740646
         </div>
       </td>
       <td style="padding:18px 20px;width:50%;vertical-align:top;">
