@@ -51,7 +51,6 @@ export function initSplitReveal() {
     ['.service-photo-meta strong', 'top 86%'],
     ['.services-signature-head h3', 'top 88%'],
     ['.section-head h3',            'top 88%'],
-    ['.achievement-copy h3',      'top 86%'],
     ['.brain-left h3',              'top 84%'],
     ['.brain-right h2',             'top 84%'],
     ['.ratings-head h3',            'top 88%'],
@@ -59,11 +58,9 @@ export function initSplitReveal() {
     ['.faq-wrap h3',                'top 88%'],
     ['.offers-head h3',             'top 88%'],
     ['.process-grid h4',            'top 90%'],
-    ['.partners-reel-left h2',      'top 88%'],
     ['.vmv-header h2',              'top 86%'],
     ['.vmv-card h3',                'top 88%'],
     ['.offices-header h2',          'top 88%'],
-    ['.facilities-header h2',       'top 88%'],
     ['.capability-card h4',         'top 90%'],
   ];
 

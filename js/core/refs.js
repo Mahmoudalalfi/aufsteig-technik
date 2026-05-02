@@ -13,7 +13,6 @@ export function collectRefs() {
     serviceTrack: document.querySelector(".services-track"),
     serviceCard: document.getElementById("serviceStoryCard"),
     servicesSection: document.getElementById("services"),
-    impactSection: document.getElementById("impactImage"),
     brainSection: document.getElementById("brainCta"),
     processSection: document.getElementById("process"),
     processCards: Array.from(document.querySelectorAll("#process .process-grid article")),

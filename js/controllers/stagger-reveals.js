@@ -178,7 +178,6 @@ export function initStaggerReveals() {
       ['.vmv-card',              40, 70],
       ['.office-card',           36, 70],
       ['.facility-card',         36, 70],
-      ['.reel-card',             40, 65],
       ['.market-approach-item',  40, 70],
       ['.core-focus-item',       40, 70],
       ['.tech-innovation-item',  40, 70],
@@ -190,14 +189,12 @@ export function initStaggerReveals() {
     });
 
     const singleSelectors = [
-      '.capabilities-viewport', '.achievement-showcase', '.brain-card',
+      '.capabilities-viewport', '.brain-card',
       '.contact-form-card', '.partners-strip', '.process-route-wrap',
-      '.ratings-marquee', '.timeline-section .section-head',
-      '.partners-reel-hook', '.partners-reel-chip', '.timeline-spine',
-      '.project-deck', '.vmv-header .chip', '.vmv-header p',
+      '.ratings-marquee',
+      '.vmv-header .chip', '.vmv-header p',
       '.offices-header .chip', '.offices-header p',
-      '.facilities-header .chip', '.facilities-header p',
-      '.partners-head p', '.services-signature-head p',
+      '.partners-head p',
       '.offers-head p', '.ratings-head p',
       '.market-approach-head', '.market-approach-panel',
       '.core-focus-head', '.core-focus-panel',
@@ -208,16 +205,6 @@ export function initStaggerReveals() {
     singleSelectors.forEach((sel) => {
       const el = document.querySelector(sel);
       if (el) ioFadeUp([el], 24, 0);
-    });
-
-    // Timeline items: simple fade-up
-    document.querySelectorAll('.timeline-item').forEach((item) => {
-      ioFadeUp([item], 24, 0);
-      // Also add tl-visible when it enters
-      const io2 = new IntersectionObserver((entries) => {
-        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('tl-visible'); io2.unobserve(e.target); } });
-      }, { threshold: 0.05 });
-      io2.observe(item);
     });
 
     bindDynamicReveals(document.body);
@@ -242,7 +229,6 @@ export function initStaggerReveals() {
     ['.vmv-card',      0.12, 40],
     ['.office-card',   0.12, 36],
     ['.facility-card', 0.12, 36],
-    ['.reel-card',     0.10, 40],
     ['.market-approach-item', 0.12, 40],
     ['.core-focus-item', 0.12, 40],
     ['.tech-innovation-item', 0.12, 40],
@@ -265,25 +251,16 @@ export function initStaggerReveals() {
 
   const blocks = [
     ['.capabilities-viewport','top 88%', 0,  32],
-    ['.achievement-showcase', 'top 86%', 0,  40],
     ['.brain-card',           'top 84%', 0,  0 ],
     ['.contact-form-card',    'top 88%', 0,  32],
     ['.partners-strip',       'top 90%', 0,  24],
     ['.process-route-wrap',   'top 86%', 0,  20],
     ['.ratings-marquee',      'top 88%', 0,  24],
-    ['.timeline-section .section-head', 'top 88%', 0, 28],
-    ['.partners-reel-hook',             'top 88%', 0, 24],
-    ['.partners-reel-chip',             'top 88%', 0, 16],
-    ['.timeline-spine',                 'top 85%', 0,  0 ],
-    ['.project-deck',                   'top 88%', 0, 32],
     ['.vmv-header .chip',               'top 88%', 0, 16],
     ['.vmv-header p',                   'top 88%', 0, 20],
     ['.offices-header .chip',           'top 88%', 0, 16],
     ['.offices-header p',               'top 88%', 0, 20],
-    ['.facilities-header .chip',        'top 88%', 0, 16],
-    ['.facilities-header p',            'top 88%', 0, 20],
     ['.partners-head p',                'top 88%', 0, 20],
-    ['.services-signature-head p',      'top 88%', 0, 20],
     ['.offers-head p',                  'top 88%', 0, 20],
     ['.ratings-head p',                 'top 88%', 0, 20],
     ['.market-approach-head',           'top 90%', 0, 26],
@@ -306,17 +283,6 @@ export function initStaggerReveals() {
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight * thresholdPct) { gsap.set(el, { opacity: 1, y: 0 }); return; }
     ST.create({ trigger: el, start, once: true, onEnter() { gsap.to(el, { opacity: 1, y: 0, duration: 1.05, ease: 'power4.out' }); } });
-  });
-
-  document.querySelectorAll('.timeline-item').forEach((item) => {
-    const isRight = item.classList.contains('tl-right');
-    gsap.set(item, { opacity: 0, x: isRight ? 50 : -50 });
-    const rect = item.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.91) { gsap.set(item, { opacity: 1, x: 0 }); item.classList.add('tl-visible'); return; }
-    ST.create({ trigger: item, start: 'top 88%', once: true, onEnter() {
-      gsap.to(item, { opacity: 1, x: 0, duration: 0.95, ease: 'power4.out' });
-      item.classList.add('tl-visible');
-    }});
   });
 
   bindDynamicReveals(document.body);

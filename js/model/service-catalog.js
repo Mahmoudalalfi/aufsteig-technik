@@ -1,7 +1,7 @@
 export const SERVICE_CATALOG = {
     supply: {
       title: "Elevators & Lifts Supply Products",
-      lead: "Passenger, freight, and specialized lift systems for different building profiles.",
+      lead: "Lift packages specified for commercial, residential, and institutional projects.",
       ctaLabel: "View shaft layout matrix",
       ctaHref: "pages/shaft-layout-matrix.html",
       secondaryCtaLabel: "Detailed shaft plan sheets",
@@ -17,7 +17,7 @@ export const SERVICE_CATALOG = {
     },
     installation: {
       title: "Mechanical & Electrical Installation Products",
-      lead: "Control, drive, and safety infrastructure installed to international standards.",
+      lead: "Installation coordination and technical implementation according to project requirements and applicable safety standards.",
       products: [
         { name: "VVVF Drive Package", desc: "Smooth acceleration controller and motor drive integration set.", img: "assets/UOdCJ.png" },
         { name: "Control Cabinet Assembly", desc: "Preconfigured cabinet with wiring harness and breaker layout.", img: "assets/DwdRr.png" },
@@ -29,7 +29,7 @@ export const SERVICE_CATALOG = {
     },
     maintenance: {
       title: "Maintenance & After-Sales Products",
-      lead: "Preventive care kits and service products to reduce downtime events.",
+      lead: "Maintenance and technical support based on agreed service level",
       products: [
         { name: "Monthly PM Checklist Pack", desc: "Structured preventive checklist and inspection sheets.", img: "assets/eZLz8.png" },
         { name: "Emergency Response Kit", desc: "Rapid response tools and standardized fault workflow cards.", img: "assets/8BCUE.png" },
@@ -67,7 +67,7 @@ export const SERVICE_CATALOG = {
     },
     compliance: {
       title: "Compliance & Safety Audit Products",
-      lead: "Audit-ready products and checklists aligned to T\u00dcV and EN 81 workflows.",
+      lead: "Compliance-oriented planning and documentation for elevator and escalator projects.",
       ctaLabel: "View safety device overview",
       ctaHref: "pages/escalator-safety-devices.html",
       products: [
@@ -84,7 +84,7 @@ export const SERVICE_CATALOG = {
 const SERVICE_CATALOG_DE = {
   supply: {
     title: "Aufz\u00fcge & Aufzugsversorgung Produkte",
-    lead: "Personen-, Lasten- und Spezialliftanlagen f\u00fcr verschiedene Geb\u00e4udeprofile.",
+    lead: "Aufzugspakete ausgelegt f\u00fcr gewerbliche, Wohn- und institutionelle Projekte.",
     ctaLabel: "Schachtlayout-Matrix ansehen",
     ctaHref: "pages/shaft-layout-matrix.html",
     secondaryCtaLabel: "Detaillierte Schachtplanbl\u00e4tter",
@@ -100,7 +100,7 @@ const SERVICE_CATALOG_DE = {
   },
   installation: {
     title: "Mechanische & Elektrische Installationsprodukte",
-    lead: "Steuerungs-, Antriebs- und Sicherheitsinfrastruktur nach internationalen Standards installiert.",
+    lead: "Installationskoordination und technische Umsetzung gem\u00e4\u00df Projektanforderungen und geltenden Sicherheitsstandards.",
     products: [
       { name: "VVVF-Antriebspaket", desc: "Sanftanlauf-Controller und Motorantriebsintegrations-Set.", img: "assets/UOdCJ.png" },
       { name: "Steuerschrank-Baugruppe", desc: "Vorkonfigurierter Schrank mit Kabelbaum und Schalterlayout.", img: "assets/DwdRr.png" },
@@ -112,7 +112,7 @@ const SERVICE_CATALOG_DE = {
   },
   maintenance: {
     title: "Wartung & Kundendienst Produkte",
-    lead: "Vorbeugende Pflegekits und Serviceprodukte zur Reduzierung von Ausfallzeiten.",
+    lead: "Wartung und technischer Support auf Basis vereinbarter Servicelevel",
     products: [
       { name: "Monatliches PM-Checklistenpaket", desc: "Strukturierte Pr\u00e4ventiv-Checkliste und Inspektionsbl\u00e4tter.", img: "assets/eZLz8.png" },
       { name: "Notfall-Reaktionsset", desc: "Schnelle Reaktionswerkzeuge und standardisierte St\u00f6rungsworkflow-Karten.", img: "assets/8BCUE.png" },
@@ -150,7 +150,7 @@ const SERVICE_CATALOG_DE = {
   },
   compliance: {
     title: "Compliance & Sicherheitsaudit Produkte",
-    lead: "Auditf\u00e4hige Produkte und Checklisten gem\u00e4\u00df T\u00dcV- und EN 81-Workflows.",
+    lead: "Konformit\u00e4tsorientierte Planung und Dokumentation f\u00fcr Aufzugs- und Fahrtreppenprojekte.",
     ctaLabel: "Sicherheitsger\u00e4te\u00fcbersicht ansehen",
     ctaHref: "pages/escalator-safety-devices.html",
     products: [

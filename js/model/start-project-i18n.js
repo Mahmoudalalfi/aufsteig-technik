@@ -60,7 +60,7 @@
       "step2.supplies.title":       "Premium Technical Supplies",
       "step2.supplies.desc":        "Retrofit components; linked to the standard vs optional parts matrix on the site.",
       "step2.compliance.title":     "Compliance & Safety Audits",
-      "step2.compliance.desc":      "Audit checklists, T\u00dcV / EN 81\u2013oriented workflows, safety device references.",
+      "step2.compliance.desc":      "Audit checklists, EN 81\u2013oriented workflows, regulatory inspection preparation, safety device references.",
 
       "step2.solutionCats":   "Which \u201CWhat We Offer\u201D solution categories are in scope?",
       "step2.solutionHint":   "Same titles as the What We Offer tiles (Products section on the homepage).",
@@ -156,7 +156,7 @@
       "step4.reqAccessibility":   "Accessibility Solutions (inclusive access)",
       "step4.reqEnergy":          "Higher drive efficiency / lower energy use (system specs on Services)",
       "step4.reqRemoteMonitoring":"Remote diagnostics & monitoring interest (Maintenance & After-Sales)",
-      "step4.reqCompliance":      "Compliance & Safety Audits \u2014 T\u00dcV / EN 81\u2013oriented workflow",
+      "step4.reqCompliance":      "Compliance & Safety Audits \u2014 EN 81\u2013oriented workflow",
 
       /* ── STEP 5 – Location & Schedule ── */
       "step5.title":          "Location & Schedule",
@@ -171,7 +171,7 @@
 
       /* ── STEP 6 – Budget & Notes ── */
       "step6.title":          "Budget & Notes",
-      "step6.lead":           "Mention optional deliverables you care about: spare-parts SLA, remote diagnostics, commissioning protocol, T\u00dcV-ready documentation \u2014 aligned with Maintenance, Contracting, and Compliance on the site.",
+      "step6.lead":           "Mention optional deliverables you care about: spare-parts SLA, remote diagnostics, commissioning protocol, inspection-ready documentation \u2014 aligned with Maintenance, Contracting, and Compliance on the site.",
       "step6.budgetRange":    "Estimated budget range",
       "step6.low":            "Low",
       "step6.medium":         "Medium",
@@ -322,7 +322,7 @@
       "step2.supplies.title":       "Premium Technische Versorgung",
       "step2.supplies.desc":        "Nachr\u00FCstkomponenten; verkn\u00FCpft mit der Standard- vs. optionalen Teilematrix auf der Website.",
       "step2.compliance.title":     "Compliance & Sicherheitsaudits",
-      "step2.compliance.desc":      "Audit-Checklisten, T\u00dcV / EN 81-orientierte Arbeitsabl\u00E4ufe, Sicherheitsger\u00E4te-Referenzen.",
+      "step2.compliance.desc":      "Audit-Checklisten, EN 81-orientierte Abl\u00E4ufe, Vorbereitung auf beh\u00F6rdliche Pr\u00FCfungen, Sicherheitsger\u00E4te-Referenzen.",
 
       "step2.solutionCats":   "Welche \u201EWas wir bieten\u201C-L\u00F6sungskategorien fallen in den Umfang?",
       "step2.solutionHint":   "Dieselben Titel wie die \u201EWas wir bieten\u201C-Kacheln (Produktbereich auf der Startseite).",
@@ -416,7 +416,7 @@
       "step4.reqAccessibility":   "Barrierefreie L\u00F6sungen (inklusiver Zugang)",
       "step4.reqEnergy":          "H\u00F6here Antriebseffizienz / geringerer Energieverbrauch (Systemspezifikationen unter Services)",
       "step4.reqRemoteMonitoring":"Interesse an Ferndiagnose & \u00DCberwachung (Wartung & Kundendienst)",
-      "step4.reqCompliance":      "Compliance & Sicherheitsaudits \u2014 T\u00dcV / EN 81-orientierter Workflow",
+      "step4.reqCompliance":      "Compliance & Sicherheitsaudits \u2014 EN 81-orientierter Workflow",
 
       "step5.title":          "Standort & Zeitplan",
       "step5.lead":           "Unterst\u00FCtzt unsere Prozessschritte: Beschaffung & Lieferung \u2192 Installation & Inbetriebnahme (der Standortzugang beeinflusst die Installationsreihenfolge).",
@@ -429,7 +429,7 @@
       "step5.timeline3":      "Flexible / phasenweise Inbetriebnahme (6+ Monate)",
 
       "step6.title":          "Budget & Hinweise",
-      "step6.lead":           "Erw\u00E4hnen Sie optionale Leistungen, die Ihnen wichtig sind: Ersatzteil-SLA, Ferndiagnose, Inbetriebnahmeprotokoll, T\u00dcV-konforme Dokumentation \u2014 abgestimmt auf Wartung, Contracting und Compliance auf der Website.",
+      "step6.lead":           "Erw\u00E4hnen Sie optionale Leistungen, die Ihnen wichtig sind: Ersatzteil-SLA, Ferndiagnose, Inbetriebnahmeprotokoll, pr\u00fcfungsbereite Dokumentation \u2014 abgestimmt auf Wartung, Contracting und Compliance auf der Website.",
       "step6.budgetRange":    "Gesch\u00E4tzter Budgetrahmen",
       "step6.low":            "Niedrig",
       "step6.medium":         "Mittel",
@@ -619,6 +619,11 @@
     /* Restore saved language */
     var saved = DEFAULT_LANG;
     try { saved = localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG; } catch (e) { /* private mode */ }
+
+    if (!translations[saved]) {
+      saved = DEFAULT_LANG;
+      try { localStorage.setItem(STORAGE_KEY, saved); } catch (e) { /* quota */ }
+    }
 
     if (saved !== DEFAULT_LANG && translations[saved]) {
       apply(saved);

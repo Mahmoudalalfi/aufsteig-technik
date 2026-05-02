@@ -329,27 +329,6 @@ export function initScrollTimelines(refs) {
     });
   }
 
-  if (refs.impactSection) {
-    const showcase = refs.impactSection.querySelector(".achievement-showcase");
-    if (showcase) {
-      gsap.fromTo(
-        showcase,
-        { y: 24, opacity: 0.3 },
-        {
-          y: 0,
-          opacity: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: refs.impactSection,
-            start: "top 84%",
-            end: "top 58%",
-            scrub: st.scrub
-          }
-        }
-      );
-    }
-  }
-
   if (refs.brainSection) {
     ScrollTrigger.create({
       trigger: refs.brainSection,
@@ -470,7 +449,6 @@ function initTouchScrollTimelines(refs, gsap, ScrollTrigger) {
   ioReveal('.intro-grid, .stats-grid article');
   ioReveal('.service-products-grid article');
   ioReveal('.capability-card', 20, 50);
-  ioReveal('.achievement-showcase', 24, 0);
 
   if (refs.brainSection) {
     ioReveal(

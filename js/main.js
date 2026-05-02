@@ -6,8 +6,6 @@ import { initFaqAccordion } from "./controllers/faq.js";
 import { initPartnersMotion } from "./controllers/partners.js";
 import { initContactForm } from "./controllers/contact.js";
 import { initServiceProductTabs } from "./controllers/services.js";
-import { initProjectDeck } from "./controllers/project-deck.js";
-import { initAchievementShowcase } from "./controllers/achievements.js";
 import { initRatingsMarquee } from "./controllers/ratings.js";
 import { initScrollNavMorph } from "./controllers/scroll-nav.js";
 import { initSmoothScroll } from "./controllers/smooth-scroll.js";
@@ -19,8 +17,6 @@ import { initStaggerReveals, bindDynamicReveals } from "./controllers/stagger-re
 import { initMagnetic } from "./controllers/magnetic.js";
 import { initCardTilt } from "./controllers/card-tilt.js";
 import { initAboutSlideshow } from "./controllers/about-slideshow.js";
-import { initTimeline } from "./controllers/timeline.js";
-import { initPartnersReel } from "./controllers/partners-reel.js";
 import { initIndustrialVision } from "./controllers/industrial-vision.js";
 import { initAboutDynamics } from "./controllers/about-dynamics.js";
 
@@ -55,8 +51,6 @@ initFaqAccordion();
 initPartnersMotion();
 initContactForm();
 initServiceProductTabs();
-initProjectDeck();
-initAchievementShowcase();
 initRatingsMarquee();
 initAboutSlideshow();
 initScrollNavMorph();
@@ -69,8 +63,6 @@ requestAnimationFrame(() => {
 initStaggerReveals(); // grid / card stagger entrances
 initAboutDynamics(); // #about bullets + trust strip (About-only)
 initIndustrialVision();
-initTimeline();       // snake path draw + milestone reveals
-initPartnersReel();   // drag-to-scroll partners film strip
 initMagnetic();       // magnetic CTAs
 initCardTilt();       // 3-D tilt on hover
 
