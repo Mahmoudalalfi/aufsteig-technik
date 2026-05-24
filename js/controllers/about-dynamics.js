@@ -60,20 +60,9 @@ export function initAboutDynamics() {
           revealOne(entry.target);
           io.unobserve(entry.target);
         });
-      }, { rootMargin: '0px 0px -5% 0px', threshold: 0.05 });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        arr.forEach((el) => {
-          const r = el.getBoundingClientRect();
-          if (r.top < window.innerHeight * 0.5) {
-            el.style.transition = 'none';
-            el.style.opacity = '1';
-            el.style.transform = 'translateY(0)';
-            done++;
-            if (done === arr.length && onDone) onDone();
-          } else {
-            io.observe(el);
-          }
-        });
+        arr.forEach((el) => io.observe(el));
       }));
     }
 

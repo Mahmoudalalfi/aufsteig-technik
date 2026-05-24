@@ -10,3 +10,8 @@ Thumbs.db
 .claude/
 .cursor/
 .vercel
+
+# Cloudinary upload scripts (contain API secret)
+cloudinary-upload.mjs
+revert-to-local.mjs
+fix-cloudinary-urls.mjs

@@ -20,18 +20,20 @@ function ioFadeUp(els, yPx = 28, staggerMs = 55) {
     el.style.transform = `translateY(${yPx}px)`;
   });
 
-  let nextDelay = 0;
+  let batchIndex = 0;
+  let batchTimer = null;
 
-  function revealEl(el, extraDelay = 0) {
-    const d = nextDelay + extraDelay;
-    nextDelay += staggerMs;
-    // Double rAF: first frame commits the hidden state, second frame starts the transition
+  function revealEl(el) {
+    const d = batchIndex * staggerMs;
+    batchIndex++;
+    clearTimeout(batchTimer);
+    batchTimer = setTimeout(() => { batchIndex = 0; }, 300);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       setTimeout(() => {
-        el.style.transition = 'opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)';
+        el.style.transition = 'opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1)';
         el.style.opacity = '1';
         el.style.transform = 'translateY(0)';
-      }, d > 0 ? d : 0);
+      }, d);
     }));
   }
 
@@ -41,16 +43,51 @@ function ioFadeUp(els, yPx = 28, staggerMs = 55) {
       revealEl(entry.target);
       io.unobserve(entry.target);
     });
-  }, { rootMargin: '0px 0px -5% 0px', threshold: 0.05 });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
 
   // Double rAF before observing so hidden state is committed to paint
   requestAnimationFrame(() => requestAnimationFrame(() => {
     arr.forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (r.bottom > 0 && r.top < window.innerHeight * 0.5) {
-        el.style.transition = 'none';
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
+      io.observe(el);
+    });
+  }));
+}
+
+/* ─── CSS-class-based reveal for pre-hidden elements (e.g. .person-card) ─── */
+function ioRevealClass(els, className, staggerMs = 65) {
+  if (!els || !els.length) return;
+  const arr = Array.isArray(els) ? els : Array.from(els);
+  let batchIndex = 0;
+  let batchTimer = null;
+
+  function revealNow(el, animate) {
+    if (!animate) {
+      el.style.transition = 'none';
+      el.classList.add(className);
+      return;
+    }
+    const d = batchIndex * staggerMs;
+    batchIndex++;
+    clearTimeout(batchTimer);
+    batchTimer = setTimeout(() => { batchIndex = 0; }, 500);
+    setTimeout(() => el.classList.add(className), d);
+  }
+
+  // Use a large negative bottom margin so IO only fires well before card enters screen
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      revealNow(entry.target, true);
+      io.unobserve(entry.target);
+    });
+  }, { rootMargin: '0px 0px -200px 0px', threshold: 0 });
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    arr.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      // Already visible on screen — reveal without animation
+      if (rect.top < window.innerHeight) {
+        revealNow(el, false);
       } else {
         io.observe(el);
       }
@@ -167,14 +204,13 @@ export function initStaggerReveals() {
   if (IS_TOUCH) {
     // ── TOUCH: pure IntersectionObserver, zero ScrollTrigger ──
     const batchSelectors = [
+      ['.ig-card',               24, 80],
       ['.capability-card',       32, 60],
       ['.process-grid article',  36, 70],
       ['.offer-tile',            28, 40],
-      ['.person-card',           32, 65],
       ['.rating-card',           28, 50],
       ['.contact-card',          28, 70],
       ['.faq-list details',      22, 45],
-      ['.people-showcase-grid .person-card', 36, 65],
       ['.vmv-card',              40, 70],
       ['.office-card',           36, 70],
       ['.facility-card',         36, 70],
@@ -187,6 +223,19 @@ export function initStaggerReveals() {
     batchSelectors.forEach(([sel, y, staggerMs]) => {
       ioFadeUp(document.querySelectorAll(sel), y, staggerMs);
     });
+
+    // Add is-visible to .people-grid when it scrolls into view → CSS keyframes handle the stagger
+    const peopleGrid = document.querySelector('.people-grid');
+    if (peopleGrid) {
+      const gridIO = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          peopleGrid.classList.add('is-visible');
+          gridIO.disconnect();
+        });
+      }, { rootMargin: '0px 0px -60px 0px', threshold: 0 });
+      gridIO.observe(peopleGrid);
+    }
 
     const singleSelectors = [
       '.capabilities-viewport', '.brain-card',
@@ -218,6 +267,7 @@ export function initStaggerReveals() {
   const ST   = window.ScrollTrigger;
 
   const batches = [
+    ['.ig-card',               0.10, 24],
     ['.capability-card',       0.09, 32],
     ['.process-grid article',  0.12, 36],
     ['.offer-tile',            0.055, 28],

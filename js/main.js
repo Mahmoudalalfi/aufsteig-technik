@@ -59,16 +59,16 @@ requestAnimationFrame(() => {
   if (window.ScrollTrigger) window.ScrollTrigger.refresh();
 });
 
-// Premium interactions — split reveal runs from __runAfterI18nApply after i18n apply()
-initStaggerReveals(); // grid / card stagger entrances
-initAboutDynamics(); // #about bullets + trust strip (About-only)
 initIndustrialVision();
-initMagnetic();       // magnetic CTAs
-initCardTilt();       // 3-D tilt on hover
+initMagnetic();
+initCardTilt();
 
 window.addEventListener(
   "load",
   () => {
+    // Run after full layout so getBoundingClientRect is accurate
+    initStaggerReveals();
+    initAboutDynamics();
     if (window.ScrollTrigger) window.ScrollTrigger.refresh();
   },
   { once: true }

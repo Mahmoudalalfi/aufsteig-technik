@@ -4,5 +4,8 @@
   "description": "Static marketing site. Deploy: upload repo root to any static host, or connect this repo to Vercel/Netlify (root = site root). GSAP/Lenis from CDN — no build step.",
   "scripts": {
     "preview": "python -m http.server 5500 --bind 127.0.0.1"
+  },
+  "dependencies": {
+    "cloudinary": "^2.10.0"
   }
 }

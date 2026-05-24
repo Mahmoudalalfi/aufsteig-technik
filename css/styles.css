@@ -1199,6 +1199,7 @@ a {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
+  align-items: stretch;
   position: relative;
   z-index: 1;
 }
@@ -1214,13 +1215,13 @@ a {
   border: 1px solid rgba(18,21,27,0.07);
   cursor: default;
   overflow: hidden;
+  align-self: stretch;
+  height: 100%;
   transition:
     background 0.4s cubic-bezier(0.22,1,0.36,1),
     border-color 0.4s cubic-bezier(0.22,1,0.36,1),
     transform 0.45s cubic-bezier(0.22,1,0.36,1),
     box-shadow 0.45s cubic-bezier(0.22,1,0.36,1);
-  animation: igCardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
-  animation-delay: calc(var(--i) * 90ms);
 }
 
 @keyframes igCardIn {
@@ -1330,10 +1331,10 @@ a {
     padding: 40px 22px;
   }
   .ig-cards {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
   .ig-card:last-child {
-    grid-column: span 2;
+    grid-column: span 1;
   }
 }
 
@@ -1903,6 +1904,11 @@ a {
   flex: 1 1 auto;
 }
 
+@keyframes personCardIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .person-card {
   position: relative;
   border-radius: 18px;
@@ -1910,6 +1916,24 @@ a {
   border: 1px solid rgba(18, 21, 27, 0.08);
   overflow: hidden;
   transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms ease;
+  opacity: 0;
+}
+
+.people-grid.is-visible .person-card {
+  animation: personCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.people-grid.is-visible .person-card:nth-child(1) { animation-delay: 0ms; }
+.people-grid.is-visible .person-card:nth-child(2) { animation-delay: 70ms; }
+.people-grid.is-visible .person-card:nth-child(3) { animation-delay: 140ms; }
+.people-grid.is-visible .person-card:nth-child(4) { animation-delay: 210ms; }
+.people-grid.is-visible .person-card:nth-child(5) { animation-delay: 280ms; }
+.people-grid.is-visible .person-card:nth-child(6) { animation-delay: 350ms; }
+.people-grid.is-visible .person-card:nth-child(7) { animation-delay: 420ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .person-card { opacity: 1; }
+  .people-grid.is-visible .person-card { animation: none; }
 }
 
 .person-card:hover {
@@ -2048,14 +2072,14 @@ a {
 
 .person-email {
   display: block;
-  margin: -6px 14px 14px;
+  margin: auto 14px 14px;
   font-size: 0.82rem;
   line-height: 1.4;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: #0f5c8c;
   text-decoration: none;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .person-email:hover {
@@ -2114,7 +2138,32 @@ a {
 
   .people-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    align-items: stretch;
   }
+
+  /* Card becomes a grid — body uses display:contents to expose children to the grid */
+  .people-grid .person-card {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    height: 100%;
+    align-content: start;
+  }
+
+  .people-grid .person-card-body {
+    display: contents;
+  }
+
+  .people-grid .person-card .person-media { grid-row: 1; }
+  .people-grid .person-card h4            { grid-row: 2; align-self: start; }
+  .people-grid .person-card .person-role  { grid-row: 3; align-self: start; }
+  .people-grid .person-card .person-desc  { grid-row: 4; align-self: start; }
+  .people-grid .person-card .person-email { grid-row: 5; align-self: end; margin-top: 0; }
+
+  .people-grid .person-card h4 { font-size: 0.95rem; }
+  .people-grid .person-role    { font-size: 0.85rem; }
+  .people-grid .person-desc    { font-size: 0.82rem; }
+  .people-grid .person-email   { font-size: 0.72rem; word-break: break-all; overflow-wrap: anywhere; }
 
   .people-showcase-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2464,19 +2513,19 @@ a {
     height: auto;
     min-height: auto;
     grid-template-rows: none;
-    grid-auto-rows: minmax(118px, auto);
+    grid-auto-rows: minmax(150px, auto);
   }
 
   .service-tab {
     height: auto;
-    min-height: 118px;
+    min-height: 150px;
   }
 
   .service-tab-clip {
     flex: 0 0 auto;
-    height: 118px;
-    min-height: 118px;
-    max-height: 118px;
+    height: 150px;
+    min-height: 150px;
+    max-height: 150px;
   }
 }
 
@@ -4461,17 +4510,17 @@ html:lang(de) .safety-concept-item-text {
 
 .office-img--berlin {
   background-color: #3d4f63;
-  background-image: url("../assets/Office1%28Berlin%29.jpeg");
+  background-image: url("https://res.cloudinary.com/dfc0qnh88/image/upload/v1779580126/Aufstieg%20Technik/assets/Office1%28Berlin%29.jpg");
 }
 
 .office-img--leipzig {
   background-color: #1a2434;
-  background-image: url("../assets/Office2%28Lipzig%29.png");
+  background-image: url("https://res.cloudinary.com/dfc0qnh88/image/upload/v1779580127/Aufstieg%20Technik/assets/Office2%28Lipzig%29.png");
 }
 
 .office-img--italy {
   background-color: #3d5240;
-  background-image: url("../assets/Office3%28Italy%29%20.png");
+  background-image: url("https://res.cloudinary.com/dfc0qnh88/image/upload/v1779580508/Aufstieg%20Technik/assets/Office3%28Italy%29.png");
 }
 
 .office-img-label {
@@ -6018,6 +6067,9 @@ html:lang(de) .market-approach-item-text {
     overflow: visible !important;
     height: auto !important;
   }
+  #serviceStoryCard.floating-card {
+    overflow: visible !important;
+  }
   .service-story-slide {
     position: static !important;
     opacity: 1 !important;
@@ -6028,6 +6080,7 @@ html:lang(de) .market-approach-item-text {
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.1);
     padding: 20px !important;
+    overflow: hidden;
   }
   .service-story-slide:not(.is-active) {
     display: block !important;
@@ -6158,18 +6211,18 @@ html:lang(de) .market-approach-item-text {
   }
 
   #serviceTabs.service-tabs {
-    grid-auto-rows: minmax(104px, auto);
+    grid-auto-rows: minmax(140px, auto);
   }
 
   .service-tab {
-    min-height: 104px;
-    font-size: 0.86rem;
+    min-height: 140px;
+    font-size: 0.82rem;
   }
 
   .service-tab-clip {
-    height: 104px;
-    min-height: 104px;
-    max-height: 104px;
+    height: 140px;
+    min-height: 140px;
+    max-height: 140px;
   }
 
   .service-specs {
